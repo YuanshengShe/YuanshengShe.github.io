@@ -716,6 +716,142 @@ $$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span><
       </tags>
   </entry>
   <entry>
+    <title>科研指南</title>
+    <url>/2025/05/17/%E7%A7%91%E7%A0%94%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h1 id="如何做好文献阅读及笔记整理">如何做好文献阅读及笔记整理</h1>
+<p>阅读文献有什么用？必须得先想清楚这个问题读文献才能有动力。简单讲读文献有四个方面的好处：（1）帮助我们快速了解课题背景；（2）帮助我们把握课题研究方向；（3）从中学习课题设计思路；（4）提升自己的逻辑写作能力。</p>
+<table>
+<tr>
+<td>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/1.png" weight="50%" height="50%">
+Fig1. 读文献的好处
+</center>
+</td>
+<td>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/2.png" weight="50%" height="50%">
+Fig2. 不同目的下文献的推荐阅读内容
+</center>
+</td>
+</tr>
+</table>
+<div class="admonition info">
+<p class="admonition-title">
+推荐工具
+</p>
+<ol>
+<li>
+Stork文献鸟： 定期通过邮箱获取指定领域的文献。
+</li>
+<li>
+Connected Papers：输入文章名，获取与之相关论文的知识图谱。其中，论文越新颜色越深，引用度越高圆圈越
+大，论文之间的联系越强连线越黑。还可以通过Prior Works找到领域的开门作，通过Derivative Works找到该
+领域的研究综述，了解领域的新进展。
+</li>
+</ol>
+</div>
+<p>那在阅读完文献之后应该怎么做文献阅读笔记呢？<del><font color="red">如果不做笔记，读完就忘了…</font></del>首先得明确做文献笔记是给自己看的，不是给别人看的，不应该机械的勾画和抄写文献的内容，应该注入自己的理解（<font color="green">强迫自己总结</font>）。</p>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/3.png" weight="50%" height="50%">
+Fig3. 论文阅读笔记模板
+</center>
+<h1 id="基于obsidian和zotero搭建文献阅读和笔记环境">基于Obsidian和Zotero搭建文献阅读和笔记环境</h1>
+<p>Zotero是一个文献管理工具，它的工作原理和hexo对博客的管理很像，对应的概念叫做条目，通过给条目赋予category和tag属性实现文献的管理。一个条目可以包含很多附件，如对应的pdf文件和笔记。Zotero的工作流简单来说就是用浏览器插件Zotero connector抓取文献条目（必须在文献详情页抓取，不要在打开的pdf阅读页抓取，不然抓不到文献的元数据，有时候只能抓到文献元数据但抓不到pdf，可以在zotero中手动添加），抓完之后用zotero阅读并标注pdf，导出zotero文献数据库，使用citations插件生成对应md模板，用obsidan写文献笔记。</p>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/6.webp" weight="50%" height="50%">
+Fig4. 文献详情页
+</center>
+<div class="admonition info">
+<p class="admonition-title">
+所需下载的插件及其功能汇总
+</p>
+<ul>
+<li>
+茉莉花（zotero）： 支持中文文献元数据的解析。
+</li>
+<li>
+better biblatex（zotero）： 将zotero所维护的数据按指定格式导出，这里选择better Biblatex格式并始终保持该文件的更新，及文库发生任何改变该导出文件都会发生相应的更新。
+</li>
+<li>
+zotfile（zotero）：使用zotero内置pdf阅读器做标记可以直接转换为笔记，但如果用其它阅读器做标记又想生成笔记就得使用zotfile插件做提取。<font color="red">zotfile现在不更新了，不支持zotero7…</font>
+</li>
+<li>
+citations（obsidian）：解析通过better biblatex导出的数据，生成指定模板下的markdown文件。
+</li>
+<li>
+dataview（obsidian）：这个插件很强大，它可以看成是一个excel表格，数据的来源是你markdown文件中的frontmatter，主要是用来排序和筛选特定文献。
+</li>
+</ul>
+</div>
+<p>此外，Zotero还可以和Word联动，快速插入引用和参考文献。<font color="blue">在一个word文档中首次插入引用会让你选择引文格式，例如中文文献一般就用GB格式，如果不小心选错了doucument performance按键重新选择！</font></p>
+<table>
+<tr>
+<td>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/8.png" width="50%" height="50%">
+Fig5. 选择引文格式
+</center>
+</td>
+<td>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/9.png">
+Fig6. 快速添加引文和参考文献
+</center>
+</td>
+</tr>
+</table>
+<h1 id="和咱专业相关的期刊">和咱专业相关的期刊</h1>
+<ul>
+<li>Transportation Research A~E：A关注交通政策、规划、经济和管理问题；B侧重交通建模、优化和理论方法；<br>
+C聚焦智能交通系统（ITS）、大数据、自动驾驶等新兴技术； D研究交通与环境、可持续发展的交叉领域；E物流、供应链管理和运输经济方向。<br>
+</li>
+<li>Transportation Science (TS)：INFORMS（Institute for Operations Research and the Management Sciences）旗下顶级期刊，关注运筹学、优化和交通系统分析。<br>
+</li>
+<li>Operations Research (OR)：INFORMS旗下旗舰期刊，涵盖优化、随机模型、算法设计、博弈论等核心方向。<br>
+</li>
+<li>European Journal of Operational Research (EJOR)：EJOR（European Journal of Operational Research）是运筹学（OR）和管理科学（MS）领域的国际顶级期刊，由欧洲运筹学协会（EURO）主办，Elsevier出版。它涵盖了运筹学理论、方法及其在商业、工程、政府等领域的应用，是学术界和工业界广泛认可的高影响力期刊。<br>
+</li>
+<li>Informs Journal on Computing (IJOC or JOC)：由INFORMS（运筹学与管理科学研究所）出版。它聚焦于算法设计、计算优化、机器学习与运筹学的结合，是理论计算与工程应用并重的高水平期刊。<br>
+</li>
+<li>IEEE Transactions on Intelligent Transportation Systems (T-ITS)：聚焦智能交通技术的应用与创新。</li>
+<li>Computers &amp; Operations Research (COR)：运筹学（OR）与计算科学交叉应用领域的国际权威期刊，由 Elsevier 出版，专注于算法开发、优化建模、决策支持系统及工业应用。</li>
+<li>Computers &amp; Industrial Engineering (CIE)：工业工程（IE）与计算机应用交叉领域 的重要国际期刊，由 Elsevier 出版，专注于 智能制造、生产系统优化、供应链管理、数据驱动决策 等方向。<br>
+</li>
+<li>交通运输工程学报</li>
+<li>交通运输系统工程与信息</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+EI、SCI和影响因子是什么东西
+</p>
+<p>
+EI（Engineering Index）和SCI（Science Citation Index）可以理解成两个数据库，在被这两个数据库搜录的期刊上发的文章就叫EI、SCI论文。影响因子（IF）是根据期刊发文量和被引用数计算出来的，一个期刊IF越大就越顶。
+</p>
+</div>
+<h1 id="参考资料">参考资料</h1>
+<ol type="1">
+<li><a href="https://www.bilibili.com/video/BV17W4y167SM">如何做好文献阅读及笔记整理</a></li>
+<li><a href="https://help.ivysci.com/guide/#chapter-ke-yan-shu-ju-shou">研飞科研指南</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/639325772">Obsidian+Zotero打造最强科研工具链</a></li>
+<li><a href="https://www.bilibili.com/video/BV1xM4y137q9">Zotero，OB不能没有它(PART1)</a></li>
+<li><a href="https://www.bilibili.com/video/BV1E64y187er">Zotero，OB不能没有它(PART2)</a></li>
+<li><a href="https://www.bilibili.com/video/BV1m341127aU">Zotero，OB不能没有它(PART3)</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/162939630">Zotero管理文献的机制——分类和标签</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/159828951">Zotero添加条目的三种方式</a></li>
+<li><a href="https://gitee.com/zotero-chinese/zotero-chinese/issues/I56D62">Zotero使用 CNKI 时抓取条目报错解决方法</a></li>
+<li><a href="https://clashforwindows.org/">外文文献搜索——Clash科学上网篇</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>其它</category>
+      </categories>
+      <tags>
+        <tag>科研方法论</tag>
+        <tag>研究生生涯规划</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Sublime</title>
     <url>/2025/05/11/Sublime/</url>
     <content><![CDATA[<h1 id="snippet效率神器">Snippet效率神器</h1>
@@ -1072,142 +1208,6 @@ Fig1. 创建项目
       <tags>
         <tag>大连海事大学</tag>
         <tag>景象照</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>科研指南</title>
-    <url>/2025/05/17/%E7%A7%91%E7%A0%94%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<h1 id="如何做好文献阅读及笔记整理">如何做好文献阅读及笔记整理</h1>
-<p>阅读文献有什么用？必须得先想清楚这个问题读文献才能有动力。简单讲读文献有四个方面的好处：（1）帮助我们快速了解课题背景；（2）帮助我们把握课题研究方向；（3）从中学习课题设计思路；（4）提升自己的逻辑写作能力。</p>
-<table>
-<tr>
-<td>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/1.png" weight="50%" height="50%">
-Fig1. 读文献的好处
-</center>
-</td>
-<td>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/2.png" weight="50%" height="50%">
-Fig2. 不同目的下文献的推荐阅读内容
-</center>
-</td>
-</tr>
-</table>
-<div class="admonition info">
-<p class="admonition-title">
-推荐工具
-</p>
-<ol>
-<li>
-Stork文献鸟： 定期通过邮箱获取指定领域的文献。
-</li>
-<li>
-Connected Papers：输入文章名，获取与之相关论文的知识图谱。其中，论文越新颜色越深，引用度越高圆圈越
-大，论文之间的联系越强连线越黑。还可以通过Prior Works找到领域的开门作，通过Derivative Works找到该
-领域的研究综述，了解领域的新进展。
-</li>
-</ol>
-</div>
-<p>那在阅读完文献之后应该怎么做文献阅读笔记呢？<del><font color="red">如果不做笔记，读完就忘了…</font></del>首先得明确做文献笔记是给自己看的，不是给别人看的，不应该机械的勾画和抄写文献的内容，应该注入自己的理解（<font color="green">强迫自己总结</font>）。</p>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/3.png" weight="50%" height="50%">
-Fig3. 论文阅读笔记模板
-</center>
-<h1 id="基于obsidian和zotero搭建文献阅读和笔记环境">基于Obsidian和Zotero搭建文献阅读和笔记环境</h1>
-<p>Zotero是一个文献管理工具，它的工作原理和hexo对博客的管理很像，对应的概念叫做条目，通过给条目赋予category和tag属性实现文献的管理。一个条目可以包含很多附件，如对应的pdf文件和笔记。Zotero的工作流简单来说就是用浏览器插件Zotero connector抓取文献条目（必须在文献详情页抓取，不要在打开的pdf阅读页抓取，不然抓不到文献的元数据，有时候只能抓到文献元数据但抓不到pdf，可以在zotero中手动添加），抓完之后用zotero阅读并标注pdf，导出zotero文献数据库，使用citations插件生成对应md模板，用obsidan写文献笔记。</p>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/6.webp" weight="50%" height="50%">
-Fig4. 文献详情页
-</center>
-<div class="admonition info">
-<p class="admonition-title">
-所需下载的插件及其功能汇总
-</p>
-<ul>
-<li>
-茉莉花（zotero）： 支持中文文献元数据的解析。
-</li>
-<li>
-better biblatex（zotero）： 将zotero所维护的数据按指定格式导出，这里选择better Biblatex格式并始终保持该文件的更新，及文库发生任何改变该导出文件都会发生相应的更新。
-</li>
-<li>
-zotfile（zotero）：使用zotero内置pdf阅读器做标记可以直接转换为笔记，但如果用其它阅读器做标记又想生成笔记就得使用zotfile插件做提取。<font color="red">zotfile现在不更新了，不支持zotero7…</font>
-</li>
-<li>
-citations（obsidian）：解析通过better biblatex导出的数据，生成指定模板下的markdown文件。
-</li>
-<li>
-dataview（obsidian）：这个插件很强大，它可以看成是一个excel表格，数据的来源是你markdown文件中的frontmatter，主要是用来排序和筛选特定文献。
-</li>
-</ul>
-</div>
-<p>此外，Zotero还可以和Word联动，快速插入引用和参考文献。<font color="blue">在一个word文档中首次插入引用会让你选择引文格式，例如中文文献一般就用GB格式，如果不小心选错了doucument performance按键重新选择！</font></p>
-<table>
-<tr>
-<td>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/8.png" width="50%" height="50%">
-Fig5. 选择引文格式
-</center>
-</td>
-<td>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/9.png">
-Fig6. 快速添加引文和参考文献
-</center>
-</td>
-</tr>
-</table>
-<h1 id="和咱专业相关的期刊">和咱专业相关的期刊</h1>
-<ul>
-<li>Transportation Research A~E：A关注交通政策、规划、经济和管理问题；B侧重交通建模、优化和理论方法；<br>
-C聚焦智能交通系统（ITS）、大数据、自动驾驶等新兴技术； D研究交通与环境、可持续发展的交叉领域；E物流、供应链管理和运输经济方向。<br>
-</li>
-<li>Transportation Science (TS)：INFORMS（Institute for Operations Research and the Management Sciences）旗下顶级期刊，关注运筹学、优化和交通系统分析。<br>
-</li>
-<li>Operations Research (OR)：INFORMS旗下旗舰期刊，涵盖优化、随机模型、算法设计、博弈论等核心方向。<br>
-</li>
-<li>European Journal of Operational Research (EJOR)：EJOR（European Journal of Operational Research）是运筹学（OR）和管理科学（MS）领域的国际顶级期刊，由欧洲运筹学协会（EURO）主办，Elsevier出版。它涵盖了运筹学理论、方法及其在商业、工程、政府等领域的应用，是学术界和工业界广泛认可的高影响力期刊。<br>
-</li>
-<li>Informs Journal on Computing (IJOC or JOC)：由INFORMS（运筹学与管理科学研究所）出版。它聚焦于算法设计、计算优化、机器学习与运筹学的结合，是理论计算与工程应用并重的高水平期刊。<br>
-</li>
-<li>IEEE Transactions on Intelligent Transportation Systems (T-ITS)：聚焦智能交通技术的应用与创新。</li>
-<li>Computers &amp; Operations Research (COR)：运筹学（OR）与计算科学交叉应用领域的国际权威期刊，由 Elsevier 出版，专注于算法开发、优化建模、决策支持系统及工业应用。</li>
-<li>Computers &amp; Industrial Engineering (CIE)：工业工程（IE）与计算机应用交叉领域 的重要国际期刊，由 Elsevier 出版，专注于 智能制造、生产系统优化、供应链管理、数据驱动决策 等方向。<br>
-</li>
-<li>交通运输工程学报</li>
-<li>交通运输系统工程与信息</li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">
-EI、SCI和影响因子是什么东西
-</p>
-<p>
-EI（Engineering Index）和SCI（Science Citation Index）可以理解成两个数据库，在被这两个数据库搜录的期刊上发的文章就叫EI、SCI论文。影响因子（IF）是根据期刊发文量和被引用数计算出来的，一个期刊IF越大就越顶。
-</p>
-</div>
-<h1 id="参考资料">参考资料</h1>
-<ol type="1">
-<li><a href="https://www.bilibili.com/video/BV17W4y167SM">如何做好文献阅读及笔记整理</a></li>
-<li><a href="https://help.ivysci.com/guide/#chapter-ke-yan-shu-ju-shou">研飞科研指南</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/639325772">Obsidian+Zotero打造最强科研工具链</a></li>
-<li><a href="https://www.bilibili.com/video/BV1xM4y137q9">Zotero，OB不能没有它(PART1)</a></li>
-<li><a href="https://www.bilibili.com/video/BV1E64y187er">Zotero，OB不能没有它(PART2)</a></li>
-<li><a href="https://www.bilibili.com/video/BV1m341127aU">Zotero，OB不能没有它(PART3)</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/162939630">Zotero管理文献的机制——分类和标签</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/159828951">Zotero添加条目的三种方式</a></li>
-<li><a href="https://gitee.com/zotero-chinese/zotero-chinese/issues/I56D62">Zotero使用 CNKI 时抓取条目报错解决方法</a></li>
-<li><a href="https://clashforwindows.org/">外文文献搜索——Clash科学上网篇</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>其它</category>
-      </categories>
-      <tags>
-        <tag>科研方法论</tag>
-        <tag>研究生生涯规划</tag>
       </tags>
   </entry>
 </search>
