@@ -1,18 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>海大的四季</title>
-    <url>/2025/05/05/%E6%B5%B7%E5%A4%A7%E7%9A%84%E5%9B%9B%E5%AD%A3/</url>
-    <content><![CDATA[<div class="gallery-container" data-type="data" data-button="" data-limit="10" data-first="10">
-    <div class="gallery-items">[{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg","alt":"","title":""},{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大2.jpg","alt":"","title":""},{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大3.jpg","alt":"","title":""},{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大4.jpg","alt":"","title":""},{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大5.jpg","alt":"","title":""},{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大6.jpg","alt":"","title":""}]</div>
-  </div>
+    <title>Git工具</title>
+    <url>/2025/05/18/Git%E5%B7%A5%E5%85%B7/</url>
+    <content><![CDATA[<p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
+<h1 id="git环境配置">Git环境配置</h1>
+<p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
+Fig1. Git仓库的结构
+</center>
+<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
+<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
+<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<blockquote>
+<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
+</blockquote>
+<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
+<span class="token function">git</span> pull origin master --allow-unrelated-histories
+<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info">
+<p class="admonition-title">
+需要注意的点
+</p>
+<ul>
+<li>
+命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。
+</li>
+<li>
+不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master
+</li>
+<li>
+如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接
+</li>
+<li>
+master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去
+</li>
+</ul>
+</div>
+<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
+<ul>
+<li>untracked：一个新创建的文件，没有被add。</li>
+<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
+<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
+<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
+</ul>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
+Fig2. 文件各种状态的转换
+</center>
+<h1 id="git分支管理工作流">Git分支管理工作流</h1>
+<p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
+<center>
+<p><img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%"></p>
+Fig3. 文件各种状态的转换
+</center>
+<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
+<p>最后是多人协作的一般流程</p>
+<ol type="1">
+<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
+<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
+<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
+<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
+</ol>
+<h1 id="常用bash命令和git命令">常用bash命令和git命令</h1>
+<ul>
+<li><code>D：</code>:切换到D磁盘。</li>
+<li><code>cd</code>：打印当前所在目录。</li>
+<li><code>cd d1\e1</code>：切换到当前磁盘下的d11目录。</li>
+<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
+<li><code>dir</code>：列出当前目录下的所有文件。</li>
+<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
+<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
+<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
+<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
+<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
+<li><code>cls</code>: clear screen。</li>
+<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
+<li><code>git status</code>：查询git仓库当前状态。</li>
+<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
+<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
+<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
+<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
+<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
+<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
+<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
+<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
+<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
+<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
+<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
+<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
+<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
+<li><code>git branch</code>：列举处所有分支。</li>
+<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
+<li><code>git branch 分支名</code>：创建分支。</li>
+<li><code>git branch -d 分支名</code>：删除分支。</li>
+<li><code>git switch 分支名</code>：切换到指定分支。</li>
+<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
+<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
+<li><code>git log --graph</code>：git 仓库历史变化图。</li>
+</ul>
 ]]></content>
       <categories>
-        <category>生活</category>
+        <category>计算机技术</category>
       </categories>
       <tags>
-        <tag>大连海事大学</tag>
-        <tag>景象照</tag>
+        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -444,258 +545,6 @@ Fig 1. 配合networx绘制家谱图
       </tags>
   </entry>
   <entry>
-    <title>Git工具</title>
-    <url>/2025/05/18/Git%E5%B7%A5%E5%85%B7/</url>
-    <content><![CDATA[<p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
-<h1 id="git环境配置">Git环境配置</h1>
-<p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
-<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
-Fig1. Git仓库的结构
-</center>
-<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
-<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
-<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<blockquote>
-<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
-</blockquote>
-<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
-<span class="token function">git</span> pull origin master --allow-unrelated-histories
-<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-需要注意的点
-</p>
-<ul>
-<li>
-命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。
-</li>
-<li>
-不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master
-</li>
-<li>
-如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接
-</li>
-<li>
-master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去
-</li>
-</ul>
-</div>
-<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
-<ul>
-<li>untracked：一个新创建的文件，没有被add。</li>
-<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
-<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
-<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
-</ul>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
-Fig2. 文件各种状态的转换
-</center>
-<h1 id="git分支管理工作流">Git分支管理工作流</h1>
-<p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
-<center>
-<p><img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%"></p>
-Fig3. 文件各种状态的转换
-</center>
-<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
-<p>最后是多人协作的一般流程</p>
-<ol type="1">
-<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
-<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
-<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
-<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
-</ol>
-<h1 id="常用bash命令和git命令">常用bash命令和git命令</h1>
-<ul>
-<li><code>D：</code>:切换到D磁盘。</li>
-<li><code>cd</code>：打印当前所在目录。</li>
-<li><code>cd d1\e1</code>：切换到当前磁盘下的d11目录。</li>
-<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
-<li><code>dir</code>：列出当前目录下的所有文件。</li>
-<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
-<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
-<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
-<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
-<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
-<li><code>cls</code>: clear screen。</li>
-<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
-<li><code>git status</code>：查询git仓库当前状态。</li>
-<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
-<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
-<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
-<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
-<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
-<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
-<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
-<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
-<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
-<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
-<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
-<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
-<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
-<li><code>git branch</code>：列举处所有分支。</li>
-<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
-<li><code>git branch 分支名</code>：创建分支。</li>
-<li><code>git branch -d 分支名</code>：删除分支。</li>
-<li><code>git switch 分支名</code>：切换到指定分支。</li>
-<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
-<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
-<li><code>git log --graph</code>：git 仓库历史变化图。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>科研指南</title>
-    <url>/2025/05/17/%E7%A7%91%E7%A0%94%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<h1 id="如何做好文献阅读及笔记整理">如何做好文献阅读及笔记整理</h1>
-<p>阅读文献有什么用？必须得先想清楚这个问题读文献才能有动力。简单讲读文献有四个方面的好处：（1）帮助我们快速了解课题背景；（2）帮助我们把握课题研究方向；（3）从中学习课题设计思路；（4）提升自己的逻辑写作能力。</p>
-<table>
-<tr>
-<td>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/1.png" weight="50%" height="50%">
-Fig1. 读文献的好处
-</center>
-</td>
-<td>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/2.png" weight="50%" height="50%">
-Fig2. 不同目的下文献的推荐阅读内容
-</center>
-</td>
-</tr>
-</table>
-<div class="admonition info">
-<p class="admonition-title">
-推荐工具
-</p>
-<ol>
-<li>
-Stork文献鸟： 定期通过邮箱获取指定领域的文献。
-</li>
-<li>
-Connected Papers：输入文章名，获取与之相关论文的知识图谱。其中，论文越新颜色越深，引用度越高圆圈越
-大，论文之间的联系越强连线越黑。还可以通过Prior Works找到领域的开门作，通过Derivative Works找到该
-领域的研究综述，了解领域的新进展。
-</li>
-</ol>
-</div>
-<p>那在阅读完文献之后应该怎么做文献阅读笔记呢？<del><font color="red">如果不做笔记，读完就忘了…</font></del>首先得明确做文献笔记是给自己看的，不是给别人看的，不应该机械的勾画和抄写文献的内容，应该注入自己的理解（<font color="green">强迫自己总结</font>）。</p>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/3.png" weight="50%" height="50%">
-Fig3. 论文阅读笔记模板
-</center>
-<h1 id="基于obsidian和zotero搭建文献阅读和笔记环境">基于Obsidian和Zotero搭建文献阅读和笔记环境</h1>
-<p>Zotero是一个文献管理工具，它的工作原理和hexo对博客的管理很像，对应的概念叫做条目，通过给条目赋予category和tag属性实现文献的管理。一个条目可以包含很多附件，如对应的pdf文件和笔记。Zotero的工作流简单来说就是用浏览器插件Zotero connector抓取文献条目（必须在文献详情页抓取，不要在打开的pdf阅读页抓取，不然抓不到文献的元数据，有时候只能抓到文献元数据但抓不到pdf，可以在zotero中手动添加），抓完之后用zotero阅读并标注pdf，导出zotero文献数据库，使用citations插件生成对应md模板，用obsidan写文献笔记。</p>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/6.webp" weight="50%" height="50%">
-Fig4. 文献详情页
-</center>
-<div class="admonition info">
-<p class="admonition-title">
-所需下载的插件及其功能汇总
-</p>
-<ul>
-<li>
-茉莉花（zotero）： 支持中文文献元数据的解析。
-</li>
-<li>
-better biblatex（zotero）： 将zotero所维护的数据按指定格式导出，这里选择better Biblatex格式并始终保持该文件的更新，及文库发生任何改变该导出文件都会发生相应的更新。
-</li>
-<li>
-zotfile（zotero）：使用zotero内置pdf阅读器做标记可以直接转换为笔记，但如果用其它阅读器做标记又想生成笔记就得使用zotfile插件做提取。<font color="red">zotfile现在不更新了，不支持zotero7…</font>
-</li>
-<li>
-citations（obsidian）：解析通过better biblatex导出的数据，生成指定模板下的markdown文件。
-</li>
-<li>
-dataview（obsidian）：这个插件很强大，它可以看成是一个excel表格，数据的来源是你markdown文件中的frontmatter，主要是用来排序和筛选特定文献。
-</li>
-</ul>
-</div>
-<p>此外，Zotero还可以和Word联动，快速插入引用和参考文献。<font color="blue">在一个word文档中首次插入引用会让你选择引文格式，例如中文文献一般就用GB格式，如果不小心选错了doucument performance按键重新选择！</font></p>
-<table>
-<tr>
-<td>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/8.png" width="50%" height="50%">
-Fig5. 选择引文格式
-</center>
-</td>
-<td>
-<center>
-<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/9.png">
-Fig6. 快速添加引文和参考文献
-</center>
-</td>
-</tr>
-</table>
-<h1 id="和咱专业相关的期刊">和咱专业相关的期刊</h1>
-<ul>
-<li>Transportation Research A~E：A关注交通政策、规划、经济和管理问题；B侧重交通建模、优化和理论方法；<br>
-C聚焦智能交通系统（ITS）、大数据、自动驾驶等新兴技术； D研究交通与环境、可持续发展的交叉领域；E物流、供应链管理和运输经济方向。<br>
-</li>
-<li>Transportation Science (TS)：INFORMS（Institute for Operations Research and the Management Sciences）旗下顶级期刊，关注运筹学、优化和交通系统分析。<br>
-</li>
-<li>Operations Research (OR)：INFORMS旗下旗舰期刊，涵盖优化、随机模型、算法设计、博弈论等核心方向。<br>
-</li>
-<li>European Journal of Operational Research (EJOR)：EJOR（European Journal of Operational Research）是运筹学（OR）和管理科学（MS）领域的国际顶级期刊，由欧洲运筹学协会（EURO）主办，Elsevier出版。它涵盖了运筹学理论、方法及其在商业、工程、政府等领域的应用，是学术界和工业界广泛认可的高影响力期刊。<br>
-</li>
-<li>Informs Journal on Computing (IJOC or JOC)：由INFORMS（运筹学与管理科学研究所）出版。它聚焦于算法设计、计算优化、机器学习与运筹学的结合，是理论计算与工程应用并重的高水平期刊。<br>
-</li>
-<li>IEEE Transactions on Intelligent Transportation Systems (T-ITS)：聚焦智能交通技术的应用与创新。</li>
-<li>Computers &amp; Operations Research (COR)：运筹学（OR）与计算科学交叉应用领域的国际权威期刊，由 Elsevier 出版，专注于算法开发、优化建模、决策支持系统及工业应用。</li>
-<li>Computers &amp; Industrial Engineering (CIE)：工业工程（IE）与计算机应用交叉领域 的重要国际期刊，由 Elsevier 出版，专注于 智能制造、生产系统优化、供应链管理、数据驱动决策 等方向。<br>
-</li>
-<li>交通运输工程学报</li>
-<li>交通运输系统工程与信息</li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">
-EI、SCI和影响因子是什么东西
-</p>
-<p>
-EI（Engineering Index）和SCI（Science Citation Index）可以理解成两个数据库，在被这两个数据库搜录的期刊上发的文章就叫EI、SCI论文。影响因子（IF）是根据期刊发文量和被引用数计算出来的，一个期刊IF越大就越顶。
-</p>
-</div>
-<h1 id="参考资料">参考资料</h1>
-<ol type="1">
-<li><a href="https://www.bilibili.com/video/BV17W4y167SM">如何做好文献阅读及笔记整理</a></li>
-<li><a href="https://help.ivysci.com/guide/#chapter-ke-yan-shu-ju-shou">研飞科研指南</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/639325772">Obsidian+Zotero打造最强科研工具链</a></li>
-<li><a href="https://www.bilibili.com/video/BV1xM4y137q9">Zotero，OB不能没有它(PART1)</a></li>
-<li><a href="https://www.bilibili.com/video/BV1E64y187er">Zotero，OB不能没有它(PART2)</a></li>
-<li><a href="https://www.bilibili.com/video/BV1m341127aU">Zotero，OB不能没有它(PART3)</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/162939630">Zotero管理文献的机制——分类和标签</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/159828951">Zotero添加条目的三种方式</a></li>
-<li><a href="https://gitee.com/zotero-chinese/zotero-chinese/issues/I56D62">Zotero使用 CNKI 时抓取条目报错解决方法</a></li>
-<li><a href="https://clashforwindows.org/">外文文献搜索——Clash科学上网篇</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>其它</category>
-      </categories>
-      <tags>
-        <tag>科研方法论</tag>
-        <tag>研究生生涯规划</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Hexo相关基础和配置</title>
     <url>/2025/05/11/Hexo%E7%9B%B8%E5%85%B3%E5%9F%BA%E7%A1%80%E5%92%8C%E9%85%8D%E7%BD%AE/</url>
     <content><![CDATA[<h1 id="hexo的基本命令">Hexo的基本命令</h1>
@@ -1120,6 +969,83 @@ $$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span><
 <img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.webp" weight="50%" height="50%">
 Fig1. 创建项目
 </center>
+<h1 id="sublime-repl插件">Sublime REPL插件</h1>
+<p>SublimeREPL 是一个 Sublime Text 插件，允许用户在编辑器内直接运行交互式编程环境（REPL，Read-Eval-Print Loop）。还可以使用python自带的PDB（python debugger）调试代码。</p>
+<pre class="line-numbers language-none"><div class="caption"><span>设置sublime repl的快捷键</span></div><code class="language-none">[  // 进入交互式界面
+    {
+        "keys":["ctrl+alt+shift+i"],
+        "caption": "SublimeREPL: Python - IPython",
+        "command": "run_existing_window_command",
+        "args":
+            {
+                "id": "repl_python_ipython",
+                "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"
+            }
+    },
+    // 通过交互式界面运行当前程序
+    {
+        "keys":["ctrl+alt+shift+r"],
+        "caption": "SublimeREPL: Python - RUN current file",
+        "command": "run_existing_window_command",
+        "args":
+        {
+        "id": "repl_python_run",
+        "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"
+        }
+    },
+    // pdb是python debugger的缩写，在交互式界面调试当前程序
+    {
+    "keys": ["ctrl+alt+shift+d"],
+    "caption": "SublimeREPL: Python - PDB current file",
+    "command": "run_existing_window_command",
+    "args": {
+        "id": "repl_python_pdb",
+        "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"}
+    },
+]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info">
+<p class="admonition-title">
+使用pdb调试代码的基本命令
+</p>
+<ul>
+<li>
+b：查看所有以及设置的断点。
+</li>
+<li>
+b linenume：在linenum行设置一个断点。
+</li>
+<li>
+cl linenum：删除linenum处的断点。
+</li>
+<li>
+condition linenum cond：当cond满足时linenum行的断点才启用。
+</li>
+<li>
+r：运行到下一处断点（不包括该断点对应行）。如果没有设置断点，就运行到最后一行（不包含最后一行）。
+</li>
+<li>
+unt linenum：运行到linenum行（不包含）或遇到断点。
+</li>
+<li>
+n：运行当前所在行，不进入函数内部。
+</li>
+<li>
+s：运行当前行，进入函数内部。
+</li>
+<li>
+j linenum：跳到linenum行，不执行。
+</li>
+<li>
+p x：查看变量x的取值。
+</li>
+</ul>
+</div>
+<h1 id="sublime的sublime-tmpl插件">sublime的Sublime Tmpl插件</h1>
+SublimeTmpl能新建html、css、javascript、php、python、ruby六种类型的文件模板，所有的文件模板都在插件目录的templates文件夹里，可以自定义编辑文件模板。
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/sublime/模板文件.webp" weight="50%" height="50%">
+Fig2. sublime tmpl的模板文件
+</center>
 ]]></content>
       <categories>
         <category>计算机技术</category>
@@ -1209,6 +1135,172 @@ Fig1. 创建项目
       <tags>
         <tag>TSP</tag>
         <tag>VRP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>海大的四季</title>
+    <url>/2025/05/05/%E6%B5%B7%E5%A4%A7%E7%9A%84%E5%9B%9B%E5%AD%A3/</url>
+    <content><![CDATA[<div class="gallery-container" data-type="data" data-button="" data-limit="10" data-first="10">
+    <div class="gallery-items">[{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg","alt":"","title":""},{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大2.jpg","alt":"","title":""},{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大3.jpg","alt":"","title":""},{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大4.jpg","alt":"","title":""},{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大5.jpg","alt":"","title":""},{"url":"https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大6.jpg","alt":"","title":""}]</div>
+  </div>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>大连海事大学</tag>
+        <tag>景象照</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>科研指南</title>
+    <url>/2025/05/17/%E7%A7%91%E7%A0%94%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h1 id="如何做好文献阅读及笔记整理">如何做好文献阅读及笔记整理</h1>
+<p>阅读文献有什么用？必须得先想清楚这个问题读文献才能有动力。简单讲读文献有四个方面的好处：（1）帮助我们快速了解课题背景；（2）帮助我们把握课题研究方向；（3）从中学习课题设计思路；（4）提升自己的逻辑写作能力。</p>
+<table>
+<tr>
+<td>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/1.png" weight="50%" height="50%">
+Fig1. 读文献的好处
+</center>
+</td>
+<td>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/2.png" weight="50%" height="50%">
+Fig2. 不同目的下文献的推荐阅读内容
+</center>
+</td>
+</tr>
+</table>
+<div class="admonition info">
+<p class="admonition-title">
+推荐工具
+</p>
+<ol>
+<li>
+Stork文献鸟： 定期通过邮箱获取指定领域的文献。
+</li>
+<li>
+Connected Papers：输入文章名，获取与之相关论文的知识图谱。其中，论文越新颜色越深，引用度越高圆圈越
+大，论文之间的联系越强连线越黑。还可以通过Prior Works找到领域的开门作，通过Derivative Works找到该
+领域的研究综述，了解领域的新进展。
+</li>
+</ol>
+</div>
+<p>那在阅读完文献之后应该怎么做文献阅读笔记呢？<del><font color="red">如果不做笔记，读完就忘了…</font></del>首先得明确做文献笔记是给自己看的，不是给别人看的，不应该机械的勾画和抄写文献的内容，应该注入自己的理解（<font color="green">强迫自己总结</font>）。</p>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/3.png" weight="50%" height="50%">
+Fig3. 论文阅读笔记模板
+</center>
+<h1 id="基于obsidian和zotero搭建文献阅读和笔记环境">基于Obsidian和Zotero搭建文献阅读和笔记环境</h1>
+<p>Zotero是一个文献管理工具，它的工作原理和hexo对博客的管理很像，对应的概念叫做条目，通过给条目赋予category和tag属性实现文献的管理。一个条目可以包含很多附件，如对应的pdf文件和笔记。Zotero的工作流简单来说就是用浏览器插件Zotero connector抓取文献条目（必须在文献详情页抓取，不要在打开的pdf阅读页抓取，不然抓不到文献的元数据，有时候只能抓到文献元数据但抓不到pdf，可以在zotero中手动添加），抓完之后用zotero阅读并标注pdf，导出zotero文献数据库，使用citations插件生成对应md模板，用obsidan写文献笔记。</p>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/6.webp" weight="50%" height="50%">
+Fig4. 文献详情页
+</center>
+<div class="admonition info">
+<p class="admonition-title">
+所需下载的插件及其功能汇总
+</p>
+<ul>
+<li>
+茉莉花（zotero）： 支持中文文献元数据的解析。
+</li>
+<li>
+better biblatex（zotero）： 将zotero所维护的数据按指定格式导出，这里选择better Biblatex格式并始终保持该文件的更新，及文库发生任何改变该导出文件都会发生相应的更新。
+</li>
+<li>
+zotfile（zotero）：使用zotero内置pdf阅读器做标记可以直接转换为笔记，但如果用其它阅读器做标记又想生成笔记就得使用zotfile插件做提取。<font color="red">zotfile现在不更新了，不支持zotero7…</font>
+</li>
+<li>
+citations（obsidian）：解析通过better biblatex导出的数据，生成指定模板下的markdown文件。
+</li>
+<li>
+dataview（obsidian）：这个插件很强大，它可以看成是一个excel表格，数据的来源是你markdown文件中的frontmatter，主要是用来排序和筛选特定文献。
+</li>
+</ul>
+</div>
+<p>此外，Zotero还可以和Word联动，快速插入引用和参考文献。<font color="blue">在一个word文档中首次插入引用会让你选择引文格式，例如中文文献一般就用GB格式，如果不小心选错了doucument performance按键重新选择！</font></p>
+<table>
+<tr>
+<td>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/8.png" width="50%" height="50%">
+Fig5. 选择引文格式
+</center>
+</td>
+<td>
+<center>
+<img src="https://raw.gitmirror.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/9.png">
+Fig6. 快速添加引文和参考文献
+</center>
+</td>
+</tr>
+</table>
+<h1 id="和咱专业相关的期刊">和咱专业相关的期刊</h1>
+<ul>
+<li>Transportation Research A~E：A关注交通政策、规划、经济和管理问题；B侧重交通建模、优化和理论方法；<br>
+C聚焦智能交通系统（ITS）、大数据、自动驾驶等新兴技术； D研究交通与环境、可持续发展的交叉领域；E物流、供应链管理和运输经济方向。<br>
+</li>
+<li>Transportation Science (TS)：INFORMS（Institute for Operations Research and the Management Sciences）旗下顶级期刊，关注运筹学、优化和交通系统分析。<br>
+</li>
+<li>Operations Research (OR)：INFORMS旗下旗舰期刊，涵盖优化、随机模型、算法设计、博弈论等核心方向。<br>
+</li>
+<li>European Journal of Operational Research (EJOR)：EJOR（European Journal of Operational Research）是运筹学（OR）和管理科学（MS）领域的国际顶级期刊，由欧洲运筹学协会（EURO）主办，Elsevier出版。它涵盖了运筹学理论、方法及其在商业、工程、政府等领域的应用，是学术界和工业界广泛认可的高影响力期刊。<br>
+</li>
+<li>Informs Journal on Computing (IJOC or JOC)：由INFORMS（运筹学与管理科学研究所）出版。它聚焦于算法设计、计算优化、机器学习与运筹学的结合，是理论计算与工程应用并重的高水平期刊。<br>
+</li>
+<li>IEEE Transactions on Intelligent Transportation Systems (T-ITS)：聚焦智能交通技术的应用与创新。</li>
+<li>Computers &amp; Operations Research (COR)：运筹学（OR）与计算科学交叉应用领域的国际权威期刊，由 Elsevier 出版，专注于算法开发、优化建模、决策支持系统及工业应用。</li>
+<li>Computers &amp; Industrial Engineering (CIE)：工业工程（IE）与计算机应用交叉领域 的重要国际期刊，由 Elsevier 出版，专注于 智能制造、生产系统优化、供应链管理、数据驱动决策 等方向。<br>
+</li>
+<li>交通运输工程学报</li>
+<li>交通运输系统工程与信息</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+EI、SCI和影响因子是什么东西
+</p>
+<p>
+EI（Engineering Index）和SCI（Science Citation Index）可以理解成两个数据库，在被这两个数据库搜录的期刊上发的文章就叫EI、SCI论文。影响因子（IF）是根据期刊发文量和被引用数计算出来的，一个期刊IF越大就越顶。
+</p>
+</div>
+<h1 id="论文中的技术路线图">论文中的技术路线图</h1>
+<div class="admonition info">
+<p class="admonition-title">
+利用ppt绘制论文中的技术路线图的技术要领
+</p>
+<ul>
+<li>
+不要采取文本框和形状拼凑的方式，效率很低，文本框本身就可以对边框进行设置。推荐在形状格式的大小与属性栏中设置对齐方式为中部居中、根据文字调整形状大小、自动换行。
+</li>
+<li>
+箭头采用锚点链接，多使用对齐工具进行调整。
+</li>
+</ul>
+</div>
+<h1 id="参考资料">参考资料</h1>
+<ol type="1">
+<li><a href="https://www.bilibili.com/video/BV17W4y167SM">如何做好文献阅读及笔记整理</a></li>
+<li><a href="https://help.ivysci.com/guide/#chapter-ke-yan-shu-ju-shou">研飞科研指南</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/639325772">Obsidian+Zotero打造最强科研工具链</a></li>
+<li><a href="https://www.bilibili.com/video/BV1xM4y137q9">Zotero，OB不能没有它(PART1)</a></li>
+<li><a href="https://www.bilibili.com/video/BV1E64y187er">Zotero，OB不能没有它(PART2)</a></li>
+<li><a href="https://www.bilibili.com/video/BV1m341127aU">Zotero，OB不能没有它(PART3)</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/162939630">Zotero管理文献的机制——分类和标签</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/159828951">Zotero添加条目的三种方式</a></li>
+<li><a href="https://gitee.com/zotero-chinese/zotero-chinese/issues/I56D62">Zotero使用 CNKI 时抓取条目报错解决方法</a></li>
+<li><a href="https://clashforwindows.org/">外文文献搜索——Clash科学上网篇</a></li>
+<li><a href="https://www.bilibili.com/video/BV1HZ4y1b7MJ">ppt绘制论文技术路线图</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>其它</category>
+      </categories>
+      <tags>
+        <tag>科研方法论</tag>
+        <tag>研究生生涯规划</tag>
       </tags>
   </entry>
 </search>
