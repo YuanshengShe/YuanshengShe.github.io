@@ -589,7 +589,7 @@ __all__ <span class="token operator">=</span> <span class="token punctuation">[<
 <div class="admonition info"><p class="admonition-title">复现过程中遇到的一个与深拷贝相关的问题
 </p><p>对population做完选择操作后需要深拷贝一下，因为选择操作可能会把相同的individual选择到offsprings中，如果不深拷贝，对某一个个体的遗传运算就会导致另一个个体相应的发生改变，这是不对的，我们希望它们之间是独立的。开始我写的是<code>offsprings=toolbox.clone(offsprings)</code>我以为这样就能让各个个体之间独立了（~~<font color="blue">实际上不能</font>~~），结果运行起来算法完全是在乱搜索。解释见下图，必须做元素级的深拷贝才能让每个个体都独立。</p>
 <center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Deap源码学习/deepcopy.png" weight="50%" height="50%">
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Deap源码学习/deepcopy.png" weight="211" height="211">
 Fig2. 两种写法深拷贝的差异
 </center>
 </div>
@@ -1332,6 +1332,28 @@ $$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span><
       </tags>
   </entry>
   <entry>
+    <title>读研规划</title>
+    <url>/2025/05/27/%E8%AF%BB%E7%A0%94%E8%A7%84%E5%88%92/</url>
+    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="密码错误！" data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="5ed898121c3122946c69c6cfa20553edf8a157effa5a5bb709abfd38cfc48073">2791a93a43004e3f66ae2791aab842499acc2705225a94f8c50462219ac7e42bf19671629d26b07bd4be951affc379aae75902c9e1229c9b5b3a90c2dbb260b8dfb776c7896812f4514e05fc3315dbc6f42df775dcef4f1da109d3cae7423dca9bff61174be3094217a5efa740a6eaa5794470da2d4e367f040121aef77c3a654ef3ace9f9213bbaa3939be0236d92773c80b04509fcbf85d2f7755fd7574ebe130bac0541fba178d9cc496557c4da12af42ec4fe7cf9a6f15da80a7730e1c63e50d813598a370ffac0ce2ffec0e10675d853c7081cdf590211e2d853b6fb701e7d0277cabf854d7f57fadfc68b5d5cd00f129f7bffb4870b7b884819ab9f956dc6b31e9b05cbd3818369f3c7f67dc38d4d76c5fd06d72b9d394ac97e4c4c749cde7815a8dc7c174eadedfe7dde46b7a9089fef0050727d0aa9e2f896f81b966dc1cca726b812c24d24948acd0a9c7b04a0456531b8dd78b3de550966082f1acd1fa6f6df175c05b96477bcadb01e27ef995a42bf15458c52ad6e220d894765f78f3c780c5a81265caee0d0c266182c2b441c909a250db2b5a6e4dcd7a2f4987319da46f990612a9827729fbd193b298f69779d2835479c0a29df17e73d0f3d04cd792e83fd9e69b25be5f92f69356c649d643d16de90d09212bb46451ac201b1968a9f70520cf703929193e46a5dd284e5f01dbffdbfb66acf744201c31413c140dfdf858c3f8de8b84bc13fc7a469300022f5ad6b6171a4829f0324d967281dee337489a01c71511e79495325f67838a1d00b5f5e3f6bdf34d084b672eb28489ec781c1a80d3382d0825f64cdb14c1ce66ba3007f57fc96502fca1f54f81837173499935e00efb21f64caaf81e1ddaf6f4ead69929f78a29da1bb13728a32eaf40b0a30a5499f08ce700d1a5b393c62ba66c6201758eba5b2559030b5767959d5fb6db585ed3d93af0dc4e554d5d3ddfaaa23273af558d74d29de826a51c38cc0d746fa86d7c2e34c16a9d05151c34dabbc952db08d02d8aed2a848d192bca7864f8c5927e292b20770986a296b9b5141ec2ae5c12667ea5bf44bbaaaf108720dd67ef8bf0b3769a7c9e57a993337b8d1ca0f9f97d5f611cffdc6fd18fd61a28ea3f21dcd909e31c66eb3278b95f683bba60894df2bb5bef0fb4d961c9090281d5eca9ddc1c51d686ac9c7a5c68bbff99ef48cf9997d11c825be222cceeba2c3a835bbc4a4062223fb3f0785633b6ae305b9519ee05188f610f8fd5554334cc508521c0d37c96e848f1affaf79a2bc4b2f64c0f357627478f443d57300092a9a4572883ac30ab12e666a2a0d359d2d83bc7d9a2439ffb41e75f4f1ba4082a9254478d41eaf2657bc788a81c04163349532fa775ad2276b582c0ec3d11fe43852c3582542165476dfd7cd15bf71568e088c5276c1fc5e8248b49407ee5d48efe2ee690a044e571548d81c4d067776b15925f4adff66f33a43976297d8ff88153ea80aa96e2407773699778abf1bc7688ed735e8f31b72499160d08b069d87e866efeebcdd51927e0d17b054428925f5f21d2d171e8c1879270741cb2b0625c665c80563b2071961578bb2ada6d767d7998ca9fca99dc8935be9a456e8736931c46750df41e0b5c2eb31476cd8e7b5df3cac78e9dac4227b7449ffd42fb20b51585a8c061431b181f9f0e26c2a2580a40355d5980fb5621b7f9127abe93a650d4e405b0b88d1abf0ede6e5fa322d125b9c7bea3ad8210bebb421a752d3f6f34485a13960da5877e0773cd7406456de426e84f4d5882028c1c3f85a29b03bc235b7c4d49660d4c5582b0c86c2be2c1ef6b05230b16ac88ba742bb0791d0523a2a9b5dfa97b7fbf2a72cfe4c236012c049950e94ffef96a6611980f14833022a2441bc94e097267c1ea2d71bb8575b17a86a7ec607fda2e5c644b567ec0ae2772804ca6df28d8e2f62d655aba2104e683d37e073d2b2e83c85e61e67e3413218ef1d3c1ed87acc50d80e6347b9b88c25986522f7b2491a2fabd0b3f086e1dc9b9c71fd18aeb669cfd60db86995e3d928faae5c59f0ce0963d4dac9b848dfb9dca7afaceef728efb221ef5041cfaa693abd1781b27d45ab4e5d6cd2082960c19bd31d3341074120b1d3a2d0f645122888081f4231c752b04b8a5eaf7539434f861c5ce04bc80c4a560262659d3ca17f386086bd5555feabe98b1ee80ff5e15d19dcf09244f8afa65ac51aeb476a2c69d8ca0aeb5d43f74ff9c46d0fc821150cde7feb007584e10de4c3746761f34c5393594a6a183c06a198bad5b076c647c5006886d4f3ab0a18f81f93e3d24100b010099caa3b88847f6e856de706381e6b5d2a8795127315714837e8cb7dd524558b88fc90e6f80dca765cc532296226475b7b470fc6ed4f00a7c930ea23f51ccfb6fa20ae03303684c105c5451f94fcc324190f17290d6cdf66397cf217c9f843aa6434ada385e6ebd3a385799947af0a6fe950726503588686abf869839b35a5cfd9</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">请点击这里输入密码</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
+      <categories>
+        <category>其它</category>
+      </categories>
+      <tags>
+        <tag>个人规划</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>科研指南</title>
     <url>/2025/05/17/%E7%A7%91%E7%A0%94%E6%8C%87%E5%8D%97/</url>
     <content><![CDATA[<h1 id="如何做好文献阅读及笔记整理"><a href="#如何做好文献阅读及笔记整理" class="headerlink" title="如何做好文献阅读及笔记整理"></a>如何做好文献阅读及笔记整理</h1><p>阅读文献有什么用？必须得先想清楚这个问题读文献才能有动力。简单讲读文献有四个方面的好处：（1）帮助我们快速了解课题背景；（2）帮助我们把握课题研究方向；（3）从中学习课题设计思路；（4）提升自己的逻辑写作能力。</p>
@@ -1448,28 +1470,6 @@ $$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span><
       <tags>
         <tag>科研方法论</tag>
         <tag>研究生生涯规划</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>读研规划</title>
-    <url>/2025/05/27/%E8%AF%BB%E7%A0%94%E8%A7%84%E5%88%92/</url>
-    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="密码错误！" data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="5ed898121c3122946c69c6cfa20553edf8a157effa5a5bb709abfd38cfc48073">2791a93a43004e3f66ae2791aab842499acc2705225a94f8c50462219ac7e42bf19671629d26b07bd4be951affc379aae75902c9e1229c9b5b3a90c2dbb260b8dfb776c7896812f4514e05fc3315dbc6f42df775dcef4f1da109d3cae7423dca9bff61174be3094217a5efa740a6eaa5794470da2d4e367f040121aef77c3a654ef3ace9f9213bbaa3939be0236d92773c80b04509fcbf85d2f7755fd7574ebe130bac0541fba178d9cc496557c4da12af42ec4fe7cf9a6f15da80a7730e1c63e50d813598a370ffac0ce2ffec0e10675d853c7081cdf590211e2d853b6fb701e7d0277cabf854d7f57fadfc68b5d5cd00f129f7bffb4870b7b884819ab9f956dc6b31e9b05cbd3818369f3c7f67dc38d4d76c5fd06d72b9d394ac97e4c4c749cde7815a8dc7c174eadedfe7dde46b7a9089fef0050727d0aa9e2f896f81b966dc1cca726b812c24d24948acd0a9c7b04a0456531b8dd78b3de550966082f1acd1fa6f6df175c05b96477bcadb01e27ef995a42bf15458c52ad6e220d894765f78f3c780c5a81265caee0d0c266182c2b441c909a250db2b5a6e4dcd7a2f4987319da46f990612a9827729fbd193b298f69779d2835479c0a29df17e73d0f3d04cd792e83fd9e69b25be5f92f69356c649d643d16de90d09212bb46451ac201b1968a9f70520cf703929193e46a5dd284e5f01dbffdbfb66acf744201c31413c140dfdf858c3f8de8b84bc13fc7a469300022f5ad6b6171a4829f0324d967281dee337489a01c71511e79495325f67838a1d00b5f5e3f6bdf34d084b672eb28489ec781c1a80d3382d0825f64cdb14c1ce66ba3007f57fc96502fca1f54f81837173499935e00efb21f64caaf81e1ddaf6f4ead69929f78a29da1bb13728a32eaf40b0a30a5499f08ce700d1a5b393c62ba66c6201758eba5b2559030b5767959d5fb6db585ed3d93af0dc4e554d5d3ddfaaa23273af558d74d29de826a51c38cc0d746fa86d7c2e34c16a9d05151c34dabbc952db08d02d8aed2a848d192bca7864f8c5927e292b20770986a296b9b5141ec2ae5c12667ea5bf44bbaaaf108720dd67ef8bf0b3769a7c9e57a993337b8d1ca0f9f97d5f611cffdc6fd18fd61a28ea3f21dcd909e31c66eb3278b95f683bba60894df2bb5bef0fb4d961c9090281d5eca9ddc1c51d686ac9c7a5c68bbff99ef48cf9997d11c825be222cceeba2c3a835bbc4a4062223fb3f0785633b6ae305b9519ee05188f610f8fd5554334cc508521c0d37c96e848f1affaf79a2bc4b2f64c0f357627478f443d57300092a9a4572883ac30ab12e666a2a0d359d2d83bc7d9a2439ffb41e75f4f1ba4082a9254478d41eaf2657bc788a81c04163349532fa775ad2276b582c0ec3d11fe43852c3582542165476dfd7cd15bf71568e088c5276c1fc5e8248b49407ee5d48efe2ee690a044e571548d81c4d067776b15925f4adff66f33a43976297d8ff88153ea80aa96e2407773699778abf1bc7688ed735e8f31b72499160d08b069d87e866efeebcdd51927e0d17b054428925f5f21d2d171e8c1879270741cb2b0625c665c80563b2071961578bb2ada6d767d7998ca9fca99dc8935be9a456e8736931c46750df41e0b5c2eb31476cd8e7b5df3cac78e9dac4227b7449ffd42fb20b51585a8c061431b181f9f0e26c2a2580a40355d5980fb5621b7f9127abe93a650d4e405b0b88d1abf0ede6e5fa322d125b9c7bea3ad8210bebb421a752d3f6f34485a13960da5877e0773cd7406456de426e84f4d5882028c1c3f85a29b03bc235b7c4d49660d4c5582b0c86c2be2c1ef6b05230b16ac88ba742bb0791d0523a2a9b5dfa97b7fbf2a72cfe4c236012c049950e94ffef96a6611980f14833022a2441bc94e097267c1ea2d71bb8575b17a86a7ec607fda2e5c644b567ec0ae2772804ca6df28d8e2f62d655aba2104e683d37e073d2b2e83c85e61e67e3413218ef1d3c1ed87acc50d80e6347b9b88c25986522f7b2491a2fabd0b3f086e1dc9b9c71fd18aeb669cfd60db86995e3d928faae5c59f0ce0963d4dac9b848dfb9dca7afaceef728efb221ef5041cfaa693abd1781b27d45ab4e5d6cd2082960c19bd31d3341074120b1d3a2d0f645122888081f4231c752b04b8a5eaf7539434f861c5ce04bc80c4a560262659d3ca17f386086bd5555feabe98b1ee80ff5e15d19dcf09244f8afa65ac51aeb476a2c69d8ca0aeb5d43f74ff9c46d0fc821150cde7feb007584e10de4c3746761f34c5393594a6a183c06a198bad5b076c647c5006886d4f3ab0a18f81f93e3d24100b010099caa3b88847f6e856de706381e6b5d2a8795127315714837e8cb7dd524558b88fc90e6f80dca765cc532296226475b7b470fc6ed4f00a7c930ea23f51ccfb6fa20ae03303684c105c5451f94fcc324190f17290d6cdf66397cf217c9f843aa6434ada385e6ebd3a385799947af0a6fe950726503588686abf869839b35a5cfd9</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-default">
-      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-default">请点击这里输入密码</span>
-      </label>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
-      <categories>
-        <category>其它</category>
-      </categories>
-      <tags>
-        <tag>个人规划</tag>
       </tags>
   </entry>
 </search>
