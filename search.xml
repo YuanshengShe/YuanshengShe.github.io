@@ -1,266 +1,345 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Tkinter框架</title>
-    <url>/2025/06/19/Tkinter%E6%A1%86%E6%9E%B6/</url>
-    <content><![CDATA[<p>怎么用tkinter设计一个GUI，思路就是——首先创建一个根窗口对象（这个一定是最顶层的容器），然后创建容器组件和其它组件（可以嵌套在容器组件里面，容器组件里面还可以嵌套容器组件），给根窗口or组件绑定对应的事件和事件处理函数，而对于各个组件之间的位置关系和布局则通过组件的grid方法来完成。</p>
-<blockquote>
-<p>少记忆，抓重点，是学一个新框架最快的方式。所以本文就忽略繁琐的参数了，知道框架大致怎么用，剩下的查文档就行了… <del><font color="green">主要原因还是不擅长记忆，哈哈</font></del></p>
-</blockquote>
-<h1 id="grid方法实现widget布局组件布局管理">grid方法实现Widget布局（组件布局管理）</h1>
-<p>grid方法以类似excel表格的方式实现组件的布局，这个方法核心的参数包括：</p>
-<ul>
-<li>row,column：设置当前组件所处的“excel表格”，<font color="blue">整个表格的大小是<code>[max(row)+1] x [max(column)+1]</code>。</font></li>
-<li>rowspan,columnspan：类似于excel表格中的合并单元格，rowspan决定列方向上合并多少个单元格，columnspan决定行方向上合并多少个单元格。</li>
-<li>padx,pady：设置控件边界与控件边界和控件边界与窗口边界之间像素距离。</li>
-<li>sticky：设置控件之间的对齐方式，可选参数包括N、S、W、E，组合使用时可能会有拉伸效果。注意时以同行或同列的组件为基准进行最大程度的对齐。</li>
-</ul>
+    <title>Sublime</title>
+    <url>/2025/05/11/Sublime/</url>
+    <content><![CDATA[<h1 id="snippet效率神器">Snippet效率神器</h1>
+<p>Sublime的这个功能真的是强！强！强！能省不少时间。比如我就不太熟悉html的语法，但是写博客总得插入一些图片，而要想把图片排版好就必须得写html，有了snippet，这简直就不是事儿。snippet字如其义，就是插入一个小片段，比如说我有两张图需要并排，我就可以设置如下的snippet，通过输入<code>insert images</code>再按tab键的方式快速插入对应的html代码，完成排版工作。其中<code>${1:}</code>这样的表达是占位符，前面的数字是跳转顺序，当你填完一处之后按tab键就可以跳转到下一处。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>snippet</span><span class="token punctuation">&gt;</span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>content</span><span class="token punctuation">&gt;</span></span><span class="token cdata">&lt;![CDATA[
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;center&gt;
+				&lt;img src=${1:src}/&gt;
+				Fig1. ${2:Title}
+			&lt;/center&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;center&gt;
+				&lt;img src=${3:src}/&gt;
+				Fig2. ${4:Title}
+			&lt;/center&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+]]&gt;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>content</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tabTrigger</span><span class="token punctuation">&gt;</span></span>insert images<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tabTrigger</span><span class="token punctuation">&gt;</span></span>
+	<span class="token comment">&lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</span>
+	<span class="token comment">&lt;!-- &lt;tabTrigger&gt;hello&lt;/tabTrigger&gt; --&gt;</span>
+	<span class="token comment">&lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</span>
+	<span class="token comment">&lt;!-- &lt;scope&gt;source.python&lt;/scope&gt; --&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>snippet</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="常用快捷键">常用快捷键</h1>
+<table>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 39%">
+<col style="width: 39%">
+</colgroup>
+<thead>
+<tr>
+<th>分类</th>
+<th>功能</th>
+<th>快捷键</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>通用操作</td>
+<td>打开命令面板</td>
+<td><code>Ctrl + Shift + P</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>新建python文件</td>
+<td><code>Ctrl + Alt + Shift + P</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>新建文件</td>
+<td><code>Ctrl + N</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>保存文件</td>
+<td><code>Ctrl + S</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>另存为</td>
+<td><code>Ctrl + Shift + S</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>打开文件</td>
+<td><code>Ctrl + O</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>切换项目</td>
+<td><code>Alt + shift + P</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>关闭当前标签页</td>
+<td><code>Ctrl + W</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>关闭所有标签页</td>
+<td><code>Ctrl + Shift + W</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>切换全屏模式</td>
+<td><code>Fn + F11</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>切换侧边栏显示/隐藏</td>
+<td><code>Ctrl + K + B</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>build当前文件（运行）</td>
+<td><code>Ctrl + B</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>显示build结果</td>
+<td><code>Shift + Esc</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>隐藏build结果</td>
+<td><code>Esc</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>快速跳转文件</td>
+<td><code>Ctrl + P</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>跳转到指定行号</td>
+<td><code>Ctrl + G</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>跳转到符号（函数/类）</td>
+<td><code>Ctrl + R</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>返回上一个光标位置</td>
+<td><code>Ctrl + -</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>前进到下一个光标位置</td>
+<td><code>Ctrl + Shift + -</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>跳转到匹配括号</td>
+<td><code>Ctrl + M</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>跳转到行首行尾</td>
+<td><code>Fn + Home</code> / <code>Fn + End</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>复制当前行</td>
+<td><code>Ctrl + Shift + D</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>删除当前行</td>
+<td><code>Ctrl + Shift + K</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>合并多行</td>
+<td><code>Ctrl + Shift + J</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>行缩进</td>
+<td><code>Ctrl + ]</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>行取消缩进</td>
+<td><code>Ctrl + [</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>注释/取消注释</td>
+<td><code>Ctrl + /</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>批量重命名所选内容</td>
+<td><code>Ctrl + D</code>（多次按）</td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>撤销操作</td>
+<td><code>Ctrl + Z</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>粘贴并自动缩进</td>
+<td><code>Ctrl + Shift + V</code></td>
+</tr>
+<tr>
+<td>选择与多光标</td>
+<td>扩展选区（词→行→块）</td>
+<td><code>Ctrl + D</code> → <code>Ctrl + L</code> → <code>Ctrl + A</code></td>
+</tr>
+<tr>
+<td>选择与多光标</td>
+<td>竖向多光标选择</td>
+<td><code>Ctrl + Alt + ↑/↓</code></td>
+</tr>
+<tr>
+<td>搜索与替换</td>
+<td>查找</td>
+<td><code>Ctrl + F</code></td>
+</tr>
+<tr>
+<td>搜索与替换</td>
+<td>替换</td>
+<td><code>Ctrl + H</code></td>
+</tr>
+<tr>
+<td>搜索与替换</td>
+<td>全局搜索（多文件）</td>
+<td><code>Ctrl + Shift + F</code></td>
+</tr>
+<tr>
+<td>窗口与标签页</td>
+<td>切换标签页</td>
+<td><code>Ctrl + Tab</code></td>
+</tr>
+<tr>
+<td>自定义快捷键</td>
+<td>终止build</td>
+<td><code>Ctrl + Shift + C</code></td>
+</tr>
+<tr>
+<td>自定义快捷键</td>
+<td>进入交互式界面</td>
+<td><code>Ctrl + Alt + Shift + I</code></td>
+</tr>
+<tr>
+<td>自定义快捷键</td>
+<td>在交互式界面运行当前程序</td>
+<td><code>Ctrl + Alt + Shift + R</code></td>
+</tr>
+<tr>
+<td>自定义快捷键</td>
+<td>在交互式界面调试当前程序（需设置断点）</td>
+<td><code>Ctrl + Alt + Shift + D</code></td>
+</tr>
+</tbody>
+</table>
+<h1 id="sublime的project功能">Sublime的project功能</h1>
+<p>Sublime的这个功能也是蛮好用的，可以把一个文件夹另存为一个project，然后通过快捷键<code>alt+shift+p</code>就可以在这些project间实现快速切换。比如我平时就是写代码和写博客的需求，我就分别创建一个代码project和一个博客project。</p>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.webp" weight="50%" height="50%">
+Fig1. 创建项目
+</center>
+<h1 id="sublime-repl插件">Sublime REPL插件</h1>
+<p>SublimeREPL 是一个 Sublime Text 插件，允许用户在编辑器内直接运行交互式编程环境（REPL，Read-Eval-Print Loop）。还可以使用python自带的PDB（python debugger）调试代码。</p>
+<pre class="line-numbers language-none"><div class="caption"><span>设置sublime repl的快捷键</span></div><code class="language-none">[  // 进入交互式界面
+    {
+        "keys":["ctrl+alt+shift+i"],
+        "caption": "SublimeREPL: Python - IPython",
+        "command": "run_existing_window_command",
+        "args":
+            {
+                "id": "repl_python_ipython",
+                "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"
+            }
+    },
+    // 通过交互式界面运行当前程序
+    {
+        "keys":["ctrl+alt+shift+r"],
+        "caption": "SublimeREPL: Python - RUN current file",
+        "command": "run_existing_window_command",
+        "args":
+        {
+        "id": "repl_python_run",
+        "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"
+        }
+    },
+    // pdb是python debugger的缩写，在交互式界面调试当前程序
+    {
+    "keys": ["ctrl+alt+shift+d"],
+    "caption": "SublimeREPL: Python - PDB current file",
+    "command": "run_existing_window_command",
+    "args": {
+        "id": "repl_python_pdb",
+        "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"}
+    },
+]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <div class="admonition info">
 <p class="admonition-title">
-Tk类的rowconfigure和columnconfigure方法
+使用pdb调试代码的基本命令
 </p>
-<p>
-这两个方法可以用来控制用户缩放根窗口大小时对应的行和列的缩放比例
-</p>
+<ul>
+<li>
+b：查看所有以及设置的断点。
+</li>
+<li>
+b linenume：在linenum行设置一个断点。
+</li>
+<li>
+cl linenum：删除linenum处的断点。
+</li>
+<li>
+condition linenum cond：当cond满足时linenum行的断点才启用。
+</li>
+<li>
+r：运行到下一处断点（不包括该断点对应行）。如果没有设置断点，就运行到最后一行（不包含最后一行）。
+</li>
+<li>
+unt linenum：运行到linenum行（不包含）或遇到断点。
+</li>
+<li>
+n：运行当前所在行，不进入函数内部。
+</li>
+<li>
+s：运行当前行，进入函数内部。
+</li>
+<li>
+j linenum：跳到linenum行，不执行。
+</li>
+<li>
+p x：查看变量x的取值。
+</li>
+</ul>
 </div>
-<h1 id="tkinter的四种内置数据类型">tkinter的四种内置数据类型</h1>
-<p>我们可以通过config方法再程序运行过程中修改组件的参数，但当某些控件具有相同的参数时，一个组件一个组件的去调用config修改就太繁琐了。一种解决方法是将参数设置为变量，通过修改变量的值就可以实现批量的修改。<del><font color="red">我们只能使用tkinter的内置数据类型，而不能直接使用python中的数据类型</font></del></p>
-<ul>
-<li>IntVar：整数类型</li>
-<li>StringVar：字符串类型</li>
-<li>DoubleVar：浮点数类型</li>
-<li>BooleanVar：bool类型</li>
-<li>get和set方法：获取和设置tkinter中变量对象的值</li>
-<li>trace方法：对变量进行追踪，如果发生修改（w模式）或读取（r模式）就会调用callback函数，注意callback函数必须包含name,index,mode这三个位置参数，这些参数会在callback被调用时自动传递给它。</li>
-</ul>
-<h1 id="tkinter中的容器类型组件">tkinter中的容器类型组件</h1>
-<p>当设计的GUI比较复杂的时候，最好使用容器组件来管理其它的组件。容器组件和用TK创建的根窗口很类似，它是一种可以容纳组件的组件。再tkinter容器组件有4种</p>
-<ul>
-<li>Frame</li>
-<li>LabelFrame：和Frame的唯一区别就是这个容器组件的左上脚是带标签的</li>
-<li>Toplevel：和Frame的唯一区别就是这个容器组件是脱离根窗口的，回产生一个独立窗口，有自己的窗口标题，关闭这个窗口不会影响根窗口，但是如果根窗口被关闭那么这个容器组件对应的窗口也会被关闭</li>
-<li>Notebook：这个是ttk子模块下的一个容器组件，它的特点是通过选项卡来组织其它组件，当选择不同的选项时可以看到不同的子组件内容</li>
-</ul>
-<h1 id="将事件和函数绑定">将事件和函数绑定</h1>
-<p>在tkinter中事件和事件处理函数绑定有两种方式：（1）使用command参数（2）使用bind方法。同时tkinter支持一个组件对应多个事件进而绑定多个事件处理函数，同时也支持使用bind方法的add参数实现一个事件绑定多个事件处理函数。</p>
-<ul>
-<li>组件状态改变事件和函数的绑定：通过组件的command参数来实现</li>
-<li>鼠标事件和函数的绑定、键盘事件和函数的绑定都可以通过控件的bind方法来实现</li>
-</ul>
-<h1 id="如何将matplotlib嵌入到tkinter当中">如何将matplotlib嵌入到tkinter当中</h1>
-<p>将 Matplotlib 图像嵌入到 Tkinter 中，需要使用 FigureCanvasTkAgg 这个适配器类。这个类常用的方法如下</p>
-<ul>
-<li>draw方法：重新将figure对象上的图像渲染到tk中。</li>
-<li>get_tk_widget()：FigureCanvasTkAgg 本身不是继承自 Tkinter 的 Widget 类，而是一个封装了 Matplotlib 绘图功能的对象，要想使用tkinter的布局管理器必须得是Widget对象，FigureCanvasTkAgg类使用这个方法返回内部创建的真实 Tkinter Canvas 组件，使其能被 Tkinter 的布局系统识别和处理。</li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">
-推荐操作流程
-</p>
-<ol>
-<li>
-创建一个figure对象，传递给FigureCanvasTkAgg，然后获取内部的Widget完成布局
-</li>
-<li>
-与用matplolib绘图一致，在figure上绘图
-</li>
-<li>
-调用draw方法重新渲染figure上的图形到gui中
-</li>
-</ol>
-</div>
-<h1 id="怎么组织一个tkinter项目的结构">怎么组织一个tkinter项目的结构</h1>
-<p>MVC架构是一种用于构建用户界面的软件设计模式，最早在1970年代由Trygve Reenskaug提出。该模式将系统划分为三个主要部分：模型（Model）、视图（View）和控制器（Controller）。这种分离的方式旨在提高代码的模块化程度，促进代码的重用和维护。各个部分的实现要求如下：</p>
-<ol type="1">
-<li>Model（模型）：管理数据和业务逻辑（如数据库操作、计算规则）</li>
-<li>View（视图）：负责UI展示（如窗口、按钮、文本框）</li>
-<li>Controller（控制器）：处理用户输入，协调Model和View的交互</li>
-</ol>
-<p>该框架的数据流为——用户在视图上操作<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.181ex" role="img" focusable="false" viewBox="0 -511 1000 522"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"></path></g></g></g></svg></mjx-container></span>视图调用控制器方法修改数据模型&amp;&amp;数据模型发生变化通知视图完成对应变化。</p>
-<blockquote>
-<p>一个好例子：https://www.runoob.com/design-pattern/mvc-pattern.html</p>
-</blockquote>
-<h1 id="tkinter中引入表格控件">tkinter中引入表格控件</h1>
-<p>目前用的是pandastable这个第三方库，使用非常简单，对数据的管理也非常方便，直接修改Table对象的model属性的df属性为新的dataframe，然后redraw方法重新绘制一下表格就ok了。</p>
+<h1 id="sublime的sublime-tmpl插件">Sublime的Sublime Tmpl插件</h1>
+<p>SublimeTmpl能新建html、css、javascript、php、python、ruby六种类型的文件模板，所有的文件模板都在插件目录的templates文件夹里，可以自定义编辑文件模板。</p>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/sublime/3.webp" weight="50%" height="50%">
+Fig2. sublime tmpl的模板文件
+</center>
+<h1 id="修改hosts屏蔽sublime的更新检查">修改hosts屏蔽sublime的更新检查</h1>
+<p>设置<code>"update_check":false</code>是不起作用的，在hosts文件中添加如下语句可以屏蔽更新检查，原理——127.0.0.1 是本地回环地址（指向本机）。将www.sublimetext.com解析到 127.0.0.1 后，当 Sublime Text 尝试访问官网（www.sublimetext.com）检测更新会被重定向到本机。由于本机无响应，这些请求会失败，软件无法完成更新检查。但是这么干会有一个负面作用，就是这台电脑没办法访问sublimetext的主页了。</p>
+<pre class="line-numbers language-none"><code class="language-none">127.0.0.1 www.sublimetext.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 ]]></content>
       <categories>
         <category>计算机技术</category>
       </categories>
       <tags>
-        <tag>GUI</tag>
-        <tag>Tkinter</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hexo相关基础和配置</title>
-    <url>/2025/05/11/Hexo%E7%9B%B8%E5%85%B3%E5%9F%BA%E7%A1%80%E5%92%8C%E9%85%8D%E7%BD%AE/</url>
-    <content><![CDATA[<h1 id="hexo的基本命令">Hexo的基本命令</h1>
-<ul>
-<li>创建制定布局的文章：<code>hexo new [layout] &lt;title&gt;</code>，其中layout参数的默认值是post。<br>
-</li>
-<li>将草稿类布局转换为post布局： <code>hexo publish</code> “草稿布局文章的标题”。<br>
-</li>
-<li>渲染，生成静态文件的文件夹public：<code>hexo generate</code>。</li>
-<li>清理缓存和原先的public文件：<code>hexo clean</code>。</li>
-<li>将public文件夹部署到远端：<code>hexo deploy</code>。</li>
-</ul>
-<h1 id="hexo的渲染器和mathjax">Hexo的渲染器和Mathjax</h1>
-<p>先说结论，Hexo渲染器的作用是将Markdown转换为对应的HTML代码，而Mathjax的作用则是去解析HTML代码当中的数学公式并基于SVG或HTML+CSS将其转换为美观的数学公式。</p>
-<p>Hexo的渲染器很多，这里就介绍hexo-renderer-pandoc。它实际上是Hexo的一个插件（用于调用Pandoc将Markdown转换为对应的html代码）。Hexo默认用的渲染器hexo-renderer-marked效果很糟糕，执行以下命令就可以将渲染器切换为hexo-renderer-pandoc。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> uninstall hexo-renderer-marked <span class="token parameter variable">--save</span>  <span class="token comment"># 移除默认渲染器</span>
-<span class="token function">npm</span> <span class="token function">install</span> hexo-renderer-pandoc <span class="token parameter variable">--save</span>    <span class="token comment"># 安装 Pandoc 渲染器</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>MathJax 是一个开源的 JavaScript 库，用于在网页中高质量地解析并可视化数学公式。与kaTex相比Mathjax除了支持Latex的完整语法，还支持相关的拓展包语法。在Hexo根目录中添加以下配置就可以自己的博客完美地显示数学公式了！</p>
-<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># 支持公式</span>
-<span class="token key atrule">pandoc</span><span class="token punctuation">:</span>
-  <span class="token key atrule">args</span><span class="token punctuation">:</span>
-    <span class="token punctuation">-</span> <span class="token string">"--mathjax"</span>                   <span class="token comment"># 启用 MathJax 支持</span>
-    <span class="token punctuation">-</span> <span class="token string">"--wrap=preserve"</span>             <span class="token comment"># 防止代码换行破坏公式</span>
-  <span class="token key atrule">extensions</span><span class="token punctuation">:</span>
-    <span class="token punctuation">-</span> <span class="token string">"+tex_math_dollars"</span>           <span class="token comment"># 允许 $...$ 行内公式</span>
-    <span class="token punctuation">-</span> <span class="token string">"+raw_tex"</span>                    <span class="token comment"># 保留原始 LaTeX 代码</span>
-<span class="token key atrule">mathjax</span><span class="token punctuation">:</span>
-  <span class="token key atrule">tags</span><span class="token punctuation">:</span> none <span class="token comment"># or 'ams' or 'all'</span>
-  <span class="token key atrule">single_dollars</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># enable single dollar signs as in-line math delimiters</span>
-  <span class="token key atrule">cjk_width</span><span class="token punctuation">:</span> <span class="token number">0.9</span> <span class="token comment"># relative CJK char width</span>
-  <span class="token key atrule">normal_width</span><span class="token punctuation">:</span> <span class="token number">0.6</span> <span class="token comment"># relative normal (monospace) width</span>
-  <span class="token key atrule">append_css</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># add CSS to pages rendered by MathJax</span>
-  <span class="token key atrule">every_page</span><span class="token punctuation">:</span> <span class="token boolean important">false</span> <span class="token comment"># if true, every page will be rendered by MathJax regardless the `mathjax` setting in Front-matter</span>
-  <span class="token key atrule">packages</span><span class="token punctuation">:</span> <span class="token comment"># extra packages to load</span>
-  <span class="token key atrule">extension_options</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token comment"># you can put your extension options here</span>
-    <span class="token comment"># see http://docs.mathjax.org/en/latest/options/input/tex.html#tex-extension-options for more detail</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-latex" data-language="latex"><code class="language-latex"><span class="token equation string">$$
-<span class="token equation-command regex">\begin</span>{align}
-<span class="token equation-command regex">\sum</span>_{j<span class="token equation-command regex">\ne</span> i}x_{ij}=&amp;1&amp;,<span class="token equation-command regex">\forall</span> i <span class="token equation-command regex">\in</span> V<span class="token equation-command regex">\\</span>
-<span class="token equation-command regex">\sum</span>_{i<span class="token equation-command regex">\ne</span> j}x_{ij}=&amp;1&amp;,<span class="token equation-command regex">\forall</span> j <span class="token equation-command regex">\in</span> V
-<span class="token equation-command regex">\end</span>{align}
-$$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><span class="math display"><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -5.035ex;" xmlns="http://www.w3.org/2000/svg" width="18.187ex" height="11.201ex" role="img" focusable="false" viewBox="0 -2725.3 8038.7 4950.6"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mtable"><g data-mml-node="mtr" transform="translate(0,1775.3)"><g data-mml-node="mtd" transform="translate(67,0)"><g data-mml-node="munder"><g data-mml-node="mo"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="TeXAtom" transform="translate(179.3,-1123.3) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g><g data-mml-node="mo" transform="translate(412,0)"><path data-c="2260" d="M166 -215T159 -215T147 -212T141 -204T139 -197Q139 -190 144 -183L306 133H70Q56 140 56 153Q56 168 72 173H327L406 327H72Q56 332 56 347Q56 360 70 367H426Q597 702 602 707Q605 716 618 716Q625 716 630 712T636 703T638 696Q638 692 471 367H707Q722 359 722 347Q722 336 708 328L451 327L371 173H708Q722 163 722 153Q722 140 707 133H351Q175 -210 170 -212Q166 -215 159 -215Z"></path></g><g data-mml-node="mi" transform="translate(1190,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g></g><g data-mml-node="msub" transform="translate(1610.7,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="TeXAtom" transform="translate(605,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(345,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g></g><g data-mml-node="mo" transform="translate(3078.7,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mn" transform="translate(4134.5,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(4634.5,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mi" transform="translate(5079.2,0)"><path data-c="2200" d="M0 673Q0 684 7 689T20 694Q32 694 38 680T82 567L126 451H430L473 566Q483 593 494 622T512 668T519 685Q524 694 538 694Q556 692 556 674Q556 670 426 329T293 -15Q288 -22 278 -22T263 -15Q260 -11 131 328T0 673ZM414 410Q414 411 278 411T142 410L278 55L414 410Z"></path></g><g data-mml-node="mi" transform="translate(5635.2,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(6257.9,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path></g><g data-mml-node="mi" transform="translate(7202.7,0)"><path data-c="1D449" d="M52 648Q52 670 65 683H76Q118 680 181 680Q299 680 320 683H330Q336 677 336 674T334 656Q329 641 325 637H304Q282 635 274 635Q245 630 242 620Q242 618 271 369T301 118L374 235Q447 352 520 471T595 594Q599 601 599 609Q599 633 555 637Q537 637 537 648Q537 649 539 661Q542 675 545 679T558 683Q560 683 570 683T604 682T668 681Q737 681 755 683H762Q769 676 769 672Q769 655 760 640Q757 637 743 637Q730 636 719 635T698 630T682 623T670 615T660 608T652 599T645 592L452 282Q272 -9 266 -16Q263 -18 259 -21L241 -22H234Q216 -22 216 -15Q213 -9 177 305Q139 623 138 626Q133 637 76 637H59Q52 642 52 648Z"></path></g></g></g><g data-mml-node="mtr" transform="translate(0,-850)"><g data-mml-node="mtd"><g data-mml-node="munder"><g data-mml-node="mo"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="TeXAtom" transform="translate(179.3,-1123.3) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(345,0)"><path data-c="2260" d="M166 -215T159 -215T147 -212T141 -204T139 -197Q139 -190 144 -183L306 133H70Q56 140 56 153Q56 168 72 173H327L406 327H72Q56 332 56 347Q56 360 70 367H426Q597 702 602 707Q605 716 618 716Q625 716 630 712T636 703T638 696Q638 692 471 367H707Q722 359 722 347Q722 336 708 328L451 327L371 173H708Q722 163 722 153Q722 140 707 133H351Q175 -210 170 -212Q166 -215 159 -215Z"></path></g><g data-mml-node="mi" transform="translate(1123,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g></g><g data-mml-node="msub" transform="translate(1610.7,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="TeXAtom" transform="translate(605,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(345,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g></g><g data-mml-node="mo" transform="translate(3078.7,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mn" transform="translate(4134.5,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(4634.5,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mi" transform="translate(5079.2,0)"><path data-c="2200" d="M0 673Q0 684 7 689T20 694Q32 694 38 680T82 567L126 451H430L473 566Q483 593 494 622T512 668T519 685Q524 694 538 694Q556 692 556 674Q556 670 426 329T293 -15Q288 -22 278 -22T263 -15Q260 -11 131 328T0 673ZM414 410Q414 411 278 411T142 410L278 55L414 410Z"></path></g><g data-mml-node="mi" transform="translate(5635.2,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g><g data-mml-node="mo" transform="translate(6324.9,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path></g><g data-mml-node="mi" transform="translate(7269.7,0)"><path data-c="1D449" d="M52 648Q52 670 65 683H76Q118 680 181 680Q299 680 320 683H330Q336 677 336 674T334 656Q329 641 325 637H304Q282 635 274 635Q245 630 242 620Q242 618 271 369T301 118L374 235Q447 352 520 471T595 594Q599 601 599 609Q599 633 555 637Q537 637 537 648Q537 649 539 661Q542 675 545 679T558 683Q560 683 570 683T604 682T668 681Q737 681 755 683H762Q769 676 769 672Q769 655 760 640Q757 637 743 637Q730 636 719 635T698 630T682 623T670 615T660 608T652 599T645 592L452 282Q272 -9 266 -16Q263 -18 259 -21L241 -22H234Q216 -22 216 -15Q213 -9 177 305Q139 623 138 626Q133 637 76 637H59Q52 642 52 648Z"></path></g></g></g></g></g></g></svg></mjx-container></span></p>
-<h1 id="category和tag的区别">category和tag的区别</h1>
-<p>知乎用户鲁大荒对Categories和Tags的理解我感觉挺有道理：“Catagory是共性因素，Tag是个性因素；对使用者而言，前者是被动引导，后者是主动引导；前者有内部层级关系，后者没有内部层级关系；二者也有共性，可以互为转换，但catagory的量不宜过大，否则就失去了索引的意义和效果。”所以之后我的博客在categories上就计划分成五类：</p>
-<ul>
-<li>计算机技术</li>
-<li>数学建模与运筹学</li>
-<li>机器学习</li>
-<li>生活</li>
-<li>其它</li>
-</ul>
-<p>而tags就根据每篇文章的内容取一个或多个，让tags在文章所属的特定category下进一步凸显自身的特性。</p>
-<h1 id="hexo中的路径问题">Hexo中的路径问题</h1>
-<p>首先得讲一下路径分隔符<code>/</code>和<code>\</code>的区别。它俩都可以作为路径分隔符，但是在linux，macos和web和各种编程语言如python中不支持使用<code>\</code>作为路径分隔符，<del><font color="blue">python里面其实也可以用r取消转义…</font></del>所以平时写路径就最好用<code>/</code>作为分隔符，特别是在用hexo写博客的时候，如果不用<code>/</code>作为路径分隔符，你把博客deploy之后是看不到里面的图片的。</p>
-<p>另一个需要注意的点就是public文件夹和source文件夹的结构不同，比如咱们正在写位于_posts文件夹下的subime这篇文章，然后咱想插入一张图片，一般来说咱会使用相对路径写成<code>./images/sublime.xxx.png</code>。但当你预览时会发现根本找不到这张图片！！！为什么？就是因为public文件夹和source文件夹结构不同。<font color="red">在写图片地址的时候必须得告诉浏览器怎么在public文件夹中找到对应的图片</font>，所以正确的写法可以是。</p>
-<pre class="line-numbers language-markup" data-language="markup"><div class="caption"><span>从根路径开始找</span></div><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>center</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>
-    Fig1. 创建项目 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>center</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-markup" data-language="markup"><div class="caption"><span>还是用相对路径</span></div><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>center</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../../../../images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>
-    Fig1. 创建项目 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>center</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-相对路径表示
-</p>
-<ul>
-<li>
-<code>.</code>表示当前文件所处的目录
-</li>
-<li>
-<code>..</code>表示当前文件所处目录的上一级目录
-</li>
-<li>
-<code>/</code>表示的是根目录
-</li>
-</ul>
-<p>
-例如当前目录下有一个xxx.png，那么路径可以直接写成’xxx.png’,也可以写成’./xxx.png’
-</p>
-</div>
-<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>text source文件夹结构</span></div><code class="language-plain">D:.
-├─abouts
-├─archives
-├─categories
-├─datasets
-├─images
-│  ├─Deap源码学习
-│  ├─Hexo相关基础和配置
-│  ├─sublime
-│  ├─子回路消除约束
-│  ├─数据集
-│  ├─海大的四季
-│  ├─科研指南
-│  └─顶部图
-├─tags
-├─_data
-├─_drafts
-└─_posts<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>text public文件夹结构</span></div><code class="language-plain">D:.
-├─2025
-│  └─05
-│      ├─05
-│      │  └─海大的四季
-│      ├─11
-│      │  ├─Hexo相关基础和配置
-│      │  └─Sublime
-│      └─17
-│          ├─Deap源码学习
-│          ├─子回路消除约束
-│          └─科研指南
-├─abouts
-├─archives
-│  └─2025
-│      └─05
-├─categories
-│  ├─数学建模与运筹学
-│  ├─生活
-│  ├─计算机技术
-│  └─论文阅读
-├─css
-├─datasets
-├─images
-│  ├─Deap源码学习
-│  ├─sublime
-│  ├─子回路消除约束
-│  ├─数据集
-│  ├─海大的四季
-│  ├─科研指南
-│  └─顶部图
-├─img
-├─js
-│  └─search
-└─tags
-    ├─Deap
-    ├─Hexo
-    ├─Sublime
-    ├─TSP
-    ├─VRP
-    ├─大连海事大学
-    ├─快捷键
-    ├─景象照
-    ├─研究生生涯规划
-    ├─科研方法论
-    └─遗传算法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="hexo部署报错">Hexo部署报错</h1>
-<p><del><font color="red">解决方法是进入先.deploy_git文件夹,执行<code>git config --global core.autocrlf false</code>命令，然后在depoly就不会报错了。用这个方法还是会时不时报错</font></del>，于是又考虑将depoly中repo的设置从https协议转换成ssh协议——目前暂时没出过报错。</p>
-<h1 id="性能优化">性能优化</h1>
-<p>我的博客是部署在github上的，国内访问的速度非常慢。经过检查，页面加载时间主要是耗在了图片加载上，经过一番折腾最终使用gitHub提供的原始文件直链服务解决了这个问题。基本原理就是通过raw.githubusercontent.com的国内镜像raw.gitmirror.com绕过 gitHub页面渲染，直接返回文件的原始数据。这样做能提速的原理是gitHub在全球部署了内容分发网络（CDN），raw.gitmirror.com的请求会被路由到离用户最近的边缘节点，减少物理距离带来的延迟。</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>  # 一般写法
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://gh.llkk.cc/https://raw.githubusercontent.com//YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span> # 使用直链服务的国内镜像的写法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<blockquote>
-<p>除了使用直链服务加速，还可以直接通过对图片进行压缩来提速，例如将图片转换为webp格式或将默认的jsdelivr的CDN切换成<a href="https://jsd-proxy.ygxz.in/index.html">国内镜像</a>或其它CDN服务。</p>
-</blockquote>
-<h1 id="参考资料">参考资料</h1>
-<ol type="1">
-<li><a href="https://blog.csdn.net/CQG1988/article/details/101652805">利用直链服务加速图像</a></li>
-<li><a href="https://blog.zhheo.com/p/128998ac.html">Hexo部署报错处理思路</a></li>
-<li><a href="https://blog.zhheo.com/p/790087d9.html">切换CDN服务</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
+        <tag>Sublime</tag>
+        <tag>快捷键</tag>
       </tags>
   </entry>
   <entry>
@@ -1207,6 +1286,385 @@ Fig2. 两种写法深拷贝的差异
       </tags>
   </entry>
   <entry>
+    <title>Hexo相关基础和配置</title>
+    <url>/2025/05/11/Hexo%E7%9B%B8%E5%85%B3%E5%9F%BA%E7%A1%80%E5%92%8C%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<h1 id="hexo的基本命令">Hexo的基本命令</h1>
+<ul>
+<li>创建制定布局的文章：<code>hexo new [layout] &lt;title&gt;</code>，其中layout参数的默认值是post。<br>
+</li>
+<li>将草稿类布局转换为post布局： <code>hexo publish</code> “草稿布局文章的标题”。<br>
+</li>
+<li>渲染，生成静态文件的文件夹public：<code>hexo generate</code>。</li>
+<li>清理缓存和原先的public文件：<code>hexo clean</code>。</li>
+<li>将public文件夹部署到远端：<code>hexo deploy</code>。</li>
+</ul>
+<h1 id="hexo的渲染器和mathjax">Hexo的渲染器和Mathjax</h1>
+<p>先说结论，Hexo渲染器的作用是将Markdown转换为对应的HTML代码，而Mathjax的作用则是去解析HTML代码当中的数学公式并基于SVG或HTML+CSS将其转换为美观的数学公式。</p>
+<p>Hexo的渲染器很多，这里就介绍hexo-renderer-pandoc。它实际上是Hexo的一个插件（用于调用Pandoc将Markdown转换为对应的html代码）。Hexo默认用的渲染器hexo-renderer-marked效果很糟糕，执行以下命令就可以将渲染器切换为hexo-renderer-pandoc。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> uninstall hexo-renderer-marked <span class="token parameter variable">--save</span>  <span class="token comment"># 移除默认渲染器</span>
+<span class="token function">npm</span> <span class="token function">install</span> hexo-renderer-pandoc <span class="token parameter variable">--save</span>    <span class="token comment"># 安装 Pandoc 渲染器</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>MathJax 是一个开源的 JavaScript 库，用于在网页中高质量地解析并可视化数学公式。与kaTex相比Mathjax除了支持Latex的完整语法，还支持相关的拓展包语法。在Hexo根目录中添加以下配置就可以自己的博客完美地显示数学公式了！</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># 支持公式</span>
+<span class="token key atrule">pandoc</span><span class="token punctuation">:</span>
+  <span class="token key atrule">args</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token string">"--mathjax"</span>                   <span class="token comment"># 启用 MathJax 支持</span>
+    <span class="token punctuation">-</span> <span class="token string">"--wrap=preserve"</span>             <span class="token comment"># 防止代码换行破坏公式</span>
+  <span class="token key atrule">extensions</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token string">"+tex_math_dollars"</span>           <span class="token comment"># 允许 $...$ 行内公式</span>
+    <span class="token punctuation">-</span> <span class="token string">"+raw_tex"</span>                    <span class="token comment"># 保留原始 LaTeX 代码</span>
+<span class="token key atrule">mathjax</span><span class="token punctuation">:</span>
+  <span class="token key atrule">tags</span><span class="token punctuation">:</span> none <span class="token comment"># or 'ams' or 'all'</span>
+  <span class="token key atrule">single_dollars</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># enable single dollar signs as in-line math delimiters</span>
+  <span class="token key atrule">cjk_width</span><span class="token punctuation">:</span> <span class="token number">0.9</span> <span class="token comment"># relative CJK char width</span>
+  <span class="token key atrule">normal_width</span><span class="token punctuation">:</span> <span class="token number">0.6</span> <span class="token comment"># relative normal (monospace) width</span>
+  <span class="token key atrule">append_css</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># add CSS to pages rendered by MathJax</span>
+  <span class="token key atrule">every_page</span><span class="token punctuation">:</span> <span class="token boolean important">false</span> <span class="token comment"># if true, every page will be rendered by MathJax regardless the `mathjax` setting in Front-matter</span>
+  <span class="token key atrule">packages</span><span class="token punctuation">:</span> <span class="token comment"># extra packages to load</span>
+  <span class="token key atrule">extension_options</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token comment"># you can put your extension options here</span>
+    <span class="token comment"># see http://docs.mathjax.org/en/latest/options/input/tex.html#tex-extension-options for more detail</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-latex" data-language="latex"><code class="language-latex"><span class="token equation string">$$
+<span class="token equation-command regex">\begin</span>{align}
+<span class="token equation-command regex">\sum</span>_{j<span class="token equation-command regex">\ne</span> i}x_{ij}=&amp;1&amp;,<span class="token equation-command regex">\forall</span> i <span class="token equation-command regex">\in</span> V<span class="token equation-command regex">\\</span>
+<span class="token equation-command regex">\sum</span>_{i<span class="token equation-command regex">\ne</span> j}x_{ij}=&amp;1&amp;,<span class="token equation-command regex">\forall</span> j <span class="token equation-command regex">\in</span> V
+<span class="token equation-command regex">\end</span>{align}
+$$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><span class="math display"><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -5.035ex;" xmlns="http://www.w3.org/2000/svg" width="18.187ex" height="11.201ex" role="img" focusable="false" viewBox="0 -2725.3 8038.7 4950.6"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mtable"><g data-mml-node="mtr" transform="translate(0,1775.3)"><g data-mml-node="mtd" transform="translate(67,0)"><g data-mml-node="munder"><g data-mml-node="mo"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="TeXAtom" transform="translate(179.3,-1123.3) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g><g data-mml-node="mo" transform="translate(412,0)"><path data-c="2260" d="M166 -215T159 -215T147 -212T141 -204T139 -197Q139 -190 144 -183L306 133H70Q56 140 56 153Q56 168 72 173H327L406 327H72Q56 332 56 347Q56 360 70 367H426Q597 702 602 707Q605 716 618 716Q625 716 630 712T636 703T638 696Q638 692 471 367H707Q722 359 722 347Q722 336 708 328L451 327L371 173H708Q722 163 722 153Q722 140 707 133H351Q175 -210 170 -212Q166 -215 159 -215Z"></path></g><g data-mml-node="mi" transform="translate(1190,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g></g><g data-mml-node="msub" transform="translate(1610.7,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="TeXAtom" transform="translate(605,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(345,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g></g><g data-mml-node="mo" transform="translate(3078.7,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mn" transform="translate(4134.5,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(4634.5,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mi" transform="translate(5079.2,0)"><path data-c="2200" d="M0 673Q0 684 7 689T20 694Q32 694 38 680T82 567L126 451H430L473 566Q483 593 494 622T512 668T519 685Q524 694 538 694Q556 692 556 674Q556 670 426 329T293 -15Q288 -22 278 -22T263 -15Q260 -11 131 328T0 673ZM414 410Q414 411 278 411T142 410L278 55L414 410Z"></path></g><g data-mml-node="mi" transform="translate(5635.2,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(6257.9,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path></g><g data-mml-node="mi" transform="translate(7202.7,0)"><path data-c="1D449" d="M52 648Q52 670 65 683H76Q118 680 181 680Q299 680 320 683H330Q336 677 336 674T334 656Q329 641 325 637H304Q282 635 274 635Q245 630 242 620Q242 618 271 369T301 118L374 235Q447 352 520 471T595 594Q599 601 599 609Q599 633 555 637Q537 637 537 648Q537 649 539 661Q542 675 545 679T558 683Q560 683 570 683T604 682T668 681Q737 681 755 683H762Q769 676 769 672Q769 655 760 640Q757 637 743 637Q730 636 719 635T698 630T682 623T670 615T660 608T652 599T645 592L452 282Q272 -9 266 -16Q263 -18 259 -21L241 -22H234Q216 -22 216 -15Q213 -9 177 305Q139 623 138 626Q133 637 76 637H59Q52 642 52 648Z"></path></g></g></g><g data-mml-node="mtr" transform="translate(0,-850)"><g data-mml-node="mtd"><g data-mml-node="munder"><g data-mml-node="mo"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="TeXAtom" transform="translate(179.3,-1123.3) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(345,0)"><path data-c="2260" d="M166 -215T159 -215T147 -212T141 -204T139 -197Q139 -190 144 -183L306 133H70Q56 140 56 153Q56 168 72 173H327L406 327H72Q56 332 56 347Q56 360 70 367H426Q597 702 602 707Q605 716 618 716Q625 716 630 712T636 703T638 696Q638 692 471 367H707Q722 359 722 347Q722 336 708 328L451 327L371 173H708Q722 163 722 153Q722 140 707 133H351Q175 -210 170 -212Q166 -215 159 -215Z"></path></g><g data-mml-node="mi" transform="translate(1123,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g></g><g data-mml-node="msub" transform="translate(1610.7,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="TeXAtom" transform="translate(605,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(345,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g></g><g data-mml-node="mo" transform="translate(3078.7,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mn" transform="translate(4134.5,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(4634.5,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mi" transform="translate(5079.2,0)"><path data-c="2200" d="M0 673Q0 684 7 689T20 694Q32 694 38 680T82 567L126 451H430L473 566Q483 593 494 622T512 668T519 685Q524 694 538 694Q556 692 556 674Q556 670 426 329T293 -15Q288 -22 278 -22T263 -15Q260 -11 131 328T0 673ZM414 410Q414 411 278 411T142 410L278 55L414 410Z"></path></g><g data-mml-node="mi" transform="translate(5635.2,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g><g data-mml-node="mo" transform="translate(6324.9,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path></g><g data-mml-node="mi" transform="translate(7269.7,0)"><path data-c="1D449" d="M52 648Q52 670 65 683H76Q118 680 181 680Q299 680 320 683H330Q336 677 336 674T334 656Q329 641 325 637H304Q282 635 274 635Q245 630 242 620Q242 618 271 369T301 118L374 235Q447 352 520 471T595 594Q599 601 599 609Q599 633 555 637Q537 637 537 648Q537 649 539 661Q542 675 545 679T558 683Q560 683 570 683T604 682T668 681Q737 681 755 683H762Q769 676 769 672Q769 655 760 640Q757 637 743 637Q730 636 719 635T698 630T682 623T670 615T660 608T652 599T645 592L452 282Q272 -9 266 -16Q263 -18 259 -21L241 -22H234Q216 -22 216 -15Q213 -9 177 305Q139 623 138 626Q133 637 76 637H59Q52 642 52 648Z"></path></g></g></g></g></g></g></svg></mjx-container></span></p>
+<h1 id="category和tag的区别">category和tag的区别</h1>
+<p>知乎用户鲁大荒对Categories和Tags的理解我感觉挺有道理：“Catagory是共性因素，Tag是个性因素；对使用者而言，前者是被动引导，后者是主动引导；前者有内部层级关系，后者没有内部层级关系；二者也有共性，可以互为转换，但catagory的量不宜过大，否则就失去了索引的意义和效果。”所以之后我的博客在categories上就计划分成五类：</p>
+<ul>
+<li>计算机技术</li>
+<li>数学建模与运筹学</li>
+<li>机器学习</li>
+<li>生活</li>
+<li>其它</li>
+</ul>
+<p>而tags就根据每篇文章的内容取一个或多个，让tags在文章所属的特定category下进一步凸显自身的特性。</p>
+<h1 id="hexo中的路径问题">Hexo中的路径问题</h1>
+<p>首先得讲一下路径分隔符<code>/</code>和<code>\</code>的区别。它俩都可以作为路径分隔符，但是在linux，macos和web和各种编程语言如python中不支持使用<code>\</code>作为路径分隔符，<del><font color="blue">python里面其实也可以用r取消转义…</font></del>所以平时写路径就最好用<code>/</code>作为分隔符，特别是在用hexo写博客的时候，如果不用<code>/</code>作为路径分隔符，你把博客deploy之后是看不到里面的图片的。</p>
+<p>另一个需要注意的点就是public文件夹和source文件夹的结构不同，比如咱们正在写位于_posts文件夹下的subime这篇文章，然后咱想插入一张图片，一般来说咱会使用相对路径写成<code>./images/sublime.xxx.png</code>。但当你预览时会发现根本找不到这张图片！！！为什么？就是因为public文件夹和source文件夹结构不同。<font color="red">在写图片地址的时候必须得告诉浏览器怎么在public文件夹中找到对应的图片</font>，所以正确的写法可以是。</p>
+<pre class="line-numbers language-markup" data-language="markup"><div class="caption"><span>从根路径开始找</span></div><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>center</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>
+    Fig1. 创建项目 
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>center</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-markup" data-language="markup"><div class="caption"><span>还是用相对路径</span></div><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>center</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../../../../images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>
+    Fig1. 创建项目 
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>center</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info">
+<p class="admonition-title">
+相对路径表示
+</p>
+<ul>
+<li>
+<code>.</code>表示当前文件所处的目录
+</li>
+<li>
+<code>..</code>表示当前文件所处目录的上一级目录
+</li>
+<li>
+<code>/</code>表示的是根目录
+</li>
+</ul>
+<p>
+例如当前目录下有一个xxx.png，那么路径可以直接写成’xxx.png’,也可以写成’./xxx.png’
+</p>
+</div>
+<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>text source文件夹结构</span></div><code class="language-plain">D:.
+├─abouts
+├─archives
+├─categories
+├─datasets
+├─images
+│  ├─Deap源码学习
+│  ├─Hexo相关基础和配置
+│  ├─sublime
+│  ├─子回路消除约束
+│  ├─数据集
+│  ├─海大的四季
+│  ├─科研指南
+│  └─顶部图
+├─tags
+├─_data
+├─_drafts
+└─_posts<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>text public文件夹结构</span></div><code class="language-plain">D:.
+├─2025
+│  └─05
+│      ├─05
+│      │  └─海大的四季
+│      ├─11
+│      │  ├─Hexo相关基础和配置
+│      │  └─Sublime
+│      └─17
+│          ├─Deap源码学习
+│          ├─子回路消除约束
+│          └─科研指南
+├─abouts
+├─archives
+│  └─2025
+│      └─05
+├─categories
+│  ├─数学建模与运筹学
+│  ├─生活
+│  ├─计算机技术
+│  └─论文阅读
+├─css
+├─datasets
+├─images
+│  ├─Deap源码学习
+│  ├─sublime
+│  ├─子回路消除约束
+│  ├─数据集
+│  ├─海大的四季
+│  ├─科研指南
+│  └─顶部图
+├─img
+├─js
+│  └─search
+└─tags
+    ├─Deap
+    ├─Hexo
+    ├─Sublime
+    ├─TSP
+    ├─VRP
+    ├─大连海事大学
+    ├─快捷键
+    ├─景象照
+    ├─研究生生涯规划
+    ├─科研方法论
+    └─遗传算法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="hexo部署报错">Hexo部署报错</h1>
+<p><del><font color="red">解决方法是进入先.deploy_git文件夹,执行<code>git config --global core.autocrlf false</code>命令，然后在depoly就不会报错了。用这个方法还是会时不时报错</font></del>，于是又考虑将depoly中repo的设置从https协议转换成ssh协议——目前暂时没出过报错。</p>
+<h1 id="性能优化">性能优化</h1>
+<p>我的博客是部署在github上的，国内访问的速度非常慢。经过检查，页面加载时间主要是耗在了图片加载上，经过一番折腾最终使用gitHub提供的原始文件直链服务解决了这个问题。基本原理就是通过raw.githubusercontent.com的国内镜像raw.gitmirror.com绕过 gitHub页面渲染，直接返回文件的原始数据。这样做能提速的原理是gitHub在全球部署了内容分发网络（CDN），raw.gitmirror.com的请求会被路由到离用户最近的边缘节点，减少物理距离带来的延迟。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>  # 一般写法
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://gh.llkk.cc/https://raw.githubusercontent.com//YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span> # 使用直链服务的国内镜像的写法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<blockquote>
+<p>除了使用直链服务加速，还可以直接通过对图片进行压缩来提速，例如将图片转换为webp格式或将默认的jsdelivr的CDN切换成<a href="https://jsd-proxy.ygxz.in/index.html">国内镜像</a>或其它CDN服务。</p>
+</blockquote>
+<h1 id="参考资料">参考资料</h1>
+<ol type="1">
+<li><a href="https://blog.csdn.net/CQG1988/article/details/101652805">利用直链服务加速图像</a></li>
+<li><a href="https://blog.zhheo.com/p/128998ac.html">Hexo部署报错处理思路</a></li>
+<li><a href="https://blog.zhheo.com/p/790087d9.html">切换CDN服务</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git工具</title>
+    <url>/2025/05/18/Git%E5%B7%A5%E5%85%B7/</url>
+    <content><![CDATA[<p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
+<h1 id="git环境配置">Git环境配置</h1>
+<p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
+Fig1. Git仓库的结构
+</center>
+<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
+<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
+<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<blockquote>
+<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
+</blockquote>
+<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
+<span class="token function">git</span> pull origin master --allow-unrelated-histories
+<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info">
+<p class="admonition-title">
+需要注意的点
+</p>
+<ul>
+<li>
+命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。
+</li>
+<li>
+不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master
+</li>
+<li>
+如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接
+</li>
+<li>
+master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去
+</li>
+</ul>
+</div>
+<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
+<ul>
+<li>untracked：一个新创建的文件，没有被add。</li>
+<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
+<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
+<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
+</ul>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
+Fig2. 文件各种状态的转换
+</center>
+<h1 id="git分支管理工作流">Git分支管理工作流</h1>
+<p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
+<center>
+<p><img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%"></p>
+Fig3. 文件各种状态的转换
+</center>
+<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
+<p>最后是多人协作的一般流程</p>
+<ol type="1">
+<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
+<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
+<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
+<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
+</ol>
+<h1 id="常用bash命令和git命令">常用bash命令和git命令</h1>
+<ul>
+<li><code>D：</code>:切换到D磁盘。</li>
+<li><code>cd</code>：打印当前所在目录。</li>
+<li><code>cd d1\e1</code>：切换到当前磁盘下的d11目录。</li>
+<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
+<li><code>dir</code>：列出当前目录下的所有文件。</li>
+<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
+<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
+<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
+<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
+<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
+<li><code>cls</code>: clear screen。</li>
+<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
+<li><code>git status</code>：查询git仓库当前状态。</li>
+<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
+<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
+<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
+<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
+<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
+<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
+<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
+<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
+<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
+<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
+<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
+<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
+<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
+<li><code>git branch</code>：列举处所有分支。</li>
+<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
+<li><code>git branch 分支名</code>：创建分支。</li>
+<li><code>git branch -d 分支名</code>：删除分支。</li>
+<li><code>git switch 分支名</code>：切换到指定分支。</li>
+<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
+<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
+<li><code>git log --graph</code>：git 仓库历史变化图。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Tkinter框架</title>
+    <url>/2025/06/19/Tkinter%E6%A1%86%E6%9E%B6/</url>
+    <content><![CDATA[<p>怎么用tkinter设计一个GUI，思路就是——首先创建一个根窗口对象（这个一定是最顶层的容器），然后创建容器组件和其它组件（可以嵌套在容器组件里面，容器组件里面还可以嵌套容器组件），给根窗口or组件绑定对应的事件和事件处理函数，而对于各个组件之间的位置关系和布局则通过组件的grid方法来完成。</p>
+<blockquote>
+<p>少记忆，抓重点，是学一个新框架最快的方式。所以本文就忽略繁琐的参数了，知道框架大致怎么用，剩下的查文档就行了… <del><font color="green">主要原因还是不擅长记忆，哈哈</font></del></p>
+</blockquote>
+<h1 id="grid方法实现widget布局组件布局管理">grid方法实现Widget布局（组件布局管理）</h1>
+<p>grid方法以类似excel表格的方式实现组件的布局，这个方法核心的参数包括：</p>
+<ul>
+<li>row,column：设置当前组件所处的“excel表格”，<font color="blue">整个表格的大小是<code>[max(row)+1] x [max(column)+1]</code>。</font></li>
+<li>rowspan,columnspan：类似于excel表格中的合并单元格，rowspan决定列方向上合并多少个单元格，columnspan决定行方向上合并多少个单元格。</li>
+<li>padx,pady：设置控件边界与控件边界和控件边界与窗口边界之间像素距离。</li>
+<li>sticky：设置控件之间的对齐方式，可选参数包括N、S、W、E，组合使用时可能会有拉伸效果。注意时以同行或同列的组件为基准进行最大程度的对齐。</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+Tk类的rowconfigure和columnconfigure方法
+</p>
+<p>
+这两个方法可以用来控制用户缩放根窗口大小时对应的行和列的缩放比例
+</p>
+</div>
+<h1 id="tkinter的四种内置数据类型">tkinter的四种内置数据类型</h1>
+<p>我们可以通过config方法再程序运行过程中修改组件的参数，但当某些控件具有相同的参数时，一个组件一个组件的去调用config修改就太繁琐了。一种解决方法是将参数设置为变量，通过修改变量的值就可以实现批量的修改。<del><font color="red">我们只能使用tkinter的内置数据类型，而不能直接使用python中的数据类型</font></del></p>
+<ul>
+<li>IntVar：整数类型</li>
+<li>StringVar：字符串类型</li>
+<li>DoubleVar：浮点数类型</li>
+<li>BooleanVar：bool类型</li>
+<li>get和set方法：获取和设置tkinter中变量对象的值</li>
+<li>trace方法：对变量进行追踪，如果发生修改（w模式）或读取（r模式）就会调用callback函数，注意callback函数必须包含name,index,mode这三个位置参数，这些参数会在callback被调用时自动传递给它。</li>
+</ul>
+<h1 id="tkinter中的容器类型组件">tkinter中的容器类型组件</h1>
+<p>当设计的GUI比较复杂的时候，最好使用容器组件来管理其它的组件。容器组件和用TK创建的根窗口很类似，它是一种可以容纳组件的组件。再tkinter容器组件有4种</p>
+<ul>
+<li>Frame</li>
+<li>LabelFrame：和Frame的唯一区别就是这个容器组件的左上脚是带标签的</li>
+<li>Toplevel：和Frame的唯一区别就是这个容器组件是脱离根窗口的，回产生一个独立窗口，有自己的窗口标题，关闭这个窗口不会影响根窗口，但是如果根窗口被关闭那么这个容器组件对应的窗口也会被关闭</li>
+<li>Notebook：这个是ttk子模块下的一个容器组件，它的特点是通过选项卡来组织其它组件，当选择不同的选项时可以看到不同的子组件内容</li>
+</ul>
+<h1 id="将事件和函数绑定">将事件和函数绑定</h1>
+<p>在tkinter中事件和事件处理函数绑定有两种方式：（1）使用command参数（2）使用bind方法。同时tkinter支持一个组件对应多个事件进而绑定多个事件处理函数，同时也支持使用bind方法的add参数实现一个事件绑定多个事件处理函数。</p>
+<ul>
+<li>组件状态改变事件和函数的绑定：通过组件的command参数来实现</li>
+<li>鼠标事件和函数的绑定、键盘事件和函数的绑定都可以通过控件的bind方法来实现</li>
+</ul>
+<h1 id="如何将matplotlib嵌入到tkinter当中">如何将matplotlib嵌入到tkinter当中</h1>
+<p>将 Matplotlib 图像嵌入到 Tkinter 中，需要使用 FigureCanvasTkAgg 这个适配器类。这个类常用的方法如下</p>
+<ul>
+<li>draw方法：重新将figure对象上的图像渲染到tk中。</li>
+<li>get_tk_widget()：FigureCanvasTkAgg 本身不是继承自 Tkinter 的 Widget 类，而是一个封装了 Matplotlib 绘图功能的对象，要想使用tkinter的布局管理器必须得是Widget对象，FigureCanvasTkAgg类使用这个方法返回内部创建的真实 Tkinter Canvas 组件，使其能被 Tkinter 的布局系统识别和处理。</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+推荐操作流程
+</p>
+<ol>
+<li>
+创建一个figure对象，传递给FigureCanvasTkAgg，然后获取内部的Widget完成布局
+</li>
+<li>
+与用matplolib绘图一致，在figure上绘图
+</li>
+<li>
+调用draw方法重新渲染figure上的图形到gui中
+</li>
+</ol>
+</div>
+<h1 id="怎么组织一个tkinter项目的结构">怎么组织一个tkinter项目的结构</h1>
+<p>MVC架构是一种用于构建用户界面的软件设计模式，最早在1970年代由Trygve Reenskaug提出。该模式将系统划分为三个主要部分：模型（Model）、视图（View）和控制器（Controller）。这种分离的方式旨在提高代码的模块化程度，促进代码的重用和维护。各个部分的实现要求如下：</p>
+<ol type="1">
+<li>Model（模型）：管理数据和业务逻辑（如数据库操作、计算规则）</li>
+<li>View（视图）：负责UI展示（如窗口、按钮、文本框）</li>
+<li>Controller（控制器）：处理用户输入，协调Model和View的交互</li>
+</ol>
+<p>该框架的数据流为——用户在视图上操作<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.181ex" role="img" focusable="false" viewBox="0 -511 1000 522"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"></path></g></g></g></svg></mjx-container></span>视图调用控制器方法修改数据模型&amp;&amp;数据模型发生变化通知视图完成对应变化。</p>
+<blockquote>
+<p>一个好例子：https://www.runoob.com/design-pattern/mvc-pattern.html</p>
+</blockquote>
+<h1 id="tkinter中引入表格控件">tkinter中引入表格控件</h1>
+<p>目前用的是pandastable这个第三方库，使用非常简单，对数据的管理也非常方便，直接修改Table对象的model属性的df属性为新的dataframe，然后redraw方法重新绘制一下表格就ok了。</p>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>GUI</tag>
+        <tag>Tkinter</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>子回路消除约束</title>
     <url>/2025/05/17/%E5%AD%90%E5%9B%9E%E8%B7%AF%E6%B6%88%E9%99%A4%E7%BA%A6%E6%9D%9F/</url>
     <content><![CDATA[<h1 id="什么是子回路">什么是子回路</h1>
@@ -1446,119 +1904,25 @@ Fig11. Gurobi求解MIP的算法框架
       </tags>
   </entry>
   <entry>
-    <title>Git工具</title>
-    <url>/2025/05/18/Git%E5%B7%A5%E5%85%B7/</url>
-    <content><![CDATA[<p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
-<h1 id="git环境配置">Git环境配置</h1>
-<p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
-<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
-<center>
-<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
-Fig1. Git仓库的结构
-</center>
-<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
-<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
-<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<blockquote>
-<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
-</blockquote>
-<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
-<span class="token function">git</span> pull origin master --allow-unrelated-histories
-<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-需要注意的点
-</p>
-<ul>
-<li>
-命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。
-</li>
-<li>
-不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master
-</li>
-<li>
-如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接
-</li>
-<li>
-master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去
-</li>
-</ul>
+    <title>读研规划</title>
+    <url>/2025/05/27/%E8%AF%BB%E7%A0%94%E8%A7%84%E5%88%92/</url>
+    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="密码错误！" data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="43ad9cb46afb8eac31ed9cd7f3e9ee309c7e38ddd2e6fae80827f774fd7375cb">2791a93a43004e3f66ae2791aab842499acc2705225a94f8c50462219ac7e42bf19671629d26b07bd4be951affc379aae75902c9e1229c9b5b3a90c2dbb260b8dfb776c7896812f4514e05fc3315dbc6a1f6f291a1dc05f029348bda16107e5cd76c006f3edb8a0ebbcf9cb39def60800bde247fd77e95f622d4adab1fec712efb888219b73a2fe7a1c25de1da247dba844bd9123f8a479de858f6ff28e36edd19865a9658cc5d40a5bb13176ec4227d37387f58eaa426c5ad81a3b7de12d4475833534a9e6909043f0c97f2a8a069a044fc41ee0423850e45ce46fb2f541ce468b5cd777f4a6ce29d6547ef922206c47794eb48db1372f666b7361a8255056eb23ce7c07b9350de8d550dd655fe8e5010aaafbe35c58c8b79aa1b643d6b38c150f54a21b787c8e4e0383a34c5ae217030bb79a952b0ac287d9106532a7405e6d4fec35307220477c55240d37af9b16c4606e7528a476f6b2a35f293251d88c6369dad268f6b596ad4fe52e13919b8743c80543fff43cb5c1fa481eac7ec83bf9fd9649b95d743d8fa2312348faf1c861e901d05abde250dc79a66f29ebb54fa849c1d2747717da14c7e157ceba8e687e2e68020090d6d681171b8d21623585bef7f7fd8ae30b6f587a9470bc7ae2c5909c58d806b87990f62e4a146fc0b49be975f29e0adb951b50b3d12f1247c5d0837e410555c45e00f8ba28fc42e04e3094d37b6a215e2b2fa79204be2751899de7e4362e8c188c97cf761ccab14a9688221902ede36fcb2037a60fe541f720641514f962e2ca72cd3531bf77330d0ee6b52e1ed19dc90e0a651278e1d088e54570b2e3ffa2b297e7e3dc0be793541e218eb728bd492330e7141dec9804377c5e9b183236ffda557f34605b045cea0ff67ff5c57a77eea1bae93774b97e5763c2e50962bfc5aef3527bc01e9c71ad044169617f62e24b374602455232b67ff58be0b0bf23777648468fc2c0e65b85e120b33aac18436e0cc8d70640c2ec43282e671dd6106af9063320188a5e8cf696d7b0b2ed6e628845894fc9469453863bd0f575f02ea9938173be59c69c41e6689986114ca2c9f5cf41ec0fbf3ce11d0393c4c55d7ecaf31232d6cc4e592110ce23fabfa8228346262dfeafb58270ecc1ced69c024c1073ac10efc322d0f246471615da9d5205fdcb2698943f4fab140f40b0f97312108877553bdd6d662c3f60103aa20f24da4397f5afb17ed3dde7c5e1439a24d067e4b6a8afd9b6209b42847290f4831ceed897a60681e7c7ce35c97b73dbb6847e736b13fa59f44b4e47def27561dc693bdff6fbfa95917754cc7e59b3ab5984f8d2824e970c9bf3fa8056259a2f76f66eb44874536cbca3b3df521e4a5958c3ec23a8df048342977ba4b76e30536610decf7c623dbdc2de86a0c96dfcf2308ea70f0ded4b0a276327206bd3a8c1175ecb511930a916c06fd73a89183a125a8d692b0b860291cd445efe697b980c75985b9d7b7ce2d559bbd176a96714e8fc6ac416f2cec4f68aca3a141f97e540b6e9f65ea47c4049274644dc4271ba946bbcd0f6ead1d48c55f757069d26a7632f461babee69b8fea57a6b6d9322a38c63bd347ca8002dbfac5a5088dd5c5acff20aa5fe742115010c58f8f2e65e609088cd712b6582d30bfcdd9f05f7fd8d09163584557a7bf318b20b1211d81a9c6f051f34d04c71d46d1452934370b948e46d94658954f1676291107a1cd73a1b545f5010c2e5c81909f977a0317a33b5de0570495c868c7bac4079a89382e0bf8a8250dabc514973cd778e9193bcf538f9c63acdfa9eb535735f095b45ef6af2a1e890aa7a13e2061dffe808e77e10e5f0ed982f8bae44574f4abaa46aa12c1f9ebdbea3ed178e2ba8e6b8bec86f9b98ab37236d2416797eaa5d8c585d797f07cf542aac8b54d75db8448177c533fcb82267e74d23a39341918f74545e899e5a887be07f95fc2971b953a32bf3559e3618c47f28f971eaf73f491912dbc43432065f99a06b3feb0235cfebbcadb4af9389078d07c30b2e4db4a33af618d08dc6e692680f6c2c67ed5299030042cba86b44f8c075ee62493ea9af8102f6cd739cb440cbe0f6bc9dc9059098460075e4be189cff850fbbd7d742751093c13eecdbb138bb82a6691903adde544056551e8af3fec57c68750a557ba9ef2d12344235292e3379e41e1e79651d3075a4c689906d50ff2fe43cfba24391dcd32cc14409ad47f59ab9bcd1d412876e737f79277b7971ae64a4cbc2086f782fd8ca95858416244352c8597f5ae5cd7aad8cadeb7a675a06ad97f0ba818230d836395fb7fdb12cfa437c4ad77b6653cbeaf38a72a6ed8056e65a8bb12998afa6046e278c41a3c027e0c1f733f55ca7fd65a7594a7dcf70f7bd4be91519092a69c5d06705a00c97ef20079bdf01731cd1eee6536df0f5a15e6946bee625eaa0e12f7b9b36af88a7d1c5411708fad0315d7f061bc2e9dc11be4737ff109c86ca17793e65d9ccc6515ca8b40fa5e2a25b853a4144b57ec44748df74fab1eadc7aa6c843dc4a057b73c87e749fb5b2a9913950ac4d8794e8a8958cac8d3e503baaedd6da679457b9fab7c9e31b76ef72083b9614e5abef9537d7e242fa5881ad1b204a60666d55f62fbd2a94788d3bf7b7fcdcaddfd0594869a58b0b383c528a6ad302ce0f68dfaadcc73f1c761b4884c39070e16ddb39f76a7b28b94d6541eaf7d6c819fee3e41cd70416070cf11d1e0f303b792c08fe5050c9b36bb6003a422c224206efc6e57c7f00adeba0491b5be772776e56235362935311ce021aeea6240eba62be42fc1ade9a596e277aec8829931ac22f6d8cbbb80dcf1ab6ab2f65255f6790847153567b57edd36647f1ab746fd9b7c3441d1d501d0f1ad90a7219d15b8072e79efb320cf18c71d75ab5410a9d52332b57c1ca7dd18b910ccca90fcef76d5cd2735c8485dd80efe1721e817958cecaf59fa</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">请点击这里输入密码</span>
+      </label>
+    </div>
+  </div>
 </div>
-<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
-<ul>
-<li>untracked：一个新创建的文件，没有被add。</li>
-<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
-<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
-<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
-</ul>
-<center>
-<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
-Fig2. 文件各种状态的转换
-</center>
-<h1 id="git分支管理工作流">Git分支管理工作流</h1>
-<p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
-<center>
-<p><img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%"></p>
-Fig3. 文件各种状态的转换
-</center>
-<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
-<p>最后是多人协作的一般流程</p>
-<ol type="1">
-<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
-<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
-<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
-<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
-</ol>
-<h1 id="常用bash命令和git命令">常用bash命令和git命令</h1>
-<ul>
-<li><code>D：</code>:切换到D磁盘。</li>
-<li><code>cd</code>：打印当前所在目录。</li>
-<li><code>cd d1\e1</code>：切换到当前磁盘下的d11目录。</li>
-<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
-<li><code>dir</code>：列出当前目录下的所有文件。</li>
-<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
-<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
-<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
-<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
-<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
-<li><code>cls</code>: clear screen。</li>
-<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
-<li><code>git status</code>：查询git仓库当前状态。</li>
-<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
-<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
-<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
-<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
-<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
-<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
-<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
-<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
-<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
-<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
-<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
-<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
-<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
-<li><code>git branch</code>：列举处所有分支。</li>
-<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
-<li><code>git branch 分支名</code>：创建分支。</li>
-<li><code>git branch -d 分支名</code>：删除分支。</li>
-<li><code>git switch 分支名</code>：切换到指定分支。</li>
-<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
-<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
-<li><code>git log --graph</code>：git 仓库历史变化图。</li>
-</ul>
-]]></content>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
       <categories>
-        <category>计算机技术</category>
+        <category>其它</category>
       </categories>
       <tags>
-        <tag>Git</tag>
+        <tag>个人规划</tag>
       </tags>
   </entry>
   <entry>
@@ -1733,370 +2097,6 @@ EI（Engineering Index）和SCI（Science Citation Index）可以理解成两个
       <tags>
         <tag>科研方法论</tag>
         <tag>研究生生涯规划</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>读研规划</title>
-    <url>/2025/05/27/%E8%AF%BB%E7%A0%94%E8%A7%84%E5%88%92/</url>
-    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="密码错误！" data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="43ad9cb46afb8eac31ed9cd7f3e9ee309c7e38ddd2e6fae80827f774fd7375cb">2791a93a43004e3f66ae2791aab842499acc2705225a94f8c50462219ac7e42bf19671629d26b07bd4be951affc379aae75902c9e1229c9b5b3a90c2dbb260b8dfb776c7896812f4514e05fc3315dbc6a1f6f291a1dc05f029348bda16107e5cd76c006f3edb8a0ebbcf9cb39def60800bde247fd77e95f622d4adab1fec712efb888219b73a2fe7a1c25de1da247dba844bd9123f8a479de858f6ff28e36edd19865a9658cc5d40a5bb13176ec4227d37387f58eaa426c5ad81a3b7de12d4475833534a9e6909043f0c97f2a8a069a044fc41ee0423850e45ce46fb2f541ce468b5cd777f4a6ce29d6547ef922206c47794eb48db1372f666b7361a8255056eb23ce7c07b9350de8d550dd655fe8e5010aaafbe35c58c8b79aa1b643d6b38c150f54a21b787c8e4e0383a34c5ae217030bb79a952b0ac287d9106532a7405e6d4fec35307220477c55240d37af9b16c4606e7528a476f6b2a35f293251d88c6369dad268f6b596ad4fe52e13919b8743c80543fff43cb5c1fa481eac7ec83bf9fd9649b95d743d8fa2312348faf1c861e901d05abde250dc79a66f29ebb54fa849c1d2747717da14c7e157ceba8e687e2e68020090d6d681171b8d21623585bef7f7fd8ae30b6f587a9470bc7ae2c5909c58d806b87990f62e4a146fc0b49be975f29e0adb951b50b3d12f1247c5d0837e410555c45e00f8ba28fc42e04e3094d37b6a215e2b2fa79204be2751899de7e4362e8c188c97cf761ccab14a9688221902ede36fcb2037a60fe541f720641514f962e2ca72cd3531bf77330d0ee6b52e1ed19dc90e0a651278e1d088e54570b2e3ffa2b297e7e3dc0be793541e218eb728bd492330e7141dec9804377c5e9b183236ffda557f34605b045cea0ff67ff5c57a77eea1bae93774b97e5763c2e50962bfc5aef3527bc01e9c71ad044169617f62e24b374602455232b67ff58be0b0bf23777648468fc2c0e65b85e120b33aac18436e0cc8d70640c2ec43282e671dd6106af9063320188a5e8cf696d7b0b2ed6e628845894fc9469453863bd0f575f02ea9938173be59c69c41e6689986114ca2c9f5cf41ec0fbf3ce11d0393c4c55d7ecaf31232d6cc4e592110ce23fabfa8228346262dfeafb58270ecc1ced69c024c1073ac10efc322d0f246471615da9d5205fdcb2698943f4fab140f40b0f97312108877553bdd6d662c3f60103aa20f24da4397f5afb17ed3dde7c5e1439a24d067e4b6a8afd9b6209b42847290f4831ceed897a60681e7c7ce35c97b73dbb6847e736b13fa59f44b4e47def27561dc693bdff6fbfa95917754cc7e59b3ab5984f8d2824e970c9bf3fa8056259a2f76f66eb44874536cbca3b3df521e4a5958c3ec23a8df048342977ba4b76e30536610decf7c623dbdc2de86a0c96dfcf2308ea70f0ded4b0a276327206bd3a8c1175ecb511930a916c06fd73a89183a125a8d692b0b860291cd445efe697b980c75985b9d7b7ce2d559bbd176a96714e8fc6ac416f2cec4f68aca3a141f97e540b6e9f65ea47c4049274644dc4271ba946bbcd0f6ead1d48c55f757069d26a7632f461babee69b8fea57a6b6d9322a38c63bd347ca8002dbfac5a5088dd5c5acff20aa5fe742115010c58f8f2e65e609088cd712b6582d30bfcdd9f05f7fd8d09163584557a7bf318b20b1211d81a9c6f051f34d04c71d46d1452934370b948e46d94658954f1676291107a1cd73a1b545f5010c2e5c81909f977a0317a33b5de0570495c868c7bac4079a89382e0bf8a8250dabc514973cd778e9193bcf538f9c63acdfa9eb535735f095b45ef6af2a1e890aa7a13e2061dffe808e77e10e5f0ed982f8bae44574f4abaa46aa12c1f9ebdbea3ed178e2ba8e6b8bec86f9b98ab37236d2416797eaa5d8c585d797f07cf542aac8b54d75db8448177c533fcb82267e74d23a39341918f74545e899e5a887be07f95fc2971b953a32bf3559e3618c47f28f971eaf73f491912dbc43432065f99a06b3feb0235cfebbcadb4af9389078d07c30b2e4db4a33af618d08dc6e692680f6c2c67ed5299030042cba86b44f8c075ee62493ea9af8102f6cd739cb440cbe0f6bc9dc9059098460075e4be189cff850fbbd7d742751093c13eecdbb138bb82a6691903adde544056551e8af3fec57c68750a557ba9ef2d12344235292e3379e41e1e79651d3075a4c689906d50ff2fe43cfba24391dcd32cc14409ad47f59ab9bcd1d412876e737f79277b7971ae64a4cbc2086f782fd8ca95858416244352c8597f5ae5cd7aad8cadeb7a675a06ad97f0ba818230d836395fb7fdb12cfa437c4ad77b6653cbeaf38a72a6ed8056e65a8bb12998afa6046e278c41a3c027e0c1f733f55ca7fd65a7594a7dcf70f7bd4be91519092a69c5d06705a00c97ef20079bdf01731cd1eee6536df0f5a15e6946bee625eaa0e12f7b9b36af88a7d1c5411708fad0315d7f061bc2e9dc11be4737ff109c86ca17793e65d9ccc6515ca8b40fa5e2a25b853a4144b57ec44748df74fab1eadc7aa6c843dc4a057b73c87e749fb5b2a9913950ac4d8794e8a8958cac8d3e503baaedd6da679457b9fab7c9e31b76ef72083b9614e5abef9537d7e242fa5881ad1b204a60666d55f62fbd2a94788d3bf7b7fcdcaddfd0594869a58b0b383c528a6ad302ce0f68dfaadcc73f1c761b4884c39070e16ddb39f76a7b28b94d6541eaf7d6c819fee3e41cd70416070cf11d1e0f303b792c08fe5050c9b36bb6003a422c224206efc6e57c7f00adeba0491b5be772776e56235362935311ce021aeea6240eba62be42fc1ade9a596e277aec8829931ac22f6d8cbbb80dcf1ab6ab2f65255f6790847153567b57edd36647f1ab746fd9b7c3441d1d501d0f1ad90a7219d15b8072e79efb320cf18c71d75ab5410a9d52332b57c1ca7dd18b910ccca90fcef76d5cd2735c8485dd80efe1721e817958cecaf59fa</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-default">
-      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-default">请点击这里输入密码</span>
-      </label>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
-      <categories>
-        <category>其它</category>
-      </categories>
-      <tags>
-        <tag>个人规划</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Sublime</title>
-    <url>/2025/05/11/Sublime/</url>
-    <content><![CDATA[<h1 id="snippet效率神器">Snippet效率神器</h1>
-<p>Sublime的这个功能真的是强！强！强！能省不少时间。比如我就不太熟悉html的语法，但是写博客总得插入一些图片，而要想把图片排版好就必须得写html，有了snippet，这简直就不是事儿。snippet字如其义，就是插入一个小片段，比如说我有两张图需要并排，我就可以设置如下的snippet，通过输入<code>insert images</code>再按tab键的方式快速插入对应的html代码，完成排版工作。其中<code>${1:}</code>这样的表达是占位符，前面的数字是跳转顺序，当你填完一处之后按tab键就可以跳转到下一处。</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>snippet</span><span class="token punctuation">&gt;</span></span>
-	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>content</span><span class="token punctuation">&gt;</span></span><span class="token cdata">&lt;![CDATA[
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;center&gt;
-				&lt;img src=${1:src}/&gt;
-				Fig1. ${2:Title}
-			&lt;/center&gt;
-		&lt;/td&gt;
-		&lt;td&gt;
-			&lt;center&gt;
-				&lt;img src=${3:src}/&gt;
-				Fig2. ${4:Title}
-			&lt;/center&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-]]&gt;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>content</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tabTrigger</span><span class="token punctuation">&gt;</span></span>insert images<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tabTrigger</span><span class="token punctuation">&gt;</span></span>
-	<span class="token comment">&lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</span>
-	<span class="token comment">&lt;!-- &lt;tabTrigger&gt;hello&lt;/tabTrigger&gt; --&gt;</span>
-	<span class="token comment">&lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</span>
-	<span class="token comment">&lt;!-- &lt;scope&gt;source.python&lt;/scope&gt; --&gt;</span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>snippet</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="常用快捷键">常用快捷键</h1>
-<table>
-<colgroup>
-<col style="width: 21%">
-<col style="width: 39%">
-<col style="width: 39%">
-</colgroup>
-<thead>
-<tr>
-<th>分类</th>
-<th>功能</th>
-<th>快捷键</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>通用操作</td>
-<td>打开命令面板</td>
-<td><code>Ctrl + Shift + P</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>新建python文件</td>
-<td><code>Ctrl + Alt + Shift + P</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>新建文件</td>
-<td><code>Ctrl + N</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>保存文件</td>
-<td><code>Ctrl + S</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>另存为</td>
-<td><code>Ctrl + Shift + S</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>打开文件</td>
-<td><code>Ctrl + O</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>切换项目</td>
-<td><code>Alt + shift + P</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>关闭当前标签页</td>
-<td><code>Ctrl + W</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>关闭所有标签页</td>
-<td><code>Ctrl + Shift + W</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>切换全屏模式</td>
-<td><code>Fn + F11</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>切换侧边栏显示/隐藏</td>
-<td><code>Ctrl + K + B</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>build当前文件（运行）</td>
-<td><code>Ctrl + B</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>显示build结果</td>
-<td><code>Shift + Esc</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>隐藏build结果</td>
-<td><code>Esc</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>快速跳转文件</td>
-<td><code>Ctrl + P</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>跳转到指定行号</td>
-<td><code>Ctrl + G</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>跳转到符号（函数/类）</td>
-<td><code>Ctrl + R</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>返回上一个光标位置</td>
-<td><code>Ctrl + -</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>前进到下一个光标位置</td>
-<td><code>Ctrl + Shift + -</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>跳转到匹配括号</td>
-<td><code>Ctrl + M</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>跳转到行首行尾</td>
-<td><code>Fn + Home</code> / <code>Fn + End</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>复制当前行</td>
-<td><code>Ctrl + Shift + D</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>删除当前行</td>
-<td><code>Ctrl + Shift + K</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>合并多行</td>
-<td><code>Ctrl + Shift + J</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>行缩进</td>
-<td><code>Ctrl + ]</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>行取消缩进</td>
-<td><code>Ctrl + [</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>注释/取消注释</td>
-<td><code>Ctrl + /</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>批量重命名所选内容</td>
-<td><code>Ctrl + D</code>（多次按）</td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>撤销操作</td>
-<td><code>Ctrl + Z</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>粘贴并自动缩进</td>
-<td><code>Ctrl + Shift + V</code></td>
-</tr>
-<tr>
-<td>选择与多光标</td>
-<td>扩展选区（词→行→块）</td>
-<td><code>Ctrl + D</code> → <code>Ctrl + L</code> → <code>Ctrl + A</code></td>
-</tr>
-<tr>
-<td>选择与多光标</td>
-<td>竖向多光标选择</td>
-<td><code>Ctrl + Alt + ↑/↓</code></td>
-</tr>
-<tr>
-<td>搜索与替换</td>
-<td>查找</td>
-<td><code>Ctrl + F</code></td>
-</tr>
-<tr>
-<td>搜索与替换</td>
-<td>替换</td>
-<td><code>Ctrl + H</code></td>
-</tr>
-<tr>
-<td>搜索与替换</td>
-<td>全局搜索（多文件）</td>
-<td><code>Ctrl + Shift + F</code></td>
-</tr>
-<tr>
-<td>窗口与标签页</td>
-<td>切换标签页</td>
-<td><code>Ctrl + Tab</code></td>
-</tr>
-<tr>
-<td>自定义快捷键</td>
-<td>终止build</td>
-<td><code>Ctrl + Shift + C</code></td>
-</tr>
-<tr>
-<td>自定义快捷键</td>
-<td>进入交互式界面</td>
-<td><code>Ctrl + Alt + Shift + I</code></td>
-</tr>
-<tr>
-<td>自定义快捷键</td>
-<td>在交互式界面运行当前程序</td>
-<td><code>Ctrl + Alt + Shift + R</code></td>
-</tr>
-<tr>
-<td>自定义快捷键</td>
-<td>在交互式界面调试当前程序（需设置断点）</td>
-<td><code>Ctrl + Alt + Shift + D</code></td>
-</tr>
-</tbody>
-</table>
-<h1 id="sublime的project功能">Sublime的project功能</h1>
-<p>Sublime的这个功能也是蛮好用的，可以把一个文件夹另存为一个project，然后通过快捷键<code>alt+shift+p</code>就可以在这些project间实现快速切换。比如我平时就是写代码和写博客的需求，我就分别创建一个代码project和一个博客project。</p>
-<center>
-<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.webp" weight="50%" height="50%">
-Fig1. 创建项目
-</center>
-<h1 id="sublime-repl插件">Sublime REPL插件</h1>
-<p>SublimeREPL 是一个 Sublime Text 插件，允许用户在编辑器内直接运行交互式编程环境（REPL，Read-Eval-Print Loop）。还可以使用python自带的PDB（python debugger）调试代码。</p>
-<pre class="line-numbers language-none"><div class="caption"><span>设置sublime repl的快捷键</span></div><code class="language-none">[  // 进入交互式界面
-    {
-        "keys":["ctrl+alt+shift+i"],
-        "caption": "SublimeREPL: Python - IPython",
-        "command": "run_existing_window_command",
-        "args":
-            {
-                "id": "repl_python_ipython",
-                "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"
-            }
-    },
-    // 通过交互式界面运行当前程序
-    {
-        "keys":["ctrl+alt+shift+r"],
-        "caption": "SublimeREPL: Python - RUN current file",
-        "command": "run_existing_window_command",
-        "args":
-        {
-        "id": "repl_python_run",
-        "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"
-        }
-    },
-    // pdb是python debugger的缩写，在交互式界面调试当前程序
-    {
-    "keys": ["ctrl+alt+shift+d"],
-    "caption": "SublimeREPL: Python - PDB current file",
-    "command": "run_existing_window_command",
-    "args": {
-        "id": "repl_python_pdb",
-        "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"}
-    },
-]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-使用pdb调试代码的基本命令
-</p>
-<ul>
-<li>
-b：查看所有以及设置的断点。
-</li>
-<li>
-b linenume：在linenum行设置一个断点。
-</li>
-<li>
-cl linenum：删除linenum处的断点。
-</li>
-<li>
-condition linenum cond：当cond满足时linenum行的断点才启用。
-</li>
-<li>
-r：运行到下一处断点（不包括该断点对应行）。如果没有设置断点，就运行到最后一行（不包含最后一行）。
-</li>
-<li>
-unt linenum：运行到linenum行（不包含）或遇到断点。
-</li>
-<li>
-n：运行当前所在行，不进入函数内部。
-</li>
-<li>
-s：运行当前行，进入函数内部。
-</li>
-<li>
-j linenum：跳到linenum行，不执行。
-</li>
-<li>
-p x：查看变量x的取值。
-</li>
-</ul>
-</div>
-<h1 id="sublime的sublime-tmpl插件">Sublime的Sublime Tmpl插件</h1>
-<p>SublimeTmpl能新建html、css、javascript、php、python、ruby六种类型的文件模板，所有的文件模板都在插件目录的templates文件夹里，可以自定义编辑文件模板。</p>
-<center>
-<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/sublime/3.webp" weight="50%" height="50%">
-Fig2. sublime tmpl的模板文件
-</center>
-<h1 id="修改hosts屏蔽sublime的更新检查">修改hosts屏蔽sublime的更新检查</h1>
-<p>设置<code>"update_check":false</code>是不起作用的，在hosts文件中添加如下语句可以屏蔽更新检查，原理——127.0.0.1 是本地回环地址（指向本机）。将www.sublimetext.com解析到 127.0.0.1 后，当 Sublime Text 尝试访问官网（www.sublimetext.com）检测更新会被重定向到本机。由于本机无响应，这些请求会失败，软件无法完成更新检查。但是这么干会有一个负面作用，就是这台电脑没办法访问sublimetext的主页了。</p>
-<pre class="line-numbers language-none"><code class="language-none">127.0.0.1 www.sublimetext.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>Sublime</tag>
-        <tag>快捷键</tag>
       </tags>
   </entry>
 </search>
