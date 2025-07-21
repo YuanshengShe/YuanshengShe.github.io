@@ -1,3 +1,4 @@
+/*使用@font-face 规则定义字体*/
 @font-face{
     font-family: 'JetBrains Mono';
     font-display: swap;
@@ -8,6 +9,12 @@
     font-display: swap;
     src: url('../fonts/HarmonyOS_Sans_SC_Regular.ttf') format("truetype");
 }
+@font-face{
+    font-family: 'LXGWWenKai-Regular';
+    font-display: swap;
+    src: url('../fonts/LXGWWenKai-Regular.ttf') format("truetype");
+}
+/*将自定义字体应用到整个网页正文，按顺序尝试，如果一个字体不可用就用下一个*/
 body {
-    font-family: 'JetBrains Mono','HarmonyOS Sans SC';
+    font-family: 'LXGWWenKai-Regular','JetBrains Mono','HarmonyOS Sans SC';
 }
