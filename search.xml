@@ -895,6 +895,114 @@ Fig2. 两种写法深拷贝的差异
       </tags>
   </entry>
   <entry>
+    <title>Git工具</title>
+    <url>/2025/05/18/Git%E5%B7%A5%E5%85%B7/</url>
+    <content><![CDATA[<p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
+<h1 id="Git环境配置"><a href="#Git环境配置" class="headerlink" title="Git环境配置"></a>Git环境配置</h1><p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
+<center>
+        <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
+        Fig1. Git仓库的结构 
+</center>
+
+<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
+<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
+<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<blockquote>
+<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
+</blockquote>
+<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
+<span class="token function">git</span> pull origin master --allow-unrelated-histories
+<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info"><p class="admonition-title">需要注意的点
+</p><ul>
+<li>命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。</li>
+<li>不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master</li>
+<li>如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接</li>
+<li>master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去</li>
+</ul>
+</div>
+
+<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
+<ul>
+<li>untracked：一个新创建的文件，没有被add。</li>
+<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
+<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
+<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
+</ul>
+<center>
+        <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
+        Fig2. 文件各种状态的转换 
+</center>
+
+
+<h1 id="Git分支管理工作流"><a href="#Git分支管理工作流" class="headerlink" title="Git分支管理工作流"></a>Git分支管理工作流</h1><p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
+<center>
+        <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%">    
+
+        Fig3. 文件各种状态的转换 
+</center>
+
+<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
+<p>最后是多人协作的一般流程</p>
+<ol>
+<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
+<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
+<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
+<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
+</ol>
+<h1 id="常用bash命令和git命令"><a href="#常用bash命令和git命令" class="headerlink" title="常用bash命令和git命令"></a>常用bash命令和git命令</h1><ul>
+<li><code>D：</code>:切换到D磁盘。</li>
+<li><code>cd</code>：打印当前所在目录。</li>
+<li><code>cd d1\e1</code>：切换到当前磁盘下的d1\e1目录。</li>
+<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
+<li><code>dir</code>：列出当前目录下的所有文件。</li>
+<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
+<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
+<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
+<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
+<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
+<li><code>cls</code>: clear screen。</li>
+<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
+<li><code>git status</code>：查询git仓库当前状态。</li>
+<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
+<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
+<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
+<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
+<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
+<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
+<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
+<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
+<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
+<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
+<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
+<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
+<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
+<li><code>git branch</code>：列举处所有分支。</li>
+<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
+<li><code>git branch 分支名</code>：创建分支。</li>
+<li><code>git branch -d 分支名</code>：删除分支。</li>
+<li><code>git switch 分支名</code>：切换到指定分支。</li>
+<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
+<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
+<li><code>git log --graph</code>：git 仓库历史变化图。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo相关基础和配置</title>
     <url>/2025/05/11/Hexo%E7%9B%B8%E5%85%B3%E5%9F%BA%E7%A1%80%E5%92%8C%E9%85%8D%E7%BD%AE/</url>
     <content><![CDATA[<h1 id="Hexo的基本命令"><a href="#Hexo的基本命令" class="headerlink" title="Hexo的基本命令"></a>Hexo的基本命令</h1><ul>
@@ -1065,114 +1173,6 @@ $$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span><
       </categories>
       <tags>
         <tag>Hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git工具</title>
-    <url>/2025/05/18/Git%E5%B7%A5%E5%85%B7/</url>
-    <content><![CDATA[<p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
-<h1 id="Git环境配置"><a href="#Git环境配置" class="headerlink" title="Git环境配置"></a>Git环境配置</h1><p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
-<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
-<center>
-        <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
-        Fig1. Git仓库的结构 
-</center>
-
-<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
-<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
-<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<blockquote>
-<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
-</blockquote>
-<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
-<span class="token function">git</span> pull origin master --allow-unrelated-histories
-<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info"><p class="admonition-title">需要注意的点
-</p><ul>
-<li>命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。</li>
-<li>不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master</li>
-<li>如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接</li>
-<li>master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去</li>
-</ul>
-</div>
-
-<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
-<ul>
-<li>untracked：一个新创建的文件，没有被add。</li>
-<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
-<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
-<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
-</ul>
-<center>
-        <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
-        Fig2. 文件各种状态的转换 
-</center>
-
-
-<h1 id="Git分支管理工作流"><a href="#Git分支管理工作流" class="headerlink" title="Git分支管理工作流"></a>Git分支管理工作流</h1><p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
-<center>
-        <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%">    
-
-        Fig3. 文件各种状态的转换 
-</center>
-
-<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
-<p>最后是多人协作的一般流程</p>
-<ol>
-<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
-<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
-<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
-<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
-</ol>
-<h1 id="常用bash命令和git命令"><a href="#常用bash命令和git命令" class="headerlink" title="常用bash命令和git命令"></a>常用bash命令和git命令</h1><ul>
-<li><code>D：</code>:切换到D磁盘。</li>
-<li><code>cd</code>：打印当前所在目录。</li>
-<li><code>cd d1\e1</code>：切换到当前磁盘下的d1\e1目录。</li>
-<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
-<li><code>dir</code>：列出当前目录下的所有文件。</li>
-<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
-<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
-<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
-<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
-<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
-<li><code>cls</code>: clear screen。</li>
-<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
-<li><code>git status</code>：查询git仓库当前状态。</li>
-<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
-<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
-<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
-<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
-<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
-<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
-<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
-<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
-<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
-<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
-<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
-<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
-<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
-<li><code>git branch</code>：列举处所有分支。</li>
-<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
-<li><code>git branch 分支名</code>：创建分支。</li>
-<li><code>git branch -d 分支名</code>：删除分支。</li>
-<li><code>git switch 分支名</code>：切换到指定分支。</li>
-<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
-<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
-<li><code>git log --graph</code>：git 仓库历史变化图。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
