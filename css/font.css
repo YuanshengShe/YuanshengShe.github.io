@@ -2,17 +2,15 @@
 @font-face{
     font-family: 'JetBrains Mono';
     font-display: swap;
-    src: url(''https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/refs/heads/main/fonts/JetBrainsMono-Regular.ttf') format("truetype");
+    src: url('../fonts/JetBrainsMono-Regular.ttf') format("truetype");
 }
 @font-face{
     font-family: 'HarmonyOS Sans SC';
     font-display: swap;
-    src: url('https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/refs/heads/main/fonts/HarmonyOS_Sans_SC_Regular.ttf') format("truetype");
+    src: url('../fonts/HarmonyOS_Sans_SC_Regular.ttf') format("truetype");
 }
-@font-face{
-    font-family: 'LXGWWenKai-Regular';
-    font-display: swap;
-    src: url(''https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/refs/heads/main/fonts/LXGWWenKai-Regular.ttf') format("truetype");
+body {
+    font-family: 'JetBrains Mono','HarmonyOS Sans SC';
 }
 /*将自定义字体应用到整个网页正文，按顺序尝试，如果一个字体不可用就用下一个*/
 body {
