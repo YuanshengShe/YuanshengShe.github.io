@@ -16,5 +16,5 @@
 }
 /*将自定义字体应用到整个网页正文，按顺序尝试，如果一个字体不可用就用下一个*/
 body {
-    font-family: 'LXGWWenKai-Regular','JetBrains Mono','HarmonyOS Sans SC';
+    font-family: 'HarmonyOS Sans SC';
 }
