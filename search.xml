@@ -1889,8 +1889,8 @@ Tk类的rowconfigure和columnconfigure方法
 <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Gurobi速查手册/1.png" weight="50%" height="50%">
 </center>
 <ol type="1">
-<li><code>Parameters</code>：参数用于控制求解器的行为，相关参数参考： https://docs.gurobi.com/projects/optimizer/en/current/concepts/parameters/groups.html</li>
-<li><code>Attributes</code>：属性是查询和修改相关对象特征的机制，相关属性参考：https://docs.gurobi.com/projects/optimizer/en/current/concepts/attributes/types.html</li>
+<li><code>Parameters</code>：参数用于控制求解器的行为，<a href="https://docs.gurobi.com/projects/optimizer/en/current/concepts/parameters/groups.html">相关参数参考</a>。</li>
+<li><code>Attributes</code>：属性是查询和修改相关对象特征的机制，<a href="https://docs.gurobi.com/projects/optimizer/en/current/concepts/attributes/types.html">相关属性参考</a>。</li>
 <li><code>Environment</code>：环境是Model的容器，gurobi的python接口会自动创建环境。设置环境的Parameters会让环境中的每个Model都默认这些Parameters，也可以单独为每个模型设置Parameters。</li>
 </ol>
 <h1 id="使用gurobi建模的一般步骤">使用Gurobi建模的一般步骤</h1>
