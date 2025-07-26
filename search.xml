@@ -1954,14 +1954,9 @@ model<span class="token punctuation">.</span>Params<span class="token punctuatio
 	model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>gp<span class="token punctuation">.</span>quicksum<span class="token punctuation">(</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token keyword">for</span> j <span class="token keyword">in</span> J<span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">5</span><span class="token punctuation">)</span>
 <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">:</span>
 	model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token string">"*"</span><span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">5</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-更简便的写法
-</p>
-<p>
-创建约束条件的时候实际上可以使用一种更加简单的写法，及在addConstrs方法内部写生成器推导式。上述的约束条件也可以写成：
-</p>
-</div>
+<p>创建约束条件的时候实际上可以使用一种更加简单的写法，及在addConstrs方法内部写生成器推导式。上述的约束条件也可以写成：</p>
+<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>另一种简便写法</span></div><code class="language-python">model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>gp<span class="token punctuation">.</span>quicksum<span class="token punctuation">(</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token keyword">for</span> I <span class="token keyword">in</span> J<span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">5</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">)</span>
+model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token string">"*"</span><span class="token punctuation">)</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h2 id="利用grb减少不必要的记忆">利用GRB减少不必要的记忆</h2>
 <p>GRB类中定义了Gurobi中常用的一些常量，例如我想将求解策略参数设置为均衡模式，我当然可以写model.Params.MIPFocus = 0，但是0这个数字并没什么字面意义，时间一长你可能就忘了到底得把MIPFocus设置成几才是均衡模式了。使用GRB类中定义的常量你可以写成model.Params.MIPFocus=MIPFOCUS_BALANCED。</p>
 <pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>GRB类中定义的常量</span></div><code class="language-plain"># Status codes
@@ -2803,6 +2798,21 @@ Fig11. Gurobi求解MIP的算法框架
       </tags>
   </entry>
   <entry>
+    <title>海大的四季</title>
+    <url>/2025/05/05/%E6%B5%B7%E5%A4%A7%E7%9A%84%E5%9B%9B%E5%AD%A3/</url>
+    <content><![CDATA[<div class="gallery-container" data-type="data" data-button="" data-limit="10" data-first="10">
+    <div class="gallery-items">[{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg","alt":"","title":""},{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大2.jpg","alt":"","title":""},{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大3.jpg","alt":"","title":""},{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大4.jpg","alt":"","title":""},{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大5.jpg","alt":"","title":""},{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大6.jpg","alt":"","title":""}]</div>
+  </div>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>大连海事大学</tag>
+        <tag>景象照</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>最短路算法学习笔记</title>
     <url>/2025/07/07/%E6%9C%80%E7%9F%AD%E8%B7%AF%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<div class="admonition info">
@@ -3189,21 +3199,6 @@ Fig2. A*的搜索过程
       </categories>
       <tags>
         <tag>最短路算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>海大的四季</title>
-    <url>/2025/05/05/%E6%B5%B7%E5%A4%A7%E7%9A%84%E5%9B%9B%E5%AD%A3/</url>
-    <content><![CDATA[<div class="gallery-container" data-type="data" data-button="" data-limit="10" data-first="10">
-    <div class="gallery-items">[{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg","alt":"","title":""},{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大2.jpg","alt":"","title":""},{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大3.jpg","alt":"","title":""},{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大4.jpg","alt":"","title":""},{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大5.jpg","alt":"","title":""},{"url":"https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大6.jpg","alt":"","title":""}]</div>
-  </div>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
-      <tags>
-        <tag>大连海事大学</tag>
-        <tag>景象照</tag>
       </tags>
   </entry>
   <entry>
