@@ -1988,6 +1988,569 @@ Tk类的rowconfigure和columnconfigure方法
       </tags>
   </entry>
   <entry>
+    <title>gurobi速查手册</title>
+    <url>/2025/07/26/gurobi%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/</url>
+    <content><![CDATA[<h1 id="gurobi中一些基本的概念">Gurobi中一些基本的概念</h1>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Gurobi速查手册/1.png" weight="50%" height="50%">
+</center>
+<ol type="1">
+<li><code>Parameters</code>：参数用于控制求解器的行为，<a href="https://docs.gurobi.com/projects/optimizer/en/current/concepts/parameters/groups.html">相关参数参考</a>。</li>
+<li><code>Attributes</code>：属性是查询和修改相关对象特征的机制，<a href="https://docs.gurobi.com/projects/optimizer/en/current/concepts/attributes/types.html">相关属性参考</a>。</li>
+<li><code>Environment</code>：环境是Model的容器，gurobi的python接口会自动创建环境。设置环境的Parameters会让环境中的每个Model都默认这些Parameters，也可以单独为每个模型设置Parameters。</li>
+</ol>
+<h1 id="使用gurobi建模的一般步骤">使用Gurobi建模的一般步骤</h1>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Gurobi速查手册/2.png" weight="50%" height="50%">
+</center>
+<p>使用Gurobi求解优化模型比较有条理的步骤如下：</p>
+<ol type="1">
+<li>先建模，建模可按以下步骤一步一步分析，避免脑袋绕晕
+<ol type="1">
+<li>定义模型中要使用的集合</li>
+<li>定义模型中要使用的参数</li>
+<li>定义模型中要使用的决策变量</li>
+<li>定义模型的目标函数</li>
+<li>分析模型应该包含的所有约束条件</li>
+</ol></li>
+<li>然后使用Gurobi求解，具体又可按以下步骤进行
+<ol type="1">
+<li>使用list或tuplelist对象保存集合（附：集合在模型中一般用作索引）</li>
+<li>使用dict或tupledict对象保存参数</li>
+<li>创建模型对象
+<ol type="1">
+<li>添加变量</li>
+<li>设置目标函数</li>
+<li>添加约束条件</li>
+<li>进行优化</li>
+</ol></li>
+</ol></li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">
+tuplelist和tupledict数据结构与list和dict的区别是什么？
+</p>
+<p>
+前者是gurobi的内置数据结构，有更加强大的索引功能。
+</p>
+</div>
+<h1 id="操作速查">操作速查</h1>
+<h2 id="获取或修改模型的参数">获取或修改模型的参数</h2>
+<p>直接用Model对象的Params属性就可以实现gurobi中相关<a href="https://docs.gurobi.com/projects/optimizer/en/current/concepts/parameters/groups.html">参数</a>的获取和修改。</p>
+<ul>
+<li>Termination parameters which set the stopping conditions for algorithms;</li>
+<li>Tolerance parameters which control solution quality requirements;</li>
+<li>Logging and I/O parameters which control logging behavior as well as input and output files;</li>
+<li>Algorithmic control parameters for Presolve, Simplex, Barrier, Scaling, MIP, MIP Cuts, and Numerics;</li>
+<li>Tuning parameters which control parameter tuning strategies for grbtune and the tune API calls;</li>
+<li>Solution Pool parameters which control how the solver searches for and stores additional solutions other than the best available one;</li>
+<li>Multi-Objective parameters which control some aspects when working with multiple objectives;</li>
+<li>Parameters for configuring aspects of remote optimization and licensing: Parallel and Distributed Computing, Instant Cloud, Compute Server, Cluster Manager, Token Server, Web License Service; and</li>
+</ul>
+<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>通过Model对象的Params属性修改参数的示范</span></div><code class="language-python">model<span class="token punctuation">.</span>Params<span class="token punctuation">.</span>MIPFocus <span class="token operator">=</span> <span class="token number">0</span> <span class="token comment"># 求解策略参数的设置</span>
+model<span class="token punctuation">.</span>Params<span class="token punctuation">.</span>LogFile <span class="token operator">=</span> <span class="token string">'modelversion2.log'</span> <span class="token comment"># 求解日志存放位置</span>
+model<span class="token punctuation">.</span>Params<span class="token punctuation">.</span>MIPGap <span class="token operator">=</span> <span class="token number">0.7</span> <span class="token comment"># 要求找到最优解，*测试的时候直接设置称60%的gap，真正要收敛到0太困难了，收到60%左右基本上就是最优解，利用这个技巧方便后面做灵敏度分析*</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="获取或修改对象的属性">获取或修改对象的属性</h2>
+<p>获取对象<a href="https://docs.gurobi.com/projects/optimizer/en/current/concepts/attributes/types.html#secattributetypes">属性</a>的话就用Model对象的getAttr方法就好了，设置对象属性则可以使用setAttr方法。这两个方法都有attrname和objects参数，当只提供属性名的时候，查询或设置的就是Model对象对应属性的值，如果提供了objects（通常是tuplelist或tupledict）这两个方法就查询和设置的是这些objects的属性值。</p>
+<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>gurobi获取或删除对象属性的示范</span></div><code class="language-python">main_model<span class="token punctuation">.</span>setAttr<span class="token punctuation">(</span><span class="token string">'VType'</span><span class="token punctuation">,</span>main_model<span class="token punctuation">.</span>getVars<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>GRB<span class="token punctuation">.</span>INTEGER<span class="token punctuation">)</span> <span class="token comment"># 将main_model.getVars()获取到的所有变量的vtype属性设置为GRB.INTEGER。</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="使用quicksum函数和tupledict的sum方法完成求和操作">使用quicksum函数和tupledict的sum方法完成求和操作</h2>
+<p>quicksum一般的用法是里面写一个生成器推导式，得到所有要求和的项，与sum方法相比，quicksum函数更加灵活，可以实现变量与系数的加权求和。</p>
+<p><span class="math display"><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -3.041ex;" xmlns="http://www.w3.org/2000/svg" width="19.698ex" height="5.191ex" role="img" focusable="false" viewBox="0 -950 8706.7 2294.2"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="munder"><g data-mml-node="mo"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="TeXAtom" transform="translate(116.7,-1100) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g><g data-mml-node="mo" transform="translate(412,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path></g><g data-mml-node="mi" transform="translate(1079,0)"><path data-c="1D43D" d="M447 625Q447 637 354 637H329Q323 642 323 645T325 664Q329 677 335 683H352Q393 681 498 681Q541 681 568 681T605 682T619 682Q633 682 633 672Q633 670 630 658Q626 642 623 640T604 637Q552 637 545 623Q541 610 483 376Q420 128 419 127Q397 64 333 21T195 -22Q137 -22 97 8T57 88Q57 130 80 152T132 174Q177 174 182 130Q182 98 164 80T123 56Q115 54 115 53T122 44Q148 15 197 15Q235 15 271 47T324 130Q328 142 387 380T447 625Z"></path></g></g></g><g data-mml-node="msub" transform="translate(1610.7,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="TeXAtom" transform="translate(605,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(345,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g></g><g data-mml-node="mo" transform="translate(3078.7,0)"><path data-c="2264" d="M674 636Q682 636 688 630T694 615T687 601Q686 600 417 472L151 346L399 228Q687 92 691 87Q694 81 694 76Q694 58 676 56H670L382 192Q92 329 90 331Q83 336 83 348Q84 359 96 365Q104 369 382 500T665 634Q669 636 674 636ZM84 -118Q84 -108 99 -98H678Q694 -104 694 -118Q694 -130 679 -138H98Q84 -131 84 -118Z"></path></g><g data-mml-node="mn" transform="translate(4134.5,0)"><path data-c="35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path></g><g data-mml-node="mo" transform="translate(4634.5,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mstyle" transform="translate(4912.5,0)"><g data-mml-node="mspace"></g></g><g data-mml-node="mi" transform="translate(6079.2,0)"><path data-c="2200" d="M0 673Q0 684 7 689T20 694Q32 694 38 680T82 567L126 451H430L473 566Q483 593 494 622T512 668T519 685Q524 694 538 694Q556 692 556 674Q556 670 426 329T293 -15Q288 -22 278 -22T263 -15Q260 -11 131 328T0 673ZM414 410Q414 411 278 411T142 410L278 55L414 410Z"></path></g><g data-mml-node="mi" transform="translate(6635.2,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(7257.9,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path></g><g data-mml-node="mi" transform="translate(8202.7,0)"><path data-c="1D43C" d="M43 1Q26 1 26 10Q26 12 29 24Q34 43 39 45Q42 46 54 46H60Q120 46 136 53Q137 53 138 54Q143 56 149 77T198 273Q210 318 216 344Q286 624 286 626Q284 630 284 631Q274 637 213 637H193Q184 643 189 662Q193 677 195 680T209 683H213Q285 681 359 681Q481 681 487 683H497Q504 676 504 672T501 655T494 639Q491 637 471 637Q440 637 407 634Q393 631 388 623Q381 609 337 432Q326 385 315 341Q245 65 245 59Q245 52 255 50T307 46H339Q345 38 345 37T342 19Q338 6 332 0H316Q279 2 179 2Q143 2 113 2T65 2T43 1Z"></path></g></g></g></svg></mjx-container></span></p>
+<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>quicksum函数和sum方法的示例</span></div><code class="language-python"><span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">:</span>
+	model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>gp<span class="token punctuation">.</span>quicksum<span class="token punctuation">(</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token keyword">for</span> j <span class="token keyword">in</span> J<span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">5</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">:</span>
+	model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token string">"*"</span><span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">5</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>创建约束条件的时候实际上可以使用一种更加简单的写法，及在addConstrs方法内部写生成器推导式。上述的约束条件也可以写成：</p>
+<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>另一种简便写法</span></div><code class="language-python">model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>gp<span class="token punctuation">.</span>quicksum<span class="token punctuation">(</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token keyword">for</span> I <span class="token keyword">in</span> J<span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">5</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">)</span>
+model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token string">"*"</span><span class="token punctuation">)</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="利用grb减少不必要的记忆">利用GRB减少不必要的记忆</h2>
+<p>GRB类中定义了Gurobi中常用的一些常量，例如我想将求解策略参数设置为均衡模式，我当然可以写model.Params.MIPFocus = 0，但是0这个数字并没什么字面意义，时间一长你可能就忘了到底得把MIPFocus设置成几才是均衡模式了。使用GRB类中定义的常量你可以写成model.Params.MIPFocus=MIPFOCUS_BALANCED。</p>
+<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>GRB类中定义的常量</span></div><code class="language-plain"># Status codes
+
+LOADED          = 1
+OPTIMAL         = 2
+INFEASIBLE      = 3
+INF_OR_UNBD     = 4
+UNBOUNDED       = 5
+CUTOFF          = 6
+ITERATION_LIMIT = 7
+NODE_LIMIT      = 8
+TIME_LIMIT      = 9
+SOLUTION_LIMIT  = 10
+INTERRUPTED     = 11
+NUMERIC         = 12
+SUBOPTIMAL      = 13
+INPROGRESS      = 14
+USER_OBJ_LIMIT  = 15
+WORK_LIMIT      = 16
+MEM_LIMIT       = 17
+
+# Batch status codes
+
+BATCH_CREATED   = 1
+BATCH_SUBMITTED = 2
+BATCH_ABORTED   = 3
+BATCH_FAILED    = 4
+BATCH_COMPLETED = 5
+
+# Constraint senses
+
+LESS_EQUAL    = '&lt;'
+GREATER_EQUAL = '&gt;'
+EQUAL         = '='
+
+# Variable types
+
+CONTINUOUS = 'C'
+BINARY     = 'B'
+INTEGER    = 'I'
+SEMICONT   = 'S'
+SEMIINT    = 'N'
+
+# Objective sense
+
+MINIMIZE = 1
+MAXIMIZE = -1
+
+# SOS types
+
+SOS_TYPE1 = 1
+SOS_TYPE2 = 2
+
+# General constraint types
+
+GENCONSTR_MAX       = 0
+GENCONSTR_MIN       = 1
+GENCONSTR_ABS       = 2
+GENCONSTR_AND       = 3
+GENCONSTR_OR        = 4
+GENCONSTR_NORM      = 5
+GENCONSTR_NL        = 6
+GENCONSTR_INDICATOR = 7
+GENCONSTR_PWL       = 8
+GENCONSTR_POLY      = 9
+GENCONSTR_EXP       = 10
+GENCONSTR_EXPA      = 11
+GENCONSTR_LOG       = 12
+GENCONSTR_LOGA      = 13
+GENCONSTR_POW       = 14
+GENCONSTR_SIN       = 15
+GENCONSTR_COS       = 16
+GENCONSTR_TAN       = 17
+GENCONSTR_LOGISTIC  = 18
+
+# Operation codes
+OPCODE_CONSTANT     = 0
+OPCODE_VARIABLE     = 1
+OPCODE_PLUS         = 2
+OPCODE_MINUS        = 3
+OPCODE_MULTIPLY     = 4
+OPCODE_DIVIDE       = 5
+OPCODE_UMINUS       = 6
+OPCODE_SQUARE       = 7
+OPCODE_SQRT         = 8
+OPCODE_SIN          = 9
+OPCODE_COS          = 10
+OPCODE_TAN          = 11
+OPCODE_POW          = 12
+OPCODE_EXP          = 13
+OPCODE_LOG          = 14
+OPCODE_LOG2         = 15
+OPCODE_LOG10        = 16
+OPCODE_LOGISTIC     = 17
+
+# Basis status
+
+BASIC          = 0
+NONBASIC_LOWER = -1
+NONBASIC_UPPER = -2
+SUPERBASIC     = -3
+
+# Numeric constants
+
+INFINITY  = 1e100
+UNDEFINED = 1e101
+MAXINT    = 2000000000
+
+# Limits
+
+MAX_NAMELEN    = 255
+MAX_STRLEN     = 512
+MAX_TAGLEN     = 10240
+MAX_CONCURRENT = 64
+
+# Other constants
+
+DEFAULT_CS_PORT = 61000
+
+# Version number
+
+VERSION_MAJOR     = 12
+VERSION_MINOR     = 0
+VERSION_TECHNICAL = 0
+
+# Errors
+
+ERROR_OUT_OF_MEMORY            = 10001
+ERROR_NULL_ARGUMENT            = 10002
+ERROR_INVALID_ARGUMENT         = 10003
+ERROR_UNKNOWN_ATTRIBUTE        = 10004
+ERROR_DATA_NOT_AVAILABLE       = 10005
+ERROR_INDEX_OUT_OF_RANGE       = 10006
+ERROR_UNKNOWN_PARAMETER        = 10007
+ERROR_VALUE_OUT_OF_RANGE       = 10008
+ERROR_NO_LICENSE               = 10009
+ERROR_SIZE_LIMIT_EXCEEDED      = 10010
+ERROR_CALLBACK                 = 10011
+ERROR_FILE_READ                = 10012
+ERROR_FILE_WRITE               = 10013
+ERROR_NUMERIC                  = 10014
+ERROR_IIS_NOT_INFEASIBLE       = 10015
+ERROR_NOT_FOR_MIP              = 10016
+ERROR_OPTIMIZATION_IN_PROGRESS = 10017
+ERROR_DUPLICATES               = 10018
+ERROR_NODEFILE                 = 10019
+ERROR_Q_NOT_PSD                = 10020
+ERROR_QCP_EQUALITY_CONSTRAINT  = 10021
+ERROR_NETWORK                  = 10022
+ERROR_JOB_REJECTED             = 10023
+ERROR_NOT_SUPPORTED            = 10024
+ERROR_EXCEED_2B_NONZEROS       = 10025
+ERROR_INVALID_PIECEWISE_OBJ    = 10026
+ERROR_UPDATEMODE_CHANGE        = 10027
+ERROR_CLOUD                    = 10028
+ERROR_MODEL_MODIFICATION       = 10029
+ERROR_CSWORKER                 = 10030
+ERROR_TUNE_MODEL_TYPES         = 10031
+ERROR_SECURITY                 = 10032
+ERROR_NOT_IN_MODEL             = 20001
+ERROR_FAILED_TO_CREATE_MODEL   = 20002
+ERROR_INTERNAL                 = 20003
+
+# Cuts parameter values
+
+CUTS_AUTO           = -1
+CUTS_OFF            = 0
+CUTS_CONSERVATIVE   = 1
+CUTS_AGGRESSIVE     = 2
+CUTS_VERYAGGRESSIVE = 3
+
+# Presolve parameter values
+
+PRESOLVE_AUTO         = -1
+PRESOLVE_OFF          = 0
+PRESOLVE_CONSERVATIVE = 1
+PRESOLVE_AGGRESSIVE   = 2
+
+# Method parameter values
+
+METHOD_NONE                             = -1
+METHOD_AUTO                             = -1
+METHOD_PRIMAL                           = 0
+METHOD_DUAL                             = 1
+METHOD_BARRIER                          = 2
+METHOD_CONCURRENT                       = 3
+METHOD_DETERMINISTIC_CONCURRENT         = 4
+METHOD_DETERMINISTIC_CONCURRENT_SIMPLEX = 5
+
+# BarHomogeneous parameter values
+
+BARHOMOGENEOUS_AUTO = -1
+BARHOMOGENEOUS_OFF  = 0
+BARHOMOGENEOUS_ON   = 1
+
+# BarOrder parameter values
+
+BARORDER_AUTOMATIC        = -1
+BARORDER_AMD              = 0
+BARORDER_NESTEDDISSECTION = 1
+
+# MIPFocus parameter values
+
+MIPFOCUS_BALANCED    = 0
+MIPFOCUS_FEASIBILITY = 1
+MIPFOCUS_OPTIMALITY  = 2
+MIPFOCUS_BESTBOUND   = 3
+
+# SimplexPricing parameter values
+
+SIMPLEXPRICING_AUTO           = -1
+SIMPLEXPRICING_PARTIAL        = 0
+SIMPLEXPRICING_STEEPEST_EDGE  = 1
+SIMPLEXPRICING_DEVEX          = 2
+SIMPLEXPRICING_STEEPEST_QUICK = 3
+
+# VarBranch parameter values
+
+VARBRANCH_AUTO           = -1
+VARBRANCH_PSEUDO_REDUCED = 0
+VARBRANCH_PSEUDO_SHADOW  = 1
+VARBRANCH_MAX_INFEAS     = 2
+VARBRANCH_STRONG         = 3
+
+# Partition parameter values
+
+PARTITION_EARLY     = 16
+PARTITION_ROOTSTART = 8
+PARTITION_ROOTEND   = 4
+PARTITION_NODES     = 2
+PARTITION_CLEANUP   = 1
+
+# Callback phase values
+
+PHASE_MIP_NOREL   = 0
+PHASE_MIP_SEARCH  = 1
+PHASE_MIP_IMPROVE = 2
+
+# FeasRelax method parameter values
+
+FEASRELAX_LINEAR      = 0
+FEASRELAX_QUADRATIC   = 1
+FEASRELAX_CARDINALITY = 2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="通过回调函数插入惰性约束">通过回调函数插入惰性约束</h2>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/usr/bin/env python</span>
+<span class="token comment"># -*- coding: utf-8 -*-</span>
+<span class="token comment"># @Date    : 2025-05-04 10:26:02</span>
+<span class="token comment"># @Author  : syuansheng (Dalian Maritime University)</span>
+<span class="token keyword">from</span> math <span class="token keyword">import</span> sqrt
+<span class="token keyword">from</span> typing <span class="token keyword">import</span> Dict<span class="token punctuation">,</span>List
+<span class="token keyword">from</span> numpy <span class="token keyword">import</span> ndarray<span class="token punctuation">,</span>zeros
+<span class="token keyword">from</span> gurobipy <span class="token keyword">import</span> Model<span class="token punctuation">,</span>GRB<span class="token punctuation">,</span>GurobiError<span class="token punctuation">,</span>quicksum
+
+<span class="token keyword">def</span> <span class="token function">findAllSubroutes</span><span class="token punctuation">(</span>solution<span class="token punctuation">:</span>ndarray<span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span>Dict<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">,</span>List<span class="token punctuation">[</span>List<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+	route_dict <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token comment"># subtours of each car</span>
+	<span class="token keyword">for</span> k <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>solution<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+		subtour_kcars <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment"># subtours of car k</span>
+		<span class="token comment"># check subtours of car k </span>
+		<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>solution<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+			flag <span class="token operator">=</span> <span class="token boolean">False</span> 
+			subtour_kcars_start_i <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment"># subtours of car k that starts from point i </span>
+			<span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>solution<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+				<span class="token comment"># car k moved from point i to j</span>
+				<span class="token keyword">if</span> solution<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>k<span class="token punctuation">]</span> <span class="token operator">&gt;</span> <span class="token number">0.9</span><span class="token punctuation">:</span>
+					subtour_kcars_start_i<span class="token punctuation">.</span>append<span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+					subtour_kcars_start_i<span class="token punctuation">.</span>append<span class="token punctuation">(</span>j<span class="token punctuation">)</span>
+					current_point <span class="token operator">=</span> j 
+					<span class="token comment"># cheack whether i-&gt;j formed a subtour</span>
+					<span class="token keyword">while</span> <span class="token keyword">not</span> flag<span class="token punctuation">:</span>
+						<span class="token keyword">for</span> next_point <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>solution<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+							<span class="token keyword">if</span> solution<span class="token punctuation">[</span>current_point<span class="token punctuation">,</span>next_point<span class="token punctuation">,</span>k<span class="token punctuation">]</span> <span class="token operator">&gt;</span>  <span class="token number">0.9</span><span class="token punctuation">:</span>
+								subtour_kcars_start_i<span class="token punctuation">.</span>append<span class="token punctuation">(</span>next_point<span class="token punctuation">)</span>
+								current_point <span class="token operator">=</span> next_point
+							<span class="token comment"># we find a subtour start from ponstallint i</span>
+							<span class="token keyword">if</span> subtour_kcars_start_i<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">==</span> subtour_kcars_start_i<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+								flag <span class="token operator">=</span> <span class="token boolean">True</span>
+								subtour_kcars<span class="token punctuation">.</span>append<span class="token punctuation">(</span>subtour_kcars_start_i<span class="token punctuation">)</span>
+								<span class="token keyword">break</span>
+							<span class="token comment"># car k finally arrived point (solution.shape[2]-1) means i-&gt;j didn't form a subtour</span>
+							<span class="token keyword">if</span> current_point <span class="token operator">==</span> solution<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">:</span>
+								flag <span class="token operator">=</span> <span class="token boolean">True</span>
+								<span class="token keyword">break</span>
+				<span class="token keyword">else</span><span class="token punctuation">:</span>
+					<span class="token keyword">continue</span>
+		route_dict<span class="token punctuation">[</span>k<span class="token punctuation">]</span> <span class="token operator">=</span> subtour_kcars
+	<span class="token keyword">return</span> route_dict
+
+<span class="token keyword">class</span> <span class="token class-name">Data</span><span class="token punctuation">:</span>
+
+	<span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+		self<span class="token punctuation">.</span>o <span class="token operator">=</span> <span class="token number">0</span>  <span class="token comment"># index of the depot</span>
+		self<span class="token punctuation">.</span>d <span class="token operator">=</span> <span class="token number">16</span> <span class="token comment"># index of the depot(duplication)</span>
+		self<span class="token punctuation">.</span>C <span class="token operator">=</span> <span class="token punctuation">[</span>i <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token comment"># index of each customer</span>
+		self<span class="token punctuation">.</span>V <span class="token operator">=</span> <span class="token punctuation">[</span>self<span class="token punctuation">.</span>o<span class="token punctuation">]</span><span class="token operator">+</span>self<span class="token punctuation">.</span>C<span class="token operator">+</span><span class="token punctuation">[</span>self<span class="token punctuation">.</span>d<span class="token punctuation">]</span>
+		self<span class="token punctuation">.</span>K <span class="token operator">=</span> <span class="token punctuation">[</span>i <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token comment"># index of each car</span>
+		self<span class="token punctuation">.</span>A <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment"># all valid arc</span>
+		self<span class="token punctuation">.</span>Q <span class="token operator">=</span> <span class="token number">100</span> <span class="token comment"># capacity of each car</span>
+		self<span class="token punctuation">.</span>c <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>  <span class="token comment"># distance between i to j</span>
+		self<span class="token punctuation">.</span>q <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token comment"># demand of each customer</span>
+		self<span class="token punctuation">.</span>loc <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token comment"># cordinate of each point	</span>
+
+	<span class="token keyword">def</span> <span class="token function">getDataReady</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+		lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+		<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">r'./r101_CVRP.txt'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+			str_lst <span class="token operator">=</span> f<span class="token punctuation">.</span>readlines<span class="token punctuation">(</span><span class="token punctuation">)</span>
+			<span class="token keyword">for</span> line <span class="token keyword">in</span> str_lst<span class="token punctuation">:</span>
+				lst<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token builtin">list</span><span class="token punctuation">(</span><span class="token builtin">map</span><span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">,</span>line<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token keyword">for</span> i<span class="token punctuation">,</span>item <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>lst<span class="token punctuation">)</span><span class="token punctuation">:</span>
+			self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>item<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>item<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+			self<span class="token punctuation">.</span>q<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>
+		<span class="token keyword">for</span> i <span class="token keyword">in</span> self<span class="token punctuation">.</span>V<span class="token punctuation">:</span>
+			<span class="token keyword">for</span> j <span class="token keyword">in</span> self<span class="token punctuation">.</span>V<span class="token punctuation">:</span>
+				<span class="token comment"># exclude invalid arc</span>
+				<span class="token keyword">if</span> i <span class="token operator">==</span> self<span class="token punctuation">.</span>d <span class="token keyword">or</span> j <span class="token operator">==</span> self<span class="token punctuation">.</span>o <span class="token keyword">or</span> i <span class="token operator">==</span> j <span class="token keyword">or</span> <span class="token punctuation">(</span>i <span class="token operator">==</span> self<span class="token punctuation">.</span>o <span class="token keyword">and</span> j <span class="token operator">==</span> self<span class="token punctuation">.</span>d<span class="token punctuation">)</span><span class="token punctuation">:</span>
+					<span class="token keyword">continue</span>
+				<span class="token keyword">else</span><span class="token punctuation">:</span>
+					self<span class="token punctuation">.</span>A<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span>j<span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token keyword">for</span> i<span class="token punctuation">,</span>j <span class="token keyword">in</span> self<span class="token punctuation">.</span>A<span class="token punctuation">:</span>
+			<span class="token keyword">if</span> j <span class="token operator">==</span> self<span class="token punctuation">.</span>d<span class="token punctuation">:</span>
+				self<span class="token punctuation">.</span>c<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">round</span><span class="token punctuation">(</span>sqrt<span class="token punctuation">(</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">-</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>self<span class="token punctuation">.</span>o<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">**</span><span class="token number">2</span><span class="token operator">+</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>self<span class="token punctuation">.</span>o<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">**</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span>
+			<span class="token keyword">else</span><span class="token punctuation">:</span>
+				self<span class="token punctuation">.</span>c<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">round</span><span class="token punctuation">(</span>sqrt<span class="token punctuation">(</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">-</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">**</span><span class="token number">2</span><span class="token operator">+</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">**</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span>
+
+<span class="token keyword">class</span> <span class="token class-name">VRPModel</span><span class="token punctuation">:</span>
+
+	<span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>data<span class="token punctuation">)</span><span class="token punctuation">:</span>
+		self<span class="token punctuation">.</span>_model <span class="token operator">=</span> <span class="token boolean">None</span>
+		self<span class="token punctuation">.</span>_data <span class="token operator">=</span> data
+		self<span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+	<span class="token keyword">def</span> <span class="token function">buildModel</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+		self<span class="token punctuation">.</span>_model <span class="token operator">=</span> Model<span class="token punctuation">(</span>name<span class="token operator">=</span><span class="token string">'CVRP1_1'</span><span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>x <span class="token operator">=</span> self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addVars<span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>A<span class="token punctuation">,</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">,</span>vtype<span class="token operator">=</span>GRB<span class="token punctuation">.</span>BINARY<span class="token punctuation">,</span>name<span class="token operator">=</span><span class="token string">'x'</span><span class="token punctuation">)</span>
+		<span class="token comment"># set objective function</span>
+		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>setObjective<span class="token punctuation">(</span>
+			quicksum<span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>c<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>k<span class="token punctuation">]</span> <span class="token keyword">for</span> i<span class="token punctuation">,</span>j <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>A <span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">,</span>
+			sense<span class="token operator">=</span>GRB<span class="token punctuation">.</span>MINIMIZE
+			<span class="token punctuation">)</span>
+		<span class="token comment"># set constraints</span>
+		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
+			<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token string">'*'</span><span class="token punctuation">,</span><span class="token string">'*'</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">1</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>C<span class="token punctuation">)</span><span class="token punctuation">,</span>
+			name <span class="token operator">=</span> <span class="token string">'constraint1'</span>
+			<span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
+			<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>o<span class="token punctuation">,</span><span class="token string">'*'</span><span class="token punctuation">,</span>k<span class="token punctuation">)</span><span class="token operator">==</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token string">'*'</span><span class="token punctuation">,</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>d<span class="token punctuation">,</span>k<span class="token punctuation">)</span> <span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">,</span>
+			name <span class="token operator">=</span> <span class="token string">'constraint2'</span>
+			<span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
+			<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token string">'*'</span><span class="token punctuation">,</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>d<span class="token punctuation">,</span>k<span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">1</span> <span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">,</span>
+			name <span class="token operator">=</span> <span class="token string">'constraint3'</span>
+			<span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
+			<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token string">'*'</span><span class="token punctuation">,</span>k<span class="token punctuation">)</span><span class="token operator">==</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token string">'*'</span><span class="token punctuation">,</span>i<span class="token punctuation">,</span>k<span class="token punctuation">)</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>C <span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">,</span>
+			name <span class="token operator">=</span> <span class="token string">'constraint4'</span>
+			<span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
+			<span class="token punctuation">(</span>quicksum<span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>q<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>k<span class="token punctuation">]</span> <span class="token keyword">for</span> i<span class="token punctuation">,</span>j <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>A<span class="token punctuation">)</span><span class="token operator">&lt;=</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>Q <span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">,</span>
+			name <span class="token operator">=</span>  <span class="token string">'constraint5'</span>
+			<span class="token punctuation">)</span>
+
+	<span class="token keyword">def</span> <span class="token function">solveModel</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+		<span class="token keyword">try</span><span class="token punctuation">:</span>
+			self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>Params<span class="token punctuation">.</span>MIPGap <span class="token operator">=</span> <span class="token number">0</span> 
+			self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>Params<span class="token punctuation">.</span>lazyConstraints <span class="token operator">=</span> <span class="token number">1</span>
+			self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>optimize<span class="token punctuation">(</span>self<span class="token punctuation">.</span>generateDFJConstraint<span class="token punctuation">)</span>
+		<span class="token keyword">except</span> GurobiError <span class="token keyword">as</span> e<span class="token punctuation">:</span>
+			<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'erro number:{},erro string:{}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>errno<span class="token punctuation">,</span>e<span class="token punctuation">.</span>message<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+	<span class="token keyword">def</span> <span class="token function">generateDFJConstraint</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>model<span class="token punctuation">,</span>where<span class="token punctuation">)</span><span class="token punctuation">:</span>
+		<span class="token comment"># each time when gurobi find a feasible solution,we check whether we should add some DFJ constraints</span>
+		<span class="token keyword">if</span> where <span class="token operator">==</span>  GRB<span class="token punctuation">.</span>Callback<span class="token punctuation">.</span>MIPSOL<span class="token punctuation">:</span>
+			solution <span class="token operator">=</span> zeros<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>V<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>V<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># save the solution results in matrix format</span>
+			<span class="token keyword">for</span> key<span class="token punctuation">,</span>value <span class="token keyword">in</span> self<span class="token punctuation">.</span>x<span class="token punctuation">.</span>items<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+				idx1<span class="token punctuation">,</span>idx2<span class="token punctuation">,</span>idx3 <span class="token operator">=</span> key
+				solution<span class="token punctuation">[</span>idx1<span class="token punctuation">,</span>idx2<span class="token punctuation">,</span>idx3<span class="token punctuation">]</span> <span class="token operator">=</span> self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>cbGetSolution<span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+			route_dict <span class="token operator">=</span> findAllSubroutes<span class="token punctuation">(</span>solution<span class="token punctuation">)</span>
+			<span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">:</span>
+				<span class="token keyword">for</span> subtour_kcars_start_i <span class="token keyword">in</span> route_dict<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">:</span>
+					<span class="token comment"># Now we get the set S(subtour_kcars_start_i[:-1])</span>
+					self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>cbLazy<span class="token punctuation">(</span>
+						quicksum<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>k<span class="token punctuation">]</span> <span class="token keyword">for</span> i<span class="token punctuation">,</span>j <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>A <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token keyword">in</span> subtour_kcars_start_i<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">and</span> j <span class="token keyword">in</span> subtour_kcars_start_i<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+						<span class="token operator">&lt;=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>subtour_kcars_start_i<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token number">1</span>
+						<span class="token punctuation">)</span>
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+	data <span class="token operator">=</span> Data<span class="token punctuation">(</span><span class="token punctuation">)</span>
+	data<span class="token punctuation">.</span>getDataReady<span class="token punctuation">(</span><span class="token punctuation">)</span>
+	model <span class="token operator">=</span> VRPModel<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+	model<span class="token punctuation">.</span>buildModel<span class="token punctuation">(</span><span class="token punctuation">)</span>
+	model<span class="token punctuation">.</span>solveModel<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="gurobi实现列生成算法">Gurobi实现列生成算法</h2>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/usr/bin/env python</span>
+<span class="token comment"># -*- coding: utf-8 -*-</span>
+<span class="token comment"># @Date    : 2025-07-25 14:34:23</span>
+<span class="token comment"># @Author  : syuansheng (Dalian Maritime University)</span>
+
+<span class="token keyword">from</span> gurobipy <span class="token keyword">import</span> <span class="token operator">*</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Data</span><span class="token punctuation">:</span>
+	<span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+		self<span class="token punctuation">.</span>l <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">]</span> <span class="token comment"># 需求类型</span>
+		self<span class="token punctuation">.</span>L <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">,</span><span class="token number">14</span><span class="token punctuation">,</span><span class="token number">16</span><span class="token punctuation">]</span> <span class="token comment"># 可用原木的长度</span>
+		self<span class="token punctuation">.</span>c <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">]</span> <span class="token comment"># 各种长度原木的价格</span>
+
+<span class="token keyword">class</span> <span class="token class-name">CGModel</span><span class="token punctuation">:</span>
+	<span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+		self<span class="token punctuation">.</span>data <span class="token operator">=</span> Data<span class="token punctuation">(</span><span class="token punctuation">)</span>
+		<span class="token comment"># 初始化主模型</span>
+		y <span class="token operator">=</span> self<span class="token punctuation">.</span>initiate_main_model<span class="token punctuation">(</span><span class="token punctuation">)</span>
+		<span class="token comment"># 初始化所有子模型</span>
+		self<span class="token punctuation">.</span>initiate_sub_model<span class="token punctuation">(</span>y<span class="token punctuation">)</span>
+
+	<span class="token keyword">def</span> <span class="token function">initiate_main_model</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+		self<span class="token punctuation">.</span>main_model <span class="token operator">=</span> Model<span class="token punctuation">(</span><span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>x <span class="token operator">=</span> self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>addVars<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span>vtype<span class="token operator">=</span>GRB<span class="token punctuation">.</span>CONTINUOUS<span class="token punctuation">,</span>name<span class="token operator">=</span><span class="token string">'x'</span><span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>setObjective<span class="token punctuation">(</span>
+			<span class="token number">5</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">+</span><span class="token number">5</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">+</span><span class="token number">5</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+			sense <span class="token operator">=</span> GRB<span class="token punctuation">.</span>MINIMIZE
+			<span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span><span class="token number">2</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">&gt;=</span><span class="token number">30</span><span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">&gt;=</span><span class="token number">20</span><span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token operator">&gt;=</span><span class="token number">40</span><span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>optimize<span class="token punctuation">(</span><span class="token punctuation">)</span>
+		<span class="token comment"># 获取对偶变量的值</span>
+		y <span class="token operator">=</span> self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getAttr<span class="token punctuation">(</span><span class="token string">'Pi'</span><span class="token punctuation">,</span>self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getConstrs<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token keyword">return</span> y
+
+	<span class="token keyword">def</span> <span class="token function">initiate_sub_model</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+		self<span class="token punctuation">.</span>submodels <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+		<span class="token keyword">for</span> k <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>L<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+			<span class="token comment"># k子模型</span>
+			submodel <span class="token operator">=</span> Model<span class="token punctuation">(</span><span class="token punctuation">)</span>
+			p <span class="token operator">=</span> submodel<span class="token punctuation">.</span>addVars<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span>vtype<span class="token operator">=</span>GRB<span class="token punctuation">.</span>INTEGER<span class="token punctuation">,</span>name<span class="token operator">=</span><span class="token string">'p'</span><span class="token punctuation">)</span>
+			submodel<span class="token punctuation">.</span>setObjective<span class="token punctuation">(</span>
+				self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>c<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token operator">-</span>quicksum<span class="token punctuation">(</span>y<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">*</span>p<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+				sense<span class="token operator">=</span>GRB<span class="token punctuation">.</span>MINIMIZE
+				<span class="token punctuation">)</span>
+			submodel<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>quicksum<span class="token punctuation">(</span>p<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">*</span>self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>l<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&lt;=</span>self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>L<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">)</span>
+			self<span class="token punctuation">.</span>submodels<span class="token punctuation">.</span>append<span class="token punctuation">(</span>submodel<span class="token punctuation">)</span>
+
+	<span class="token keyword">def</span> <span class="token function">update</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+		<span class="token triple-quoted-string string">"""
+		不断更新主模型和子模型并求解，直到得到原模型的最优解
+		"""</span>
+		<span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+			best_ObjVal<span class="token punctuation">,</span>best_P<span class="token punctuation">,</span>submodel_idx <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token boolean">None</span><span class="token punctuation">,</span><span class="token number">0</span>
+			<span class="token comment"># 求解子模型</span>
+			<span class="token keyword">for</span> k<span class="token punctuation">,</span>submodel <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>submodels<span class="token punctuation">)</span><span class="token punctuation">:</span>
+				submodel<span class="token punctuation">.</span>optimize<span class="token punctuation">(</span><span class="token punctuation">)</span>
+				<span class="token keyword">if</span> submodel<span class="token punctuation">.</span>ObjVal <span class="token operator">&lt;</span> best_ObjVal<span class="token punctuation">:</span>
+					<span class="token comment"># 说明存在列加入主模型后使得主模型更好</span>
+					best_ObjVal <span class="token operator">=</span> submodel<span class="token punctuation">.</span>ObjVal <span class="token comment"># 子模型最优解目标函数值</span>
+					best_P <span class="token operator">=</span> submodel<span class="token punctuation">.</span>X <span class="token comment"># 子模型最优解</span>
+					submodel_idx <span class="token operator">=</span> k
+			<span class="token comment"># 退出</span>
+			<span class="token keyword">if</span> best_ObjVal <span class="token operator">&gt;=</span> <span class="token number">0</span> <span class="token punctuation">:</span>
+				<span class="token keyword">break</span>
+			<span class="token comment"># 将新的列添加到主模型中，求解主模型并更新子模型</span>
+			<span class="token keyword">else</span><span class="token punctuation">:</span>
+				col <span class="token operator">=</span> Column<span class="token punctuation">(</span>best_P<span class="token punctuation">,</span>self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getConstrs<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># 创建要加入到主模型的列</span>
+				self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>addVar<span class="token punctuation">(</span>obj<span class="token operator">=</span>self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>c<span class="token punctuation">[</span>submodel_idx<span class="token punctuation">]</span><span class="token punctuation">,</span>column<span class="token operator">=</span>col<span class="token punctuation">,</span>vtype<span class="token operator">=</span>GRB<span class="token punctuation">.</span>CONTINUOUS<span class="token punctuation">,</span>name<span class="token operator">=</span><span class="token string">'new_x'</span><span class="token punctuation">)</span> <span class="token comment"># 将新的列加入主模型</span>
+				self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>optimize<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 求解主模型</span>
+				self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'ttest.lp'</span><span class="token punctuation">)</span>
+				y <span class="token operator">=</span> self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getAttr<span class="token punctuation">(</span><span class="token string">'Pi'</span><span class="token punctuation">,</span>self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getConstrs<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># 新的对偶变量值</span>
+				<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'----------------------------'</span><span class="token punctuation">,</span>y<span class="token punctuation">,</span>best_P<span class="token punctuation">,</span>submodel_idx<span class="token punctuation">)</span>
+				self<span class="token punctuation">.</span>initiate_sub_model<span class="token punctuation">(</span>y<span class="token punctuation">)</span> <span class="token comment"># 更新子模型</span>
+		<span class="token comment"># 将模型转换为对应的IP模型继续求解</span>
+		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>setAttr<span class="token punctuation">(</span><span class="token string">'VType'</span><span class="token punctuation">,</span>self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getVars<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>GRB<span class="token punctuation">.</span>INTEGER<span class="token punctuation">)</span>
+		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>optimize<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+	model <span class="token operator">=</span> CGModel<span class="token punctuation">(</span><span class="token punctuation">)</span>
+	model<span class="token punctuation">.</span>update<span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">print</span><span class="token punctuation">(</span>model<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>ObjVal<span class="token punctuation">)</span>
+	<span class="token keyword">print</span><span class="token punctuation">(</span>model<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>X<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>数学建模与运筹学</category>
+      </categories>
+      <tags>
+        <tag>Gurobi</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>整数规划课程笔记（孙小玲主讲）</title>
     <url>/2025/07/24/%E6%95%B4%E6%95%B0%E8%A7%84%E5%88%92%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0%EF%BC%88%E5%AD%99%E5%B0%8F%E7%8E%B2%E6%95%99%E6%8E%88%E4%B8%BB%E8%AE%B2%EF%BC%89/</url>
     <content><![CDATA[<h1 id="单纯形算法部分枚举方法">单纯形算法（部分枚举方法）</h1>
@@ -2660,569 +3223,6 @@ Fig2. A*的搜索过程
       <tags>
         <tag>大连海事大学</tag>
         <tag>景象照</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>gurobi速查手册</title>
-    <url>/2025/07/26/gurobi%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C/</url>
-    <content><![CDATA[<h1 id="gurobi中一些基本的概念">Gurobi中一些基本的概念</h1>
-<center>
-<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Gurobi速查手册/1.png" weight="50%" height="50%">
-</center>
-<ol type="1">
-<li><code>Parameters</code>：参数用于控制求解器的行为，<a href="https://docs.gurobi.com/projects/optimizer/en/current/concepts/parameters/groups.html">相关参数参考</a>。</li>
-<li><code>Attributes</code>：属性是查询和修改相关对象特征的机制，<a href="https://docs.gurobi.com/projects/optimizer/en/current/concepts/attributes/types.html">相关属性参考</a>。</li>
-<li><code>Environment</code>：环境是Model的容器，gurobi的python接口会自动创建环境。设置环境的Parameters会让环境中的每个Model都默认这些Parameters，也可以单独为每个模型设置Parameters。</li>
-</ol>
-<h1 id="使用gurobi建模的一般步骤">使用Gurobi建模的一般步骤</h1>
-<center>
-<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Gurobi速查手册/2.png" weight="50%" height="50%">
-</center>
-<p>使用Gurobi求解优化模型比较有条理的步骤如下：</p>
-<ol type="1">
-<li>先建模，建模可按以下步骤一步一步分析，避免脑袋绕晕
-<ol type="1">
-<li>定义模型中要使用的集合</li>
-<li>定义模型中要使用的参数</li>
-<li>定义模型中要使用的决策变量</li>
-<li>定义模型的目标函数</li>
-<li>分析模型应该包含的所有约束条件</li>
-</ol></li>
-<li>然后使用Gurobi求解，具体又可按以下步骤进行
-<ol type="1">
-<li>使用list或tuplelist对象保存集合（附：集合在模型中一般用作索引）</li>
-<li>使用dict或tupledict对象保存参数</li>
-<li>创建模型对象
-<ol type="1">
-<li>添加变量</li>
-<li>设置目标函数</li>
-<li>添加约束条件</li>
-<li>进行优化</li>
-</ol></li>
-</ol></li>
-</ol>
-<div class="admonition info">
-<p class="admonition-title">
-tuplelist和tupledict数据结构与list和dict的区别是什么？
-</p>
-<p>
-前者是gurobi的内置数据结构，有更加强大的索引功能。
-</p>
-</div>
-<h1 id="操作速查">操作速查</h1>
-<h2 id="获取或修改模型的参数">获取或修改模型的参数</h2>
-<p>直接用Model对象的Params属性就可以实现gurobi中相关<a href="https://docs.gurobi.com/projects/optimizer/en/current/concepts/parameters/groups.html">参数</a>的获取和修改。</p>
-<ul>
-<li>Termination parameters which set the stopping conditions for algorithms;</li>
-<li>Tolerance parameters which control solution quality requirements;</li>
-<li>Logging and I/O parameters which control logging behavior as well as input and output files;</li>
-<li>Algorithmic control parameters for Presolve, Simplex, Barrier, Scaling, MIP, MIP Cuts, and Numerics;</li>
-<li>Tuning parameters which control parameter tuning strategies for grbtune and the tune API calls;</li>
-<li>Solution Pool parameters which control how the solver searches for and stores additional solutions other than the best available one;</li>
-<li>Multi-Objective parameters which control some aspects when working with multiple objectives;</li>
-<li>Parameters for configuring aspects of remote optimization and licensing: Parallel and Distributed Computing, Instant Cloud, Compute Server, Cluster Manager, Token Server, Web License Service; and</li>
-</ul>
-<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>通过Model对象的Params属性修改参数的示范</span></div><code class="language-python">model<span class="token punctuation">.</span>Params<span class="token punctuation">.</span>MIPFocus <span class="token operator">=</span> <span class="token number">0</span> <span class="token comment"># 求解策略参数的设置</span>
-model<span class="token punctuation">.</span>Params<span class="token punctuation">.</span>LogFile <span class="token operator">=</span> <span class="token string">'modelversion2.log'</span> <span class="token comment"># 求解日志存放位置</span>
-model<span class="token punctuation">.</span>Params<span class="token punctuation">.</span>MIPGap <span class="token operator">=</span> <span class="token number">0.7</span> <span class="token comment"># 要求找到最优解，*测试的时候直接设置称60%的gap，真正要收敛到0太困难了，收到60%左右基本上就是最优解，利用这个技巧方便后面做灵敏度分析*</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="获取或修改对象的属性">获取或修改对象的属性</h2>
-<p>获取对象<a href="https://docs.gurobi.com/projects/optimizer/en/current/concepts/attributes/types.html#secattributetypes">属性</a>的话就用Model对象的getAttr方法就好了，设置对象属性则可以使用setAttr方法。这两个方法都有attrname和objects参数，当只提供属性名的时候，查询或设置的就是Model对象对应属性的值，如果提供了objects（通常是tuplelist或tupledict）这两个方法就查询和设置的是这些objects的属性值。</p>
-<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>gurobi获取或删除对象属性的示范</span></div><code class="language-python">main_model<span class="token punctuation">.</span>setAttr<span class="token punctuation">(</span><span class="token string">'VType'</span><span class="token punctuation">,</span>main_model<span class="token punctuation">.</span>getVars<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>GRB<span class="token punctuation">.</span>INTEGER<span class="token punctuation">)</span> <span class="token comment"># 将main_model.getVars()获取到的所有变量的vtype属性设置为GRB.INTEGER。</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="使用quicksum函数和tupledict的sum方法完成求和操作">使用quicksum函数和tupledict的sum方法完成求和操作</h2>
-<p>quicksum一般的用法是里面写一个生成器推导式，得到所有要求和的项，与sum方法相比，quicksum函数更加灵活，可以实现变量与系数的加权求和。</p>
-<p><span class="math display"><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -3.041ex;" xmlns="http://www.w3.org/2000/svg" width="19.698ex" height="5.191ex" role="img" focusable="false" viewBox="0 -950 8706.7 2294.2"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="munder"><g data-mml-node="mo"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="TeXAtom" transform="translate(116.7,-1100) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g><g data-mml-node="mo" transform="translate(412,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path></g><g data-mml-node="mi" transform="translate(1079,0)"><path data-c="1D43D" d="M447 625Q447 637 354 637H329Q323 642 323 645T325 664Q329 677 335 683H352Q393 681 498 681Q541 681 568 681T605 682T619 682Q633 682 633 672Q633 670 630 658Q626 642 623 640T604 637Q552 637 545 623Q541 610 483 376Q420 128 419 127Q397 64 333 21T195 -22Q137 -22 97 8T57 88Q57 130 80 152T132 174Q177 174 182 130Q182 98 164 80T123 56Q115 54 115 53T122 44Q148 15 197 15Q235 15 271 47T324 130Q328 142 387 380T447 625Z"></path></g></g></g><g data-mml-node="msub" transform="translate(1610.7,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="TeXAtom" transform="translate(605,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(345,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g></g><g data-mml-node="mo" transform="translate(3078.7,0)"><path data-c="2264" d="M674 636Q682 636 688 630T694 615T687 601Q686 600 417 472L151 346L399 228Q687 92 691 87Q694 81 694 76Q694 58 676 56H670L382 192Q92 329 90 331Q83 336 83 348Q84 359 96 365Q104 369 382 500T665 634Q669 636 674 636ZM84 -118Q84 -108 99 -98H678Q694 -104 694 -118Q694 -130 679 -138H98Q84 -131 84 -118Z"></path></g><g data-mml-node="mn" transform="translate(4134.5,0)"><path data-c="35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path></g><g data-mml-node="mo" transform="translate(4634.5,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mstyle" transform="translate(4912.5,0)"><g data-mml-node="mspace"></g></g><g data-mml-node="mi" transform="translate(6079.2,0)"><path data-c="2200" d="M0 673Q0 684 7 689T20 694Q32 694 38 680T82 567L126 451H430L473 566Q483 593 494 622T512 668T519 685Q524 694 538 694Q556 692 556 674Q556 670 426 329T293 -15Q288 -22 278 -22T263 -15Q260 -11 131 328T0 673ZM414 410Q414 411 278 411T142 410L278 55L414 410Z"></path></g><g data-mml-node="mi" transform="translate(6635.2,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(7257.9,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path></g><g data-mml-node="mi" transform="translate(8202.7,0)"><path data-c="1D43C" d="M43 1Q26 1 26 10Q26 12 29 24Q34 43 39 45Q42 46 54 46H60Q120 46 136 53Q137 53 138 54Q143 56 149 77T198 273Q210 318 216 344Q286 624 286 626Q284 630 284 631Q274 637 213 637H193Q184 643 189 662Q193 677 195 680T209 683H213Q285 681 359 681Q481 681 487 683H497Q504 676 504 672T501 655T494 639Q491 637 471 637Q440 637 407 634Q393 631 388 623Q381 609 337 432Q326 385 315 341Q245 65 245 59Q245 52 255 50T307 46H339Q345 38 345 37T342 19Q338 6 332 0H316Q279 2 179 2Q143 2 113 2T65 2T43 1Z"></path></g></g></g></svg></mjx-container></span></p>
-<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>quicksum函数和sum方法的示例</span></div><code class="language-python"><span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">:</span>
-	model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>gp<span class="token punctuation">.</span>quicksum<span class="token punctuation">(</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token keyword">for</span> j <span class="token keyword">in</span> J<span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">5</span><span class="token punctuation">)</span>
-<span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">:</span>
-	model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token string">"*"</span><span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">5</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>创建约束条件的时候实际上可以使用一种更加简单的写法，及在addConstrs方法内部写生成器推导式。上述的约束条件也可以写成：</p>
-<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>另一种简便写法</span></div><code class="language-python">model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>gp<span class="token punctuation">.</span>quicksum<span class="token punctuation">(</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token keyword">for</span> I <span class="token keyword">in</span> J<span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">5</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">)</span>
-model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token string">"*"</span><span class="token punctuation">)</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h2 id="利用grb减少不必要的记忆">利用GRB减少不必要的记忆</h2>
-<p>GRB类中定义了Gurobi中常用的一些常量，例如我想将求解策略参数设置为均衡模式，我当然可以写model.Params.MIPFocus = 0，但是0这个数字并没什么字面意义，时间一长你可能就忘了到底得把MIPFocus设置成几才是均衡模式了。使用GRB类中定义的常量你可以写成model.Params.MIPFocus=MIPFOCUS_BALANCED。</p>
-<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>GRB类中定义的常量</span></div><code class="language-plain"># Status codes
-
-LOADED          = 1
-OPTIMAL         = 2
-INFEASIBLE      = 3
-INF_OR_UNBD     = 4
-UNBOUNDED       = 5
-CUTOFF          = 6
-ITERATION_LIMIT = 7
-NODE_LIMIT      = 8
-TIME_LIMIT      = 9
-SOLUTION_LIMIT  = 10
-INTERRUPTED     = 11
-NUMERIC         = 12
-SUBOPTIMAL      = 13
-INPROGRESS      = 14
-USER_OBJ_LIMIT  = 15
-WORK_LIMIT      = 16
-MEM_LIMIT       = 17
-
-# Batch status codes
-
-BATCH_CREATED   = 1
-BATCH_SUBMITTED = 2
-BATCH_ABORTED   = 3
-BATCH_FAILED    = 4
-BATCH_COMPLETED = 5
-
-# Constraint senses
-
-LESS_EQUAL    = '&lt;'
-GREATER_EQUAL = '&gt;'
-EQUAL         = '='
-
-# Variable types
-
-CONTINUOUS = 'C'
-BINARY     = 'B'
-INTEGER    = 'I'
-SEMICONT   = 'S'
-SEMIINT    = 'N'
-
-# Objective sense
-
-MINIMIZE = 1
-MAXIMIZE = -1
-
-# SOS types
-
-SOS_TYPE1 = 1
-SOS_TYPE2 = 2
-
-# General constraint types
-
-GENCONSTR_MAX       = 0
-GENCONSTR_MIN       = 1
-GENCONSTR_ABS       = 2
-GENCONSTR_AND       = 3
-GENCONSTR_OR        = 4
-GENCONSTR_NORM      = 5
-GENCONSTR_NL        = 6
-GENCONSTR_INDICATOR = 7
-GENCONSTR_PWL       = 8
-GENCONSTR_POLY      = 9
-GENCONSTR_EXP       = 10
-GENCONSTR_EXPA      = 11
-GENCONSTR_LOG       = 12
-GENCONSTR_LOGA      = 13
-GENCONSTR_POW       = 14
-GENCONSTR_SIN       = 15
-GENCONSTR_COS       = 16
-GENCONSTR_TAN       = 17
-GENCONSTR_LOGISTIC  = 18
-
-# Operation codes
-OPCODE_CONSTANT     = 0
-OPCODE_VARIABLE     = 1
-OPCODE_PLUS         = 2
-OPCODE_MINUS        = 3
-OPCODE_MULTIPLY     = 4
-OPCODE_DIVIDE       = 5
-OPCODE_UMINUS       = 6
-OPCODE_SQUARE       = 7
-OPCODE_SQRT         = 8
-OPCODE_SIN          = 9
-OPCODE_COS          = 10
-OPCODE_TAN          = 11
-OPCODE_POW          = 12
-OPCODE_EXP          = 13
-OPCODE_LOG          = 14
-OPCODE_LOG2         = 15
-OPCODE_LOG10        = 16
-OPCODE_LOGISTIC     = 17
-
-# Basis status
-
-BASIC          = 0
-NONBASIC_LOWER = -1
-NONBASIC_UPPER = -2
-SUPERBASIC     = -3
-
-# Numeric constants
-
-INFINITY  = 1e100
-UNDEFINED = 1e101
-MAXINT    = 2000000000
-
-# Limits
-
-MAX_NAMELEN    = 255
-MAX_STRLEN     = 512
-MAX_TAGLEN     = 10240
-MAX_CONCURRENT = 64
-
-# Other constants
-
-DEFAULT_CS_PORT = 61000
-
-# Version number
-
-VERSION_MAJOR     = 12
-VERSION_MINOR     = 0
-VERSION_TECHNICAL = 0
-
-# Errors
-
-ERROR_OUT_OF_MEMORY            = 10001
-ERROR_NULL_ARGUMENT            = 10002
-ERROR_INVALID_ARGUMENT         = 10003
-ERROR_UNKNOWN_ATTRIBUTE        = 10004
-ERROR_DATA_NOT_AVAILABLE       = 10005
-ERROR_INDEX_OUT_OF_RANGE       = 10006
-ERROR_UNKNOWN_PARAMETER        = 10007
-ERROR_VALUE_OUT_OF_RANGE       = 10008
-ERROR_NO_LICENSE               = 10009
-ERROR_SIZE_LIMIT_EXCEEDED      = 10010
-ERROR_CALLBACK                 = 10011
-ERROR_FILE_READ                = 10012
-ERROR_FILE_WRITE               = 10013
-ERROR_NUMERIC                  = 10014
-ERROR_IIS_NOT_INFEASIBLE       = 10015
-ERROR_NOT_FOR_MIP              = 10016
-ERROR_OPTIMIZATION_IN_PROGRESS = 10017
-ERROR_DUPLICATES               = 10018
-ERROR_NODEFILE                 = 10019
-ERROR_Q_NOT_PSD                = 10020
-ERROR_QCP_EQUALITY_CONSTRAINT  = 10021
-ERROR_NETWORK                  = 10022
-ERROR_JOB_REJECTED             = 10023
-ERROR_NOT_SUPPORTED            = 10024
-ERROR_EXCEED_2B_NONZEROS       = 10025
-ERROR_INVALID_PIECEWISE_OBJ    = 10026
-ERROR_UPDATEMODE_CHANGE        = 10027
-ERROR_CLOUD                    = 10028
-ERROR_MODEL_MODIFICATION       = 10029
-ERROR_CSWORKER                 = 10030
-ERROR_TUNE_MODEL_TYPES         = 10031
-ERROR_SECURITY                 = 10032
-ERROR_NOT_IN_MODEL             = 20001
-ERROR_FAILED_TO_CREATE_MODEL   = 20002
-ERROR_INTERNAL                 = 20003
-
-# Cuts parameter values
-
-CUTS_AUTO           = -1
-CUTS_OFF            = 0
-CUTS_CONSERVATIVE   = 1
-CUTS_AGGRESSIVE     = 2
-CUTS_VERYAGGRESSIVE = 3
-
-# Presolve parameter values
-
-PRESOLVE_AUTO         = -1
-PRESOLVE_OFF          = 0
-PRESOLVE_CONSERVATIVE = 1
-PRESOLVE_AGGRESSIVE   = 2
-
-# Method parameter values
-
-METHOD_NONE                             = -1
-METHOD_AUTO                             = -1
-METHOD_PRIMAL                           = 0
-METHOD_DUAL                             = 1
-METHOD_BARRIER                          = 2
-METHOD_CONCURRENT                       = 3
-METHOD_DETERMINISTIC_CONCURRENT         = 4
-METHOD_DETERMINISTIC_CONCURRENT_SIMPLEX = 5
-
-# BarHomogeneous parameter values
-
-BARHOMOGENEOUS_AUTO = -1
-BARHOMOGENEOUS_OFF  = 0
-BARHOMOGENEOUS_ON   = 1
-
-# BarOrder parameter values
-
-BARORDER_AUTOMATIC        = -1
-BARORDER_AMD              = 0
-BARORDER_NESTEDDISSECTION = 1
-
-# MIPFocus parameter values
-
-MIPFOCUS_BALANCED    = 0
-MIPFOCUS_FEASIBILITY = 1
-MIPFOCUS_OPTIMALITY  = 2
-MIPFOCUS_BESTBOUND   = 3
-
-# SimplexPricing parameter values
-
-SIMPLEXPRICING_AUTO           = -1
-SIMPLEXPRICING_PARTIAL        = 0
-SIMPLEXPRICING_STEEPEST_EDGE  = 1
-SIMPLEXPRICING_DEVEX          = 2
-SIMPLEXPRICING_STEEPEST_QUICK = 3
-
-# VarBranch parameter values
-
-VARBRANCH_AUTO           = -1
-VARBRANCH_PSEUDO_REDUCED = 0
-VARBRANCH_PSEUDO_SHADOW  = 1
-VARBRANCH_MAX_INFEAS     = 2
-VARBRANCH_STRONG         = 3
-
-# Partition parameter values
-
-PARTITION_EARLY     = 16
-PARTITION_ROOTSTART = 8
-PARTITION_ROOTEND   = 4
-PARTITION_NODES     = 2
-PARTITION_CLEANUP   = 1
-
-# Callback phase values
-
-PHASE_MIP_NOREL   = 0
-PHASE_MIP_SEARCH  = 1
-PHASE_MIP_IMPROVE = 2
-
-# FeasRelax method parameter values
-
-FEASRELAX_LINEAR      = 0
-FEASRELAX_QUADRATIC   = 1
-FEASRELAX_CARDINALITY = 2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="通过回调函数插入惰性约束">通过回调函数插入惰性约束</h2>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/usr/bin/env python</span>
-<span class="token comment"># -*- coding: utf-8 -*-</span>
-<span class="token comment"># @Date    : 2025-05-04 10:26:02</span>
-<span class="token comment"># @Author  : syuansheng (Dalian Maritime University)</span>
-<span class="token keyword">from</span> math <span class="token keyword">import</span> sqrt
-<span class="token keyword">from</span> typing <span class="token keyword">import</span> Dict<span class="token punctuation">,</span>List
-<span class="token keyword">from</span> numpy <span class="token keyword">import</span> ndarray<span class="token punctuation">,</span>zeros
-<span class="token keyword">from</span> gurobipy <span class="token keyword">import</span> Model<span class="token punctuation">,</span>GRB<span class="token punctuation">,</span>GurobiError<span class="token punctuation">,</span>quicksum
-
-<span class="token keyword">def</span> <span class="token function">findAllSubroutes</span><span class="token punctuation">(</span>solution<span class="token punctuation">:</span>ndarray<span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">&gt;</span>Dict<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">,</span>List<span class="token punctuation">[</span>List<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
-	route_dict <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token comment"># subtours of each car</span>
-	<span class="token keyword">for</span> k <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>solution<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-		subtour_kcars <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment"># subtours of car k</span>
-		<span class="token comment"># check subtours of car k </span>
-		<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>solution<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-			flag <span class="token operator">=</span> <span class="token boolean">False</span> 
-			subtour_kcars_start_i <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment"># subtours of car k that starts from point i </span>
-			<span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>solution<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-				<span class="token comment"># car k moved from point i to j</span>
-				<span class="token keyword">if</span> solution<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>k<span class="token punctuation">]</span> <span class="token operator">&gt;</span> <span class="token number">0.9</span><span class="token punctuation">:</span>
-					subtour_kcars_start_i<span class="token punctuation">.</span>append<span class="token punctuation">(</span>i<span class="token punctuation">)</span>
-					subtour_kcars_start_i<span class="token punctuation">.</span>append<span class="token punctuation">(</span>j<span class="token punctuation">)</span>
-					current_point <span class="token operator">=</span> j 
-					<span class="token comment"># cheack whether i-&gt;j formed a subtour</span>
-					<span class="token keyword">while</span> <span class="token keyword">not</span> flag<span class="token punctuation">:</span>
-						<span class="token keyword">for</span> next_point <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>solution<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-							<span class="token keyword">if</span> solution<span class="token punctuation">[</span>current_point<span class="token punctuation">,</span>next_point<span class="token punctuation">,</span>k<span class="token punctuation">]</span> <span class="token operator">&gt;</span>  <span class="token number">0.9</span><span class="token punctuation">:</span>
-								subtour_kcars_start_i<span class="token punctuation">.</span>append<span class="token punctuation">(</span>next_point<span class="token punctuation">)</span>
-								current_point <span class="token operator">=</span> next_point
-							<span class="token comment"># we find a subtour start from ponstallint i</span>
-							<span class="token keyword">if</span> subtour_kcars_start_i<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">==</span> subtour_kcars_start_i<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
-								flag <span class="token operator">=</span> <span class="token boolean">True</span>
-								subtour_kcars<span class="token punctuation">.</span>append<span class="token punctuation">(</span>subtour_kcars_start_i<span class="token punctuation">)</span>
-								<span class="token keyword">break</span>
-							<span class="token comment"># car k finally arrived point (solution.shape[2]-1) means i-&gt;j didn't form a subtour</span>
-							<span class="token keyword">if</span> current_point <span class="token operator">==</span> solution<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">:</span>
-								flag <span class="token operator">=</span> <span class="token boolean">True</span>
-								<span class="token keyword">break</span>
-				<span class="token keyword">else</span><span class="token punctuation">:</span>
-					<span class="token keyword">continue</span>
-		route_dict<span class="token punctuation">[</span>k<span class="token punctuation">]</span> <span class="token operator">=</span> subtour_kcars
-	<span class="token keyword">return</span> route_dict
-
-<span class="token keyword">class</span> <span class="token class-name">Data</span><span class="token punctuation">:</span>
-
-	<span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
-
-		self<span class="token punctuation">.</span>o <span class="token operator">=</span> <span class="token number">0</span>  <span class="token comment"># index of the depot</span>
-		self<span class="token punctuation">.</span>d <span class="token operator">=</span> <span class="token number">16</span> <span class="token comment"># index of the depot(duplication)</span>
-		self<span class="token punctuation">.</span>C <span class="token operator">=</span> <span class="token punctuation">[</span>i <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token comment"># index of each customer</span>
-		self<span class="token punctuation">.</span>V <span class="token operator">=</span> <span class="token punctuation">[</span>self<span class="token punctuation">.</span>o<span class="token punctuation">]</span><span class="token operator">+</span>self<span class="token punctuation">.</span>C<span class="token operator">+</span><span class="token punctuation">[</span>self<span class="token punctuation">.</span>d<span class="token punctuation">]</span>
-		self<span class="token punctuation">.</span>K <span class="token operator">=</span> <span class="token punctuation">[</span>i <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token comment"># index of each car</span>
-		self<span class="token punctuation">.</span>A <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment"># all valid arc</span>
-		self<span class="token punctuation">.</span>Q <span class="token operator">=</span> <span class="token number">100</span> <span class="token comment"># capacity of each car</span>
-		self<span class="token punctuation">.</span>c <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>  <span class="token comment"># distance between i to j</span>
-		self<span class="token punctuation">.</span>q <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token comment"># demand of each customer</span>
-		self<span class="token punctuation">.</span>loc <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token comment"># cordinate of each point	</span>
-
-	<span class="token keyword">def</span> <span class="token function">getDataReady</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
-
-		lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-		<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">r'./r101_CVRP.txt'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
-			str_lst <span class="token operator">=</span> f<span class="token punctuation">.</span>readlines<span class="token punctuation">(</span><span class="token punctuation">)</span>
-			<span class="token keyword">for</span> line <span class="token keyword">in</span> str_lst<span class="token punctuation">:</span>
-				lst<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token builtin">list</span><span class="token punctuation">(</span><span class="token builtin">map</span><span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">,</span>line<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-		<span class="token keyword">for</span> i<span class="token punctuation">,</span>item <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>lst<span class="token punctuation">)</span><span class="token punctuation">:</span>
-			self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>item<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>item<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
-			self<span class="token punctuation">.</span>q<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>
-		<span class="token keyword">for</span> i <span class="token keyword">in</span> self<span class="token punctuation">.</span>V<span class="token punctuation">:</span>
-			<span class="token keyword">for</span> j <span class="token keyword">in</span> self<span class="token punctuation">.</span>V<span class="token punctuation">:</span>
-				<span class="token comment"># exclude invalid arc</span>
-				<span class="token keyword">if</span> i <span class="token operator">==</span> self<span class="token punctuation">.</span>d <span class="token keyword">or</span> j <span class="token operator">==</span> self<span class="token punctuation">.</span>o <span class="token keyword">or</span> i <span class="token operator">==</span> j <span class="token keyword">or</span> <span class="token punctuation">(</span>i <span class="token operator">==</span> self<span class="token punctuation">.</span>o <span class="token keyword">and</span> j <span class="token operator">==</span> self<span class="token punctuation">.</span>d<span class="token punctuation">)</span><span class="token punctuation">:</span>
-					<span class="token keyword">continue</span>
-				<span class="token keyword">else</span><span class="token punctuation">:</span>
-					self<span class="token punctuation">.</span>A<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span>j<span class="token punctuation">)</span><span class="token punctuation">)</span>
-		<span class="token keyword">for</span> i<span class="token punctuation">,</span>j <span class="token keyword">in</span> self<span class="token punctuation">.</span>A<span class="token punctuation">:</span>
-			<span class="token keyword">if</span> j <span class="token operator">==</span> self<span class="token punctuation">.</span>d<span class="token punctuation">:</span>
-				self<span class="token punctuation">.</span>c<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">round</span><span class="token punctuation">(</span>sqrt<span class="token punctuation">(</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">-</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>self<span class="token punctuation">.</span>o<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">**</span><span class="token number">2</span><span class="token operator">+</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>self<span class="token punctuation">.</span>o<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">**</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span>
-			<span class="token keyword">else</span><span class="token punctuation">:</span>
-				self<span class="token punctuation">.</span>c<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">round</span><span class="token punctuation">(</span>sqrt<span class="token punctuation">(</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">-</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">**</span><span class="token number">2</span><span class="token operator">+</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">-</span>self<span class="token punctuation">.</span>loc<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">**</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span>
-
-<span class="token keyword">class</span> <span class="token class-name">VRPModel</span><span class="token punctuation">:</span>
-
-	<span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>data<span class="token punctuation">)</span><span class="token punctuation">:</span>
-		self<span class="token punctuation">.</span>_model <span class="token operator">=</span> <span class="token boolean">None</span>
-		self<span class="token punctuation">.</span>_data <span class="token operator">=</span> data
-		self<span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-
-	<span class="token keyword">def</span> <span class="token function">buildModel</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
-		self<span class="token punctuation">.</span>_model <span class="token operator">=</span> Model<span class="token punctuation">(</span>name<span class="token operator">=</span><span class="token string">'CVRP1_1'</span><span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>x <span class="token operator">=</span> self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addVars<span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>A<span class="token punctuation">,</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">,</span>vtype<span class="token operator">=</span>GRB<span class="token punctuation">.</span>BINARY<span class="token punctuation">,</span>name<span class="token operator">=</span><span class="token string">'x'</span><span class="token punctuation">)</span>
-		<span class="token comment"># set objective function</span>
-		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>setObjective<span class="token punctuation">(</span>
-			quicksum<span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>c<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">]</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>k<span class="token punctuation">]</span> <span class="token keyword">for</span> i<span class="token punctuation">,</span>j <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>A <span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">,</span>
-			sense<span class="token operator">=</span>GRB<span class="token punctuation">.</span>MINIMIZE
-			<span class="token punctuation">)</span>
-		<span class="token comment"># set constraints</span>
-		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
-			<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token string">'*'</span><span class="token punctuation">,</span><span class="token string">'*'</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">1</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>C<span class="token punctuation">)</span><span class="token punctuation">,</span>
-			name <span class="token operator">=</span> <span class="token string">'constraint1'</span>
-			<span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
-			<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>o<span class="token punctuation">,</span><span class="token string">'*'</span><span class="token punctuation">,</span>k<span class="token punctuation">)</span><span class="token operator">==</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token string">'*'</span><span class="token punctuation">,</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>d<span class="token punctuation">,</span>k<span class="token punctuation">)</span> <span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">,</span>
-			name <span class="token operator">=</span> <span class="token string">'constraint2'</span>
-			<span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
-			<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token string">'*'</span><span class="token punctuation">,</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>d<span class="token punctuation">,</span>k<span class="token punctuation">)</span><span class="token operator">&lt;=</span><span class="token number">1</span> <span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">,</span>
-			name <span class="token operator">=</span> <span class="token string">'constraint3'</span>
-			<span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
-			<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token string">'*'</span><span class="token punctuation">,</span>k<span class="token punctuation">)</span><span class="token operator">==</span>self<span class="token punctuation">.</span>x<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token string">'*'</span><span class="token punctuation">,</span>i<span class="token punctuation">,</span>k<span class="token punctuation">)</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>C <span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">,</span>
-			name <span class="token operator">=</span> <span class="token string">'constraint4'</span>
-			<span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
-			<span class="token punctuation">(</span>quicksum<span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>q<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>k<span class="token punctuation">]</span> <span class="token keyword">for</span> i<span class="token punctuation">,</span>j <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>A<span class="token punctuation">)</span><span class="token operator">&lt;=</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>Q <span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">,</span>
-			name <span class="token operator">=</span>  <span class="token string">'constraint5'</span>
-			<span class="token punctuation">)</span>
-
-	<span class="token keyword">def</span> <span class="token function">solveModel</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
-		<span class="token keyword">try</span><span class="token punctuation">:</span>
-			self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>Params<span class="token punctuation">.</span>MIPGap <span class="token operator">=</span> <span class="token number">0</span> 
-			self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>Params<span class="token punctuation">.</span>lazyConstraints <span class="token operator">=</span> <span class="token number">1</span>
-			self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>optimize<span class="token punctuation">(</span>self<span class="token punctuation">.</span>generateDFJConstraint<span class="token punctuation">)</span>
-		<span class="token keyword">except</span> GurobiError <span class="token keyword">as</span> e<span class="token punctuation">:</span>
-			<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'erro number:{},erro string:{}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>errno<span class="token punctuation">,</span>e<span class="token punctuation">.</span>message<span class="token punctuation">)</span><span class="token punctuation">)</span>
-
-	<span class="token keyword">def</span> <span class="token function">generateDFJConstraint</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>model<span class="token punctuation">,</span>where<span class="token punctuation">)</span><span class="token punctuation">:</span>
-		<span class="token comment"># each time when gurobi find a feasible solution,we check whether we should add some DFJ constraints</span>
-		<span class="token keyword">if</span> where <span class="token operator">==</span>  GRB<span class="token punctuation">.</span>Callback<span class="token punctuation">.</span>MIPSOL<span class="token punctuation">:</span>
-			solution <span class="token operator">=</span> zeros<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>V<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>V<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># save the solution results in matrix format</span>
-			<span class="token keyword">for</span> key<span class="token punctuation">,</span>value <span class="token keyword">in</span> self<span class="token punctuation">.</span>x<span class="token punctuation">.</span>items<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-				idx1<span class="token punctuation">,</span>idx2<span class="token punctuation">,</span>idx3 <span class="token operator">=</span> key
-				solution<span class="token punctuation">[</span>idx1<span class="token punctuation">,</span>idx2<span class="token punctuation">,</span>idx3<span class="token punctuation">]</span> <span class="token operator">=</span> self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>cbGetSolution<span class="token punctuation">(</span>value<span class="token punctuation">)</span>
-			route_dict <span class="token operator">=</span> findAllSubroutes<span class="token punctuation">(</span>solution<span class="token punctuation">)</span>
-			<span class="token keyword">for</span> k <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>K<span class="token punctuation">:</span>
-				<span class="token keyword">for</span> subtour_kcars_start_i <span class="token keyword">in</span> route_dict<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">:</span>
-					<span class="token comment"># Now we get the set S(subtour_kcars_start_i[:-1])</span>
-					self<span class="token punctuation">.</span>_model<span class="token punctuation">.</span>cbLazy<span class="token punctuation">(</span>
-						quicksum<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span>i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>k<span class="token punctuation">]</span> <span class="token keyword">for</span> i<span class="token punctuation">,</span>j <span class="token keyword">in</span> self<span class="token punctuation">.</span>_data<span class="token punctuation">.</span>A <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token keyword">in</span> subtour_kcars_start_i<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">and</span> j <span class="token keyword">in</span> subtour_kcars_start_i<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
-						<span class="token operator">&lt;=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>subtour_kcars_start_i<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token number">1</span>
-						<span class="token punctuation">)</span>
-
-<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
-	data <span class="token operator">=</span> Data<span class="token punctuation">(</span><span class="token punctuation">)</span>
-	data<span class="token punctuation">.</span>getDataReady<span class="token punctuation">(</span><span class="token punctuation">)</span>
-	model <span class="token operator">=</span> VRPModel<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
-	model<span class="token punctuation">.</span>buildModel<span class="token punctuation">(</span><span class="token punctuation">)</span>
-	model<span class="token punctuation">.</span>solveModel<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="gurobi实现列生成算法">Gurobi实现列生成算法</h2>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/usr/bin/env python</span>
-<span class="token comment"># -*- coding: utf-8 -*-</span>
-<span class="token comment"># @Date    : 2025-07-25 14:34:23</span>
-<span class="token comment"># @Author  : syuansheng (Dalian Maritime University)</span>
-
-<span class="token keyword">from</span> gurobipy <span class="token keyword">import</span> <span class="token operator">*</span>
-
-<span class="token keyword">class</span> <span class="token class-name">Data</span><span class="token punctuation">:</span>
-	<span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
-		self<span class="token punctuation">.</span>l <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">]</span> <span class="token comment"># 需求类型</span>
-		self<span class="token punctuation">.</span>L <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">,</span><span class="token number">14</span><span class="token punctuation">,</span><span class="token number">16</span><span class="token punctuation">]</span> <span class="token comment"># 可用原木的长度</span>
-		self<span class="token punctuation">.</span>c <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">]</span> <span class="token comment"># 各种长度原木的价格</span>
-
-<span class="token keyword">class</span> <span class="token class-name">CGModel</span><span class="token punctuation">:</span>
-	<span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
-		self<span class="token punctuation">.</span>data <span class="token operator">=</span> Data<span class="token punctuation">(</span><span class="token punctuation">)</span>
-		<span class="token comment"># 初始化主模型</span>
-		y <span class="token operator">=</span> self<span class="token punctuation">.</span>initiate_main_model<span class="token punctuation">(</span><span class="token punctuation">)</span>
-		<span class="token comment"># 初始化所有子模型</span>
-		self<span class="token punctuation">.</span>initiate_sub_model<span class="token punctuation">(</span>y<span class="token punctuation">)</span>
-
-	<span class="token keyword">def</span> <span class="token function">initiate_main_model</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
-		self<span class="token punctuation">.</span>main_model <span class="token operator">=</span> Model<span class="token punctuation">(</span><span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>x <span class="token operator">=</span> self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>addVars<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span>vtype<span class="token operator">=</span>GRB<span class="token punctuation">.</span>CONTINUOUS<span class="token punctuation">,</span>name<span class="token operator">=</span><span class="token string">'x'</span><span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>setObjective<span class="token punctuation">(</span>
-			<span class="token number">5</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">+</span><span class="token number">5</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">+</span><span class="token number">5</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-			sense <span class="token operator">=</span> GRB<span class="token punctuation">.</span>MINIMIZE
-			<span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span><span class="token number">2</span><span class="token operator">*</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">&gt;=</span><span class="token number">30</span><span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">&gt;=</span><span class="token number">20</span><span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>self<span class="token punctuation">.</span>x<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token operator">&gt;=</span><span class="token number">40</span><span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>optimize<span class="token punctuation">(</span><span class="token punctuation">)</span>
-		<span class="token comment"># 获取对偶变量的值</span>
-		y <span class="token operator">=</span> self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getAttr<span class="token punctuation">(</span><span class="token string">'Pi'</span><span class="token punctuation">,</span>self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getConstrs<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-		<span class="token keyword">return</span> y
-
-	<span class="token keyword">def</span> <span class="token function">initiate_sub_model</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>y<span class="token punctuation">)</span><span class="token punctuation">:</span>
-		self<span class="token punctuation">.</span>submodels <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-		<span class="token keyword">for</span> k <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>L<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-			<span class="token comment"># k子模型</span>
-			submodel <span class="token operator">=</span> Model<span class="token punctuation">(</span><span class="token punctuation">)</span>
-			p <span class="token operator">=</span> submodel<span class="token punctuation">.</span>addVars<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span>vtype<span class="token operator">=</span>GRB<span class="token punctuation">.</span>INTEGER<span class="token punctuation">,</span>name<span class="token operator">=</span><span class="token string">'p'</span><span class="token punctuation">)</span>
-			submodel<span class="token punctuation">.</span>setObjective<span class="token punctuation">(</span>
-				self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>c<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token operator">-</span>quicksum<span class="token punctuation">(</span>y<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">*</span>p<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-				sense<span class="token operator">=</span>GRB<span class="token punctuation">.</span>MINIMIZE
-				<span class="token punctuation">)</span>
-			submodel<span class="token punctuation">.</span>addConstr<span class="token punctuation">(</span>quicksum<span class="token punctuation">(</span>p<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">*</span>self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>l<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&lt;=</span>self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>L<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">)</span>
-			self<span class="token punctuation">.</span>submodels<span class="token punctuation">.</span>append<span class="token punctuation">(</span>submodel<span class="token punctuation">)</span>
-
-	<span class="token keyword">def</span> <span class="token function">update</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
-		<span class="token triple-quoted-string string">"""
-		不断更新主模型和子模型并求解，直到得到原模型的最优解
-		"""</span>
-		<span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
-			best_ObjVal<span class="token punctuation">,</span>best_P<span class="token punctuation">,</span>submodel_idx <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token boolean">None</span><span class="token punctuation">,</span><span class="token number">0</span>
-			<span class="token comment"># 求解子模型</span>
-			<span class="token keyword">for</span> k<span class="token punctuation">,</span>submodel <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>submodels<span class="token punctuation">)</span><span class="token punctuation">:</span>
-				submodel<span class="token punctuation">.</span>optimize<span class="token punctuation">(</span><span class="token punctuation">)</span>
-				<span class="token keyword">if</span> submodel<span class="token punctuation">.</span>ObjVal <span class="token operator">&lt;</span> best_ObjVal<span class="token punctuation">:</span>
-					<span class="token comment"># 说明存在列加入主模型后使得主模型更好</span>
-					best_ObjVal <span class="token operator">=</span> submodel<span class="token punctuation">.</span>ObjVal <span class="token comment"># 子模型最优解目标函数值</span>
-					best_P <span class="token operator">=</span> submodel<span class="token punctuation">.</span>X <span class="token comment"># 子模型最优解</span>
-					submodel_idx <span class="token operator">=</span> k
-			<span class="token comment"># 退出</span>
-			<span class="token keyword">if</span> best_ObjVal <span class="token operator">&gt;=</span> <span class="token number">0</span> <span class="token punctuation">:</span>
-				<span class="token keyword">break</span>
-			<span class="token comment"># 将新的列添加到主模型中，求解主模型并更新子模型</span>
-			<span class="token keyword">else</span><span class="token punctuation">:</span>
-				col <span class="token operator">=</span> Column<span class="token punctuation">(</span>best_P<span class="token punctuation">,</span>self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getConstrs<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># 创建要加入到主模型的列</span>
-				self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>addVar<span class="token punctuation">(</span>obj<span class="token operator">=</span>self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>c<span class="token punctuation">[</span>submodel_idx<span class="token punctuation">]</span><span class="token punctuation">,</span>column<span class="token operator">=</span>col<span class="token punctuation">,</span>vtype<span class="token operator">=</span>GRB<span class="token punctuation">.</span>CONTINUOUS<span class="token punctuation">,</span>name<span class="token operator">=</span><span class="token string">'new_x'</span><span class="token punctuation">)</span> <span class="token comment"># 将新的列加入主模型</span>
-				self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>optimize<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 求解主模型</span>
-				self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'ttest.lp'</span><span class="token punctuation">)</span>
-				y <span class="token operator">=</span> self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getAttr<span class="token punctuation">(</span><span class="token string">'Pi'</span><span class="token punctuation">,</span>self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getConstrs<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># 新的对偶变量值</span>
-				<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'----------------------------'</span><span class="token punctuation">,</span>y<span class="token punctuation">,</span>best_P<span class="token punctuation">,</span>submodel_idx<span class="token punctuation">)</span>
-				self<span class="token punctuation">.</span>initiate_sub_model<span class="token punctuation">(</span>y<span class="token punctuation">)</span> <span class="token comment"># 更新子模型</span>
-		<span class="token comment"># 将模型转换为对应的IP模型继续求解</span>
-		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>setAttr<span class="token punctuation">(</span><span class="token string">'VType'</span><span class="token punctuation">,</span>self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>getVars<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>GRB<span class="token punctuation">.</span>INTEGER<span class="token punctuation">)</span>
-		self<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>optimize<span class="token punctuation">(</span><span class="token punctuation">)</span>
-
-
-<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
-	model <span class="token operator">=</span> CGModel<span class="token punctuation">(</span><span class="token punctuation">)</span>
-	model<span class="token punctuation">.</span>update<span class="token punctuation">(</span><span class="token punctuation">)</span>
-	<span class="token keyword">print</span><span class="token punctuation">(</span>model<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>ObjVal<span class="token punctuation">)</span>
-	<span class="token keyword">print</span><span class="token punctuation">(</span>model<span class="token punctuation">.</span>main_model<span class="token punctuation">.</span>X<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>数学建模与运筹学</category>
-      </categories>
-      <tags>
-        <tag>Gurobi</tag>
       </tags>
   </entry>
   <entry>
