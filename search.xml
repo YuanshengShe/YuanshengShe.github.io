@@ -1469,7 +1469,7 @@ c <span class="token operator">=</span> a<span class="token operator">+</span>b 
         <category>计算机技术</category>
       </categories>
       <tags>
-        <tag>nunmpy</tag>
+        <tag>numpy</tag>
       </tags>
   </entry>
   <entry>
@@ -3228,16 +3228,7 @@ Fig2. A*的搜索过程
   <entry>
     <title>科研指南</title>
     <url>/2025/05/17/%E7%A7%91%E7%A0%94%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<div class="admonition info">
-<p class="admonition-title">
-海运研究什么东西？
-</p>
-<p>
-战略层面：船舶大小、船队规模和组成、班轮运输网络设计。
-战术层面：船队路径规划问题。
-</p>
-</div>
-<h1 id="如何做好文献阅读及笔记整理">如何做好文献阅读及笔记整理</h1>
+    <content><![CDATA[<h1 id="如何做好文献阅读及笔记整理">如何做好文献阅读及笔记整理</h1>
 <p>阅读文献有什么用？必须得先想清楚这个问题读文献才能有动力。简单讲读文献有四个方面的好处：（1）帮助我们快速了解课题背景；（2）帮助我们把握课题研究方向；（3）从中学习课题设计思路；（4）提升自己的逻辑写作能力。</p>
 <table>
 <tr>
@@ -3369,6 +3360,16 @@ EI（Engineering Index）和SCI（Science Citation Index）可以理解成两个
 箭头采用锚点链接，多使用对齐工具进行调整。
 </li>
 </ul>
+</div>
+<h1 id="关于海运">关于海运</h1>
+<div class="admonition info">
+<p class="admonition-title">
+海运研究什么东西？
+</p>
+<p>
+战略层面：船舶大小、船队规模和组成、班轮运输网络设计。
+战术层面：船队路径规划问题。
+</p>
 </div>
 <h1 id="参考资料">参考资料</h1>
 <ol type="1">
