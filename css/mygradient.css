@@ -1,0 +1,39 @@
+/* ===== 通用毛玻璃基础样式 ===== */
+.card-widget {
+  background: linear-gradient(
+    -45deg, 
+    #a8d8ff33,  /* 淡天蓝（约 20% 不透明） */
+    #77b5ff33,  /* 明亮蓝（约 20% 不透明） */
+    #6a8dff33,  /* 紫调蓝（约 20% 不透明） */
+    #a3b8ff33   /* 柔紫蓝（约 20% 不透明） */
+  ) !important;
+}
+/* ===== 动画定义 ===== */
+@keyframes Gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+/*主页文章列表页面卡片*/
+#recent-posts > .recent-post-items .recent-post-item {
+  background: linear-gradient(
+    -45deg,
+    #a8d8ff33,  /* 淡天蓝（约 20% 不透明） */
+    #77b5ff33,  /* 明亮蓝（约 20% 不透明） */
+    #6a8dff33,  /* 紫调蓝（约 20% 不透明） */
+    #a3b8ff33   /* 柔紫蓝（约 20% 不透明） */
+  ) !important;
+}
+/*导航栏*/
+.nav-fixed > #nav {
+  background: linear-gradient(
+    -45deg,
+    #a8d8ff33,  /* 淡天蓝（约 20% 不透明） */
+    #77b5ff33,  /* 明亮蓝（约 20% 不透明） */
+    #6a8dff33,  /* 紫调蓝（约 20% 不透明） */
+    #a3b8ff33   /* 柔紫蓝（约 20% 不透明） */
+  ) !important;
+  backdrop-filter: blur(10px);
+}
+
+
