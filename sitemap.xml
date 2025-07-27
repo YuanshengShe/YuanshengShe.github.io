@@ -187,13 +187,6 @@
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/Git/</loc>
-    <lastmod>2025-07-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://yuanshengshe.github.io/tags/Hexo/</loc>
     <lastmod>2025-07-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -202,6 +195,13 @@
   
   <url>
     <loc>https://yuanshengshe.github.io/tags/numpy/</loc>
+    <lastmod>2025-07-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yuanshengshe.github.io/tags/Git/</loc>
     <lastmod>2025-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -236,13 +236,6 @@
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/Gurobi/</loc>
-    <lastmod>2025-07-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://yuanshengshe.github.io/tags/TSP/</loc>
     <lastmod>2025-07-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -251,6 +244,13 @@
   
   <url>
     <loc>https://yuanshengshe.github.io/tags/VRP/</loc>
+    <lastmod>2025-07-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yuanshengshe.github.io/tags/Gurobi/</loc>
     <lastmod>2025-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
