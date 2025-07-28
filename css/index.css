@@ -2105,7 +2105,7 @@ pre[class*='language-'] .token.entity {
   flex: 1 auto;
   margin: 0 auto;
   padding: 40px 15px;
-  max-width: 1200px;
+  max-width: 70%;
   width: 100%;
 }
 @media screen and (max-width: 900px) {
@@ -2150,6 +2150,16 @@ pre[class*='language-'] .token.entity {
 @media screen and (max-width: 900px) {
   .layout > div:first-child {
     width: 100% !important;
+  }
+}
+@media screen and (min-width: 900px) {
+  .layout > div:first-child {
+    -webkit-box-ordinal-group: 2;
+    -moz-box-ordinal-group: 2;
+    -o-box-ordinal-group: 2;
+    -ms-flex-order: 2;
+    -webkit-order: 2;
+    order: 2;
   }
 }
 .layout.hide-aside {
@@ -2597,7 +2607,7 @@ pre[class*='language-'] .token.entity {
 }
 @media screen and (min-width: 900px) {
   #aside-content {
-    padding-left: 15px;
+    padding-right: 15px;
   }
 }
 @media screen and (max-width: 900px) {
@@ -3684,6 +3694,12 @@ pre[class*='language-'] .token.entity {
   display: -ms-flexbox;
   display: box;
   display: flex;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -o-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
   -webkit-box-align: center;
   -moz-box-align: center;
   -o-box-align: center;
@@ -3702,6 +3718,8 @@ pre[class*='language-'] .token.entity {
   -o-transition: all 0.5s;
   -ms-transition: all 0.5s;
   transition: all 0.5s;
+  font-family: 'Comic Sans MS', '幼圆', 'Yuanti SC', cursive, sans-serif;
+  letter-spacing: 0.5px;
 }
 @media screen and (max-width: 768px) {
   #nav {
@@ -3714,14 +3732,22 @@ pre[class*='language-'] .token.entity {
   filter: none;
 }
 #nav #blog-info {
+  position: absolute;
+  left: 36px;
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -o-box-flex: 1;
   box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
+  -webkit-flex: 0;
+  -ms-flex: 0;
+  flex: 0;
+  font-size: 1.5em;
   color: var(--light-grey);
+}
+@media screen and (max-width: 768px) {
+  #nav #blog-info {
+    left: 16px;
+  }
 }
 #nav #blog-info .site-icon {
   margin-right: 6px;
@@ -3752,7 +3778,9 @@ pre[class*='language-'] .token.entity {
   font-weight: bold;
 }
 #nav .menus_items {
-  display: inline;
+  display: inline-block;
+  margin: 0 auto;
+  text-align: center;
 }
 #nav .menus_items .menus_item {
   position: relative;
@@ -3837,7 +3865,18 @@ pre[class*='language-'] .token.entity {
 }
 #nav #search-button {
   display: inline;
-  padding: 0 0 0 14px;
+  position: absolute;
+  right: 36px;
+  padding: 0;
+  color: var(--light-grey);
+}
+@media screen and (max-width: 768px) {
+  #nav #search-button {
+    right: 16px;
+  }
+}
+#nav #search-button:hover {
+  color: var(--white);
 }
 #nav .site-page {
   position: relative;
