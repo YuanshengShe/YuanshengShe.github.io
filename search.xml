@@ -944,6 +944,122 @@ Fig2. 两种写法深拷贝的差异
       </tags>
   </entry>
   <entry>
+    <title>Git工具</title>
+    <url>/posts/a97adaa0/</url>
+    <content><![CDATA[<p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
+<h1 id="git环境配置">Git环境配置</h1>
+<p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
+Fig1. Git仓库的结构
+</center>
+<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
+<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
+<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<blockquote>
+<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
+</blockquote>
+<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
+<span class="token function">git</span> pull origin master --allow-unrelated-histories
+<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info">
+<p class="admonition-title">
+需要注意的点
+</p>
+<ul>
+<li>
+命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。
+</li>
+<li>
+不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master
+</li>
+<li>
+如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接
+</li>
+<li>
+master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去
+</li>
+</ul>
+</div>
+<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
+<ul>
+<li>untracked：一个新创建的文件，没有被add。</li>
+<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
+<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
+<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
+</ul>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
+Fig2. 文件各种状态的转换
+</center>
+<h1 id="git分支管理工作流">Git分支管理工作流</h1>
+<p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
+<center>
+<p><img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%"></p>
+Fig3. 文件各种状态的转换
+</center>
+<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
+<p>最后是多人协作的一般流程</p>
+<ol type="1">
+<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
+<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
+<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
+<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
+</ol>
+<h1 id="常用bash命令和git命令">常用bash命令和git命令</h1>
+<ul>
+<li><code>D：</code>:切换到D磁盘。</li>
+<li><code>cd</code>：打印当前所在目录。</li>
+<li><code>cd d1\e1</code>：切换到当前磁盘下的d11目录。</li>
+<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
+<li><code>dir</code>：列出当前目录下的所有文件。</li>
+<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
+<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
+<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
+<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
+<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
+<li><code>cls</code>: clear screen。</li>
+<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
+<li><code>git status</code>：查询git仓库当前状态。</li>
+<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
+<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
+<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
+<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
+<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
+<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
+<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
+<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
+<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
+<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
+<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
+<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
+<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
+<li><code>git branch</code>：列举处所有分支。</li>
+<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
+<li><code>git branch 分支名</code>：创建分支。</li>
+<li><code>git branch -d 分支名</code>：删除分支。</li>
+<li><code>git switch 分支名</code>：切换到指定分支。</li>
+<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
+<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
+<li><code>git log --graph</code>：git 仓库历史变化图。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo相关基础和配置</title>
     <url>/posts/a4cc4fab/</url>
     <content><![CDATA[<h1 id="hexo的基本命令">Hexo的基本命令</h1>
@@ -1218,555 +1334,6 @@ $$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span><
       </categories>
       <tags>
         <tag>Hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git工具</title>
-    <url>/posts/a97adaa0/</url>
-    <content><![CDATA[<p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
-<h1 id="git环境配置">Git环境配置</h1>
-<p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
-<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
-Fig1. Git仓库的结构
-</center>
-<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
-<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
-<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<blockquote>
-<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
-</blockquote>
-<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
-<span class="token function">git</span> pull origin master --allow-unrelated-histories
-<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-需要注意的点
-</p>
-<ul>
-<li>
-命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。
-</li>
-<li>
-不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master
-</li>
-<li>
-如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接
-</li>
-<li>
-master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去
-</li>
-</ul>
-</div>
-<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
-<ul>
-<li>untracked：一个新创建的文件，没有被add。</li>
-<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
-<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
-<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
-</ul>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
-Fig2. 文件各种状态的转换
-</center>
-<h1 id="git分支管理工作流">Git分支管理工作流</h1>
-<p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
-<center>
-<p><img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%"></p>
-Fig3. 文件各种状态的转换
-</center>
-<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
-<p>最后是多人协作的一般流程</p>
-<ol type="1">
-<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
-<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
-<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
-<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
-</ol>
-<h1 id="常用bash命令和git命令">常用bash命令和git命令</h1>
-<ul>
-<li><code>D：</code>:切换到D磁盘。</li>
-<li><code>cd</code>：打印当前所在目录。</li>
-<li><code>cd d1\e1</code>：切换到当前磁盘下的d11目录。</li>
-<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
-<li><code>dir</code>：列出当前目录下的所有文件。</li>
-<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
-<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
-<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
-<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
-<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
-<li><code>cls</code>: clear screen。</li>
-<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
-<li><code>git status</code>：查询git仓库当前状态。</li>
-<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
-<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
-<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
-<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
-<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
-<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
-<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
-<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
-<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
-<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
-<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
-<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
-<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
-<li><code>git branch</code>：列举处所有分支。</li>
-<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
-<li><code>git branch 分支名</code>：创建分支。</li>
-<li><code>git branch -d 分支名</code>：删除分支。</li>
-<li><code>git switch 分支名</code>：切换到指定分支。</li>
-<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
-<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
-<li><code>git log --graph</code>：git 仓库历史变化图。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Sublime</title>
-    <url>/posts/ec31ac22/</url>
-    <content><![CDATA[<h1 id="snippet效率神器">Snippet效率神器</h1>
-<p>Sublime的这个功能真的是强！强！强！能省不少时间。比如我就不太熟悉html的语法，但是写博客总得插入一些图片，而要想把图片排版好就必须得写html，有了snippet，这简直就不是事儿。snippet字如其义，就是插入一个小片段，比如说我有两张图需要并排，我就可以设置如下的snippet，通过输入<code>insert images</code>再按tab键的方式快速插入对应的html代码，完成排版工作。其中<code>${1:}</code>这样的表达是占位符，前面的数字是跳转顺序，当你填完一处之后按tab键就可以跳转到下一处。</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>snippet</span><span class="token punctuation">&gt;</span></span>
-	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>content</span><span class="token punctuation">&gt;</span></span><span class="token cdata">&lt;![CDATA[
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;center&gt;
-				&lt;img src=${1:src}/&gt;
-				Fig1. ${2:Title}
-			&lt;/center&gt;
-		&lt;/td&gt;
-		&lt;td&gt;
-			&lt;center&gt;
-				&lt;img src=${3:src}/&gt;
-				Fig2. ${4:Title}
-			&lt;/center&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-]]&gt;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>content</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tabTrigger</span><span class="token punctuation">&gt;</span></span>insert images<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tabTrigger</span><span class="token punctuation">&gt;</span></span>
-	<span class="token comment">&lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</span>
-	<span class="token comment">&lt;!-- &lt;tabTrigger&gt;hello&lt;/tabTrigger&gt; --&gt;</span>
-	<span class="token comment">&lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</span>
-	<span class="token comment">&lt;!-- &lt;scope&gt;source.python&lt;/scope&gt; --&gt;</span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>snippet</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="常用快捷键">常用快捷键</h1>
-<table>
-<colgroup>
-<col style="width: 21%">
-<col style="width: 39%">
-<col style="width: 39%">
-</colgroup>
-<thead>
-<tr>
-<th>分类</th>
-<th>功能</th>
-<th>快捷键</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>通用操作</td>
-<td>打开命令面板</td>
-<td><code>Ctrl + Shift + P</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>新建python文件</td>
-<td><code>Ctrl + Alt + Shift + P</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>新建文件</td>
-<td><code>Ctrl + N</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>保存文件</td>
-<td><code>Ctrl + S</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>另存为</td>
-<td><code>Ctrl + Shift + S</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>打开文件</td>
-<td><code>Ctrl + O</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>切换项目</td>
-<td><code>Alt + shift + P</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>关闭当前标签页</td>
-<td><code>Ctrl + W</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>关闭所有标签页</td>
-<td><code>Ctrl + Shift + W</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>切换全屏模式</td>
-<td><code>Fn + F11</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>切换侧边栏显示/隐藏</td>
-<td><code>Ctrl + K + B</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>build当前文件（运行）</td>
-<td><code>Ctrl + B</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>显示build结果</td>
-<td><code>Shift + Esc</code></td>
-</tr>
-<tr>
-<td>通用操作</td>
-<td>隐藏build结果</td>
-<td><code>Esc</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>快速跳转文件</td>
-<td><code>Ctrl + P</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>跳转到指定行号</td>
-<td><code>Ctrl + G</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>跳转到符号（函数/类）</td>
-<td><code>Ctrl + R</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>返回上一个光标位置</td>
-<td><code>Ctrl + -</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>前进到下一个光标位置</td>
-<td><code>Ctrl + Shift + -</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>跳转到匹配括号</td>
-<td><code>Ctrl + M</code></td>
-</tr>
-<tr>
-<td>导航与跳转</td>
-<td>跳转到行首行尾</td>
-<td><code>Fn + Home</code> / <code>Fn + End</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>复制当前行</td>
-<td><code>Ctrl + Shift + D</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>删除当前行</td>
-<td><code>Ctrl + Shift + K</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>合并多行</td>
-<td><code>Ctrl + Shift + J</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>行缩进</td>
-<td><code>Ctrl + ]</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>行取消缩进</td>
-<td><code>Ctrl + [</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>注释/取消注释</td>
-<td><code>Ctrl + /</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>批量重命名所选内容</td>
-<td><code>Ctrl + D</code>（多次按）</td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>撤销操作</td>
-<td><code>Ctrl + Z</code></td>
-</tr>
-<tr>
-<td>编辑操作</td>
-<td>粘贴并自动缩进</td>
-<td><code>Ctrl + Shift + V</code></td>
-</tr>
-<tr>
-<td>选择与多光标</td>
-<td>扩展选区（词→行→块）</td>
-<td><code>Ctrl + D</code> → <code>Ctrl + L</code> → <code>Ctrl + A</code></td>
-</tr>
-<tr>
-<td>选择与多光标</td>
-<td>竖向多光标选择</td>
-<td><code>Ctrl + Alt + ↑/↓</code></td>
-</tr>
-<tr>
-<td>搜索与替换</td>
-<td>查找</td>
-<td><code>Ctrl + F</code></td>
-</tr>
-<tr>
-<td>搜索与替换</td>
-<td>替换</td>
-<td><code>Ctrl + H</code></td>
-</tr>
-<tr>
-<td>搜索与替换</td>
-<td>全局搜索（多文件）</td>
-<td><code>Ctrl + Shift + F</code></td>
-</tr>
-<tr>
-<td>窗口与标签页</td>
-<td>切换标签页</td>
-<td><code>Ctrl + Tab</code></td>
-</tr>
-<tr>
-<td>自定义快捷键</td>
-<td>终止build</td>
-<td><code>Ctrl + Shift + C</code></td>
-</tr>
-<tr>
-<td>自定义快捷键</td>
-<td>进入交互式界面</td>
-<td><code>Ctrl + Alt + Shift + I</code></td>
-</tr>
-<tr>
-<td>自定义快捷键</td>
-<td>在交互式界面运行当前程序</td>
-<td><code>Ctrl + Alt + Shift + R</code></td>
-</tr>
-<tr>
-<td>自定义快捷键</td>
-<td>在交互式界面调试当前程序（需设置断点）</td>
-<td><code>Ctrl + Alt + Shift + D</code></td>
-</tr>
-</tbody>
-</table>
-<h1 id="sublime的project功能">Sublime的project功能</h1>
-<p>Sublime的这个功能也是蛮好用的，可以把一个文件夹另存为一个project，然后通过快捷键<code>alt+shift+p</code>就可以在这些project间实现快速切换。比如我平时就是写代码和写博客的需求，我就分别创建一个代码project和一个博客project。</p>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.webp" weight="50%" height="50%">
-Fig1. 创建项目
-</center>
-<h1 id="sublime-repl插件">Sublime REPL插件</h1>
-<p>SublimeREPL 是一个 Sublime Text 插件，允许用户在编辑器内直接运行交互式编程环境（REPL，Read-Eval-Print Loop）。还可以使用python自带的PDB（python debugger）调试代码。</p>
-<pre class="line-numbers language-none"><div class="caption"><span>设置sublime repl的快捷键</span></div><code class="language-none">[  // 进入交互式界面
-    {
-        "keys":["ctrl+alt+shift+i"],
-        "caption": "SublimeREPL: Python - IPython",
-        "command": "run_existing_window_command",
-        "args":
-            {
-                "id": "repl_python_ipython",
-                "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"
-            }
-    },
-    // 通过交互式界面运行当前程序
-    {
-        "keys":["ctrl+alt+shift+r"],
-        "caption": "SublimeREPL: Python - RUN current file",
-        "command": "run_existing_window_command",
-        "args":
-        {
-        "id": "repl_python_run",
-        "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"
-        }
-    },
-    // pdb是python debugger的缩写，在交互式界面调试当前程序
-    {
-    "keys": ["ctrl+alt+shift+d"],
-    "caption": "SublimeREPL: Python - PDB current file",
-    "command": "run_existing_window_command",
-    "args": {
-        "id": "repl_python_pdb",
-        "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"}
-    },
-]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-使用pdb调试代码的基本命令
-</p>
-<ul>
-<li>
-b：查看所有以及设置的断点。
-</li>
-<li>
-b linenume：在linenum行设置一个断点。
-</li>
-<li>
-cl linenum：删除linenum处的断点。
-</li>
-<li>
-condition linenum cond：当cond满足时linenum行的断点才启用。
-</li>
-<li>
-r：运行到下一处断点（不包括该断点对应行）。如果没有设置断点，就运行到最后一行（不包含最后一行）。
-</li>
-<li>
-unt linenum：运行到linenum行（不包含）或遇到断点。
-</li>
-<li>
-n：运行当前所在行，不进入函数内部。
-</li>
-<li>
-s：运行当前行，进入函数内部。
-</li>
-<li>
-j linenum：跳到linenum行，不执行。
-</li>
-<li>
-p x：查看变量x的取值。
-</li>
-</ul>
-</div>
-<h1 id="sublime的sublime-tmpl插件">Sublime的Sublime Tmpl插件</h1>
-<p>SublimeTmpl能新建html、css、javascript、php、python、ruby六种类型的文件模板，所有的文件模板都在插件目录的templates文件夹里，可以自定义编辑文件模板。</p>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/sublime/3.webp" weight="50%" height="50%">
-Fig2. sublime tmpl的模板文件
-</center>
-<h1 id="修改hosts屏蔽sublime的更新检查">修改hosts屏蔽sublime的更新检查</h1>
-<p>设置<code>"update_check":false</code>是不起作用的，在hosts文件中添加如下语句可以屏蔽更新检查，原理——127.0.0.1 是本地回环地址（指向本机）。将www.sublimetext.com解析到 127.0.0.1 后，当 Sublime Text 尝试访问官网（www.sublimetext.com）检测更新会被重定向到本机。由于本机无响应，这些请求会失败，软件无法完成更新检查。但是这么干会有一个负面作用，就是这台电脑没办法访问sublimetext的主页了。</p>
-<pre class="line-numbers language-none"><code class="language-none">127.0.0.1 www.sublimetext.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>Sublime</tag>
-        <tag>快捷键</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Tkinter框架</title>
-    <url>/posts/10440878/</url>
-    <content><![CDATA[<p>怎么用tkinter设计一个GUI，思路就是——首先创建一个根窗口对象（这个一定是最顶层的容器），然后创建容器组件和其它组件（可以嵌套在容器组件里面，容器组件里面还可以嵌套容器组件），给根窗口or组件绑定对应的事件和事件处理函数，而对于各个组件之间的位置关系和布局则通过组件的grid方法来完成。</p>
-<blockquote>
-<p>少记忆，抓重点，是学一个新框架最快的方式。所以本文就忽略繁琐的参数了，知道框架大致怎么用，剩下的查文档就行了… <del><font color="green">主要原因还是不擅长记忆，哈哈</font></del></p>
-</blockquote>
-<h1 id="grid方法实现widget布局组件布局管理">grid方法实现Widget布局（组件布局管理）</h1>
-<p>grid方法以类似excel表格的方式实现组件的布局，这个方法核心的参数包括：</p>
-<ul>
-<li>row,column：设置当前组件所处的“excel表格”，<font color="blue">整个表格的大小是<code>[max(row)+1] x [max(column)+1]</code>。</font></li>
-<li>rowspan,columnspan：类似于excel表格中的合并单元格，rowspan决定列方向上合并多少个单元格，columnspan决定行方向上合并多少个单元格。</li>
-<li>padx,pady：设置控件边界与控件边界和控件边界与窗口边界之间像素距离。</li>
-<li>sticky：设置控件之间的对齐方式，可选参数包括N、S、W、E，组合使用时可能会有拉伸效果。注意时以同行或同列的组件为基准进行最大程度的对齐。</li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">
-Tk类的rowconfigure和columnconfigure方法
-</p>
-<p>
-这两个方法可以用来控制用户缩放根窗口大小时对应的行和列的缩放比例
-</p>
-</div>
-<h1 id="tkinter的四种内置数据类型">tkinter的四种内置数据类型</h1>
-<p>我们可以通过config方法再程序运行过程中修改组件的参数，但当某些控件具有相同的参数时，一个组件一个组件的去调用config修改就太繁琐了。一种解决方法是将参数设置为变量，通过修改变量的值就可以实现批量的修改。<del><font color="red">我们只能使用tkinter的内置数据类型，而不能直接使用python中的数据类型</font></del></p>
-<ul>
-<li>IntVar：整数类型</li>
-<li>StringVar：字符串类型</li>
-<li>DoubleVar：浮点数类型</li>
-<li>BooleanVar：bool类型</li>
-<li>get和set方法：获取和设置tkinter中变量对象的值</li>
-<li>trace方法：对变量进行追踪，如果发生修改（w模式）或读取（r模式）就会调用callback函数，注意callback函数必须包含name,index,mode这三个位置参数，这些参数会在callback被调用时自动传递给它。</li>
-</ul>
-<h1 id="tkinter中的容器类型组件">tkinter中的容器类型组件</h1>
-<p>当设计的GUI比较复杂的时候，最好使用容器组件来管理其它的组件。容器组件和用TK创建的根窗口很类似，它是一种可以容纳组件的组件。再tkinter容器组件有4种</p>
-<ul>
-<li>Frame</li>
-<li>LabelFrame：和Frame的唯一区别就是这个容器组件的左上脚是带标签的</li>
-<li>Toplevel：和Frame的唯一区别就是这个容器组件是脱离根窗口的，回产生一个独立窗口，有自己的窗口标题，关闭这个窗口不会影响根窗口，但是如果根窗口被关闭那么这个容器组件对应的窗口也会被关闭</li>
-<li>Notebook：这个是ttk子模块下的一个容器组件，它的特点是通过选项卡来组织其它组件，当选择不同的选项时可以看到不同的子组件内容</li>
-</ul>
-<h1 id="将事件和函数绑定">将事件和函数绑定</h1>
-<p>在tkinter中事件和事件处理函数绑定有两种方式：（1）使用command参数（2）使用bind方法。同时tkinter支持一个组件对应多个事件进而绑定多个事件处理函数，同时也支持使用bind方法的add参数实现一个事件绑定多个事件处理函数。</p>
-<ul>
-<li>组件状态改变事件和函数的绑定：通过组件的command参数来实现</li>
-<li>鼠标事件和函数的绑定、键盘事件和函数的绑定都可以通过控件的bind方法来实现</li>
-</ul>
-<h1 id="如何将matplotlib嵌入到tkinter当中">如何将matplotlib嵌入到tkinter当中</h1>
-<p>将 Matplotlib 图像嵌入到 Tkinter 中，需要使用 FigureCanvasTkAgg 这个适配器类。这个类常用的方法如下</p>
-<ul>
-<li>draw方法：重新将figure对象上的图像渲染到tk中。</li>
-<li>get_tk_widget()：FigureCanvasTkAgg 本身不是继承自 Tkinter 的 Widget 类，而是一个封装了 Matplotlib 绘图功能的对象，要想使用tkinter的布局管理器必须得是Widget对象，FigureCanvasTkAgg类使用这个方法返回内部创建的真实 Tkinter Canvas 组件，使其能被 Tkinter 的布局系统识别和处理。</li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">
-推荐操作流程
-</p>
-<ol>
-<li>
-创建一个figure对象，传递给FigureCanvasTkAgg，然后获取内部的Widget完成布局
-</li>
-<li>
-与用matplolib绘图一致，在figure上绘图
-</li>
-<li>
-调用draw方法重新渲染figure上的图形到gui中
-</li>
-</ol>
-</div>
-<h1 id="怎么组织一个tkinter项目的结构">怎么组织一个tkinter项目的结构</h1>
-<p>MVC架构是一种用于构建用户界面的软件设计模式，最早在1970年代由Trygve Reenskaug提出。该模式将系统划分为三个主要部分：模型（Model）、视图（View）和控制器（Controller）。这种分离的方式旨在提高代码的模块化程度，促进代码的重用和维护。各个部分的实现要求如下：</p>
-<ol type="1">
-<li>Model（模型）：管理数据和业务逻辑（如数据库操作、计算规则）</li>
-<li>View（视图）：负责UI展示（如窗口、按钮、文本框）</li>
-<li>Controller（控制器）：处理用户输入，协调Model和View的交互</li>
-</ol>
-<p>该框架的数据流为——用户在视图上操作<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.181ex" role="img" focusable="false" viewBox="0 -511 1000 522"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"></path></g></g></g></svg></mjx-container></span>视图调用控制器方法修改数据模型&amp;&amp;数据模型发生变化通知视图完成对应变化。</p>
-<blockquote>
-<p>一个好例子：https://www.runoob.com/design-pattern/mvc-pattern.html</p>
-</blockquote>
-<h1 id="tkinter中引入表格控件">tkinter中引入表格控件</h1>
-<p>目前用的是pandastable这个第三方库，使用非常简单，对数据的管理也非常方便，直接修改Table对象的model属性的df属性为新的dataframe，然后redraw方法重新绘制一下表格就ok了。</p>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>GUI</tag>
-        <tag>Tkinter</tag>
       </tags>
   </entry>
   <entry>
@@ -2532,6 +2099,348 @@ FEASRELAX_CARDINALITY = 2<span aria-hidden="true" class="line-numbers-rows"><spa
       </tags>
   </entry>
   <entry>
+    <title>Sublime</title>
+    <url>/posts/ec31ac22/</url>
+    <content><![CDATA[<h1 id="snippet效率神器">Snippet效率神器</h1>
+<p>Sublime的这个功能真的是强！强！强！能省不少时间。比如我就不太熟悉html的语法，但是写博客总得插入一些图片，而要想把图片排版好就必须得写html，有了snippet，这简直就不是事儿。snippet字如其义，就是插入一个小片段，比如说我有两张图需要并排，我就可以设置如下的snippet，通过输入<code>insert images</code>再按tab键的方式快速插入对应的html代码，完成排版工作。其中<code>${1:}</code>这样的表达是占位符，前面的数字是跳转顺序，当你填完一处之后按tab键就可以跳转到下一处。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>snippet</span><span class="token punctuation">&gt;</span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>content</span><span class="token punctuation">&gt;</span></span><span class="token cdata">&lt;![CDATA[
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;center&gt;
+				&lt;img src=${1:src}/&gt;
+				Fig1. ${2:Title}
+			&lt;/center&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;center&gt;
+				&lt;img src=${3:src}/&gt;
+				Fig2. ${4:Title}
+			&lt;/center&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+]]&gt;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>content</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>tabTrigger</span><span class="token punctuation">&gt;</span></span>insert images<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>tabTrigger</span><span class="token punctuation">&gt;</span></span>
+	<span class="token comment">&lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</span>
+	<span class="token comment">&lt;!-- &lt;tabTrigger&gt;hello&lt;/tabTrigger&gt; --&gt;</span>
+	<span class="token comment">&lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</span>
+	<span class="token comment">&lt;!-- &lt;scope&gt;source.python&lt;/scope&gt; --&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>snippet</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="常用快捷键">常用快捷键</h1>
+<table>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 39%">
+<col style="width: 39%">
+</colgroup>
+<thead>
+<tr>
+<th>分类</th>
+<th>功能</th>
+<th>快捷键</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>通用操作</td>
+<td>打开命令面板</td>
+<td><code>Ctrl + Shift + P</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>新建python文件</td>
+<td><code>Ctrl + Alt + Shift + P</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>新建文件</td>
+<td><code>Ctrl + N</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>保存文件</td>
+<td><code>Ctrl + S</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>另存为</td>
+<td><code>Ctrl + Shift + S</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>打开文件</td>
+<td><code>Ctrl + O</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>切换项目</td>
+<td><code>Alt + shift + P</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>关闭当前标签页</td>
+<td><code>Ctrl + W</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>关闭所有标签页</td>
+<td><code>Ctrl + Shift + W</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>切换全屏模式</td>
+<td><code>Fn + F11</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>切换侧边栏显示/隐藏</td>
+<td><code>Ctrl + K + B</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>build当前文件（运行）</td>
+<td><code>Ctrl + B</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>显示build结果</td>
+<td><code>Shift + Esc</code></td>
+</tr>
+<tr>
+<td>通用操作</td>
+<td>隐藏build结果</td>
+<td><code>Esc</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>快速跳转文件</td>
+<td><code>Ctrl + P</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>跳转到指定行号</td>
+<td><code>Ctrl + G</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>跳转到符号（函数/类）</td>
+<td><code>Ctrl + R</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>返回上一个光标位置</td>
+<td><code>Ctrl + -</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>前进到下一个光标位置</td>
+<td><code>Ctrl + Shift + -</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>跳转到匹配括号</td>
+<td><code>Ctrl + M</code></td>
+</tr>
+<tr>
+<td>导航与跳转</td>
+<td>跳转到行首行尾</td>
+<td><code>Fn + Home</code> / <code>Fn + End</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>复制当前行</td>
+<td><code>Ctrl + Shift + D</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>删除当前行</td>
+<td><code>Ctrl + Shift + K</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>合并多行</td>
+<td><code>Ctrl + Shift + J</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>行缩进</td>
+<td><code>Ctrl + ]</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>行取消缩进</td>
+<td><code>Ctrl + [</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>注释/取消注释</td>
+<td><code>Ctrl + /</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>批量重命名所选内容</td>
+<td><code>Ctrl + D</code>（多次按）</td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>撤销操作</td>
+<td><code>Ctrl + Z</code></td>
+</tr>
+<tr>
+<td>编辑操作</td>
+<td>粘贴并自动缩进</td>
+<td><code>Ctrl + Shift + V</code></td>
+</tr>
+<tr>
+<td>选择与多光标</td>
+<td>扩展选区（词→行→块）</td>
+<td><code>Ctrl + D</code> → <code>Ctrl + L</code> → <code>Ctrl + A</code></td>
+</tr>
+<tr>
+<td>选择与多光标</td>
+<td>竖向多光标选择</td>
+<td><code>Ctrl + Alt + ↑/↓</code></td>
+</tr>
+<tr>
+<td>搜索与替换</td>
+<td>查找</td>
+<td><code>Ctrl + F</code></td>
+</tr>
+<tr>
+<td>搜索与替换</td>
+<td>替换</td>
+<td><code>Ctrl + H</code></td>
+</tr>
+<tr>
+<td>搜索与替换</td>
+<td>全局搜索（多文件）</td>
+<td><code>Ctrl + Shift + F</code></td>
+</tr>
+<tr>
+<td>窗口与标签页</td>
+<td>切换标签页</td>
+<td><code>Ctrl + Tab</code></td>
+</tr>
+<tr>
+<td>自定义快捷键</td>
+<td>终止build</td>
+<td><code>Ctrl + Shift + C</code></td>
+</tr>
+<tr>
+<td>自定义快捷键</td>
+<td>进入交互式界面</td>
+<td><code>Ctrl + Alt + Shift + I</code></td>
+</tr>
+<tr>
+<td>自定义快捷键</td>
+<td>在交互式界面运行当前程序</td>
+<td><code>Ctrl + Alt + Shift + R</code></td>
+</tr>
+<tr>
+<td>自定义快捷键</td>
+<td>在交互式界面调试当前程序（需设置断点）</td>
+<td><code>Ctrl + Alt + Shift + D</code></td>
+</tr>
+</tbody>
+</table>
+<h1 id="sublime的project功能">Sublime的project功能</h1>
+<p>Sublime的这个功能也是蛮好用的，可以把一个文件夹另存为一个project，然后通过快捷键<code>alt+shift+p</code>就可以在这些project间实现快速切换。比如我平时就是写代码和写博客的需求，我就分别创建一个代码project和一个博客project。</p>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.webp" weight="50%" height="50%">
+Fig1. 创建项目
+</center>
+<h1 id="sublime-repl插件">Sublime REPL插件</h1>
+<p>SublimeREPL 是一个 Sublime Text 插件，允许用户在编辑器内直接运行交互式编程环境（REPL，Read-Eval-Print Loop）。还可以使用python自带的PDB（python debugger）调试代码。</p>
+<pre class="line-numbers language-none"><div class="caption"><span>设置sublime repl的快捷键</span></div><code class="language-none">[  // 进入交互式界面
+    {
+        "keys":["ctrl+alt+shift+i"],
+        "caption": "SublimeREPL: Python - IPython",
+        "command": "run_existing_window_command",
+        "args":
+            {
+                "id": "repl_python_ipython",
+                "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"
+            }
+    },
+    // 通过交互式界面运行当前程序
+    {
+        "keys":["ctrl+alt+shift+r"],
+        "caption": "SublimeREPL: Python - RUN current file",
+        "command": "run_existing_window_command",
+        "args":
+        {
+        "id": "repl_python_run",
+        "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"
+        }
+    },
+    // pdb是python debugger的缩写，在交互式界面调试当前程序
+    {
+    "keys": ["ctrl+alt+shift+d"],
+    "caption": "SublimeREPL: Python - PDB current file",
+    "command": "run_existing_window_command",
+    "args": {
+        "id": "repl_python_pdb",
+        "file": "C:/Users/sheyu/AppData/Roaming/Sublime Text/Packages/SublimeREPL/config/Python/Main.sublime-menu"}
+    },
+]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info">
+<p class="admonition-title">
+使用pdb调试代码的基本命令
+</p>
+<ul>
+<li>
+b：查看所有以及设置的断点。
+</li>
+<li>
+b linenume：在linenum行设置一个断点。
+</li>
+<li>
+cl linenum：删除linenum处的断点。
+</li>
+<li>
+condition linenum cond：当cond满足时linenum行的断点才启用。
+</li>
+<li>
+r：运行到下一处断点（不包括该断点对应行）。如果没有设置断点，就运行到最后一行（不包含最后一行）。
+</li>
+<li>
+unt linenum：运行到linenum行（不包含）或遇到断点。
+</li>
+<li>
+n：运行当前所在行，不进入函数内部。
+</li>
+<li>
+s：运行当前行，进入函数内部。
+</li>
+<li>
+j linenum：跳到linenum行，不执行。
+</li>
+<li>
+p x：查看变量x的取值。
+</li>
+</ul>
+</div>
+<h1 id="sublime的sublime-tmpl插件">Sublime的Sublime Tmpl插件</h1>
+<p>SublimeTmpl能新建html、css、javascript、php、python、ruby六种类型的文件模板，所有的文件模板都在插件目录的templates文件夹里，可以自定义编辑文件模板。</p>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/sublime/3.webp" weight="50%" height="50%">
+Fig2. sublime tmpl的模板文件
+</center>
+<h1 id="修改hosts屏蔽sublime的更新检查">修改hosts屏蔽sublime的更新检查</h1>
+<p>设置<code>"update_check":false</code>是不起作用的，在hosts文件中添加如下语句可以屏蔽更新检查，原理——127.0.0.1 是本地回环地址（指向本机）。将www.sublimetext.com解析到 127.0.0.1 后，当 Sublime Text 尝试访问官网（www.sublimetext.com）检测更新会被重定向到本机。由于本机无响应，这些请求会失败，软件无法完成更新检查。但是这么干会有一个负面作用，就是这台电脑没办法访问sublimetext的主页了。</p>
+<pre class="line-numbers language-none"><code class="language-none">127.0.0.1 www.sublimetext.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>Sublime</tag>
+        <tag>快捷键</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Latex环境配置与模板</title>
     <url>/posts/effed353/</url>
     <content><![CDATA[<h1 id="环境配置">环境配置</h1>
@@ -2620,12 +2529,118 @@ Fig4. 再次编译，成功运行
 </center>
 <h2 id="关于latex语法">关于latex语法</h2>
 <p>这块儿目前还没有很迫切的需求去详细学习，计划在使用别人做好的模板的过程中遇到问题再补充，就先略过了。<br>
-<embed src="path/to/downloaded-tutorial.pdf" type="application/pdf" width="100%" height="600px"></p>
+<pre class="line-numbers language-latex" data-language="latex"><div class="caption"><span>一个tex文件的例子</span></div><code class="language-latex"><span class="token comment">% document环境之前的部分都叫做序言</span>
+<span class="token comment">% 定义了文档类（类型）以及诸如编写文档时使用的语言等细节，加载您想要使用的包</span>
+<span class="token function selector">\documentclass</span><span class="token punctuation">[</span>12pt, letterpaper<span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token keyword">article</span><span class="token punctuation">}</span> <span class="token comment">% 定义文章类型是article，并在[]中传递附加参数</span>
+<span class="token function selector">\title</span><span class="token punctuation">{</span>My first LaTeX document<span class="token punctuation">}</span> <span class="token comment">% 序言中的内容不会显示在编译好的pdf中，这里只是在设置题目、作者和日期信息，想在正文的什么位置显示就得在正文使用\maketitle命令</span>
+<span class="token function selector">\author</span><span class="token punctuation">{</span>Hubert Farnsworth<span class="token function selector">\thanks</span><span class="token punctuation">{</span>Funded by the Overleaf team.<span class="token punctuation">}</span><span class="token punctuation">}</span>
+<span class="token function selector">\date</span><span class="token punctuation">{</span>August 2022<span class="token punctuation">}</span>
+<span class="token function selector">\usepackage</span><span class="token punctuation">{</span><span class="token keyword">graphicx</span><span class="token punctuation">}</span> <span class="token comment">% 支持latex中显示图像的包</span>
+<span class="token function selector">\usepackage</span><span class="token punctuation">{</span><span class="token keyword">amsmath</span><span class="token punctuation">}</span> <span class="token comment">% 提供了额外的公式环境</span>
+<span class="token function selector">\graphicspath</span><span class="token punctuation">{</span><span class="token punctuation">{</span>images/<span class="token punctuation">}</span><span class="token punctuation">}</span> <span class="token comment">% 配置图像放在当前文件夹的images目录下，下面导入图片的地址就可以用基于images的相对路径了</span>
+<span class="token comment">% document环境之间的部分叫做正文</span>
+<span class="token function selector">\begin</span><span class="token punctuation">{</span><span class="token keyword">document</span><span class="token punctuation">}</span>
+<span class="token function selector">\maketitle</span> <span class="token comment">% 添加标题信息的命令</span>
+<span class="token function selector">\tableofcontents</span> <span class="token comment">% 添加目录的命令</span>
+<span class="token function selector">\begin</span><span class="token punctuation">{</span><span class="token keyword">abstract</span><span class="token punctuation">}</span> <span class="token comment">% 使用abstract环境排版摘要</span>
+This is a simple paragraph at the beginning of the 
+document. A brief introduction about the main subject.
+<span class="token function selector">\end</span><span class="token punctuation">{</span><span class="token keyword">abstract</span><span class="token punctuation">}</span>
+<span class="token comment">% 分段通过空行实现，和markdown一样，换行通过\\或\newline实现，建议新用户不要使用多个\\ 或 \换行符来“模拟”段落之间有较大间距，因为这会干扰 LaTeX 的排版算法。推荐的方法是继续使用空白行来创建新段落</span>
+<span class="token function selector">\section</span><span class="token punctuation">{</span><span class="token headline class-name">Test section</span><span class="token punctuation">}</span>
+<span class="token function selector">\subsection</span><span class="token punctuation">{</span><span class="token headline class-name">Test subsection</span><span class="token punctuation">}</span>
+After our abstract we can begin the first paragraph, then press ``enter'' twice to start the second one.
+
+This line will start a second paragraph.
+
+I will start the third paragraph and then add <span class="token function selector">\\</span> a manual line break which causes this text to start on a new line but remains part of the same paragraph. Alternatively, I can use the <span class="token function selector">\verb</span>|<span class="token function selector">\newline</span>|<span class="token function selector">\newline</span> command to start a new line, which is also part of the same paragraph.
+
+First document. This is a simple example, with no 
+extra parameters or packages included.
+Some of the <span class="token function selector">\textbf</span><span class="token punctuation">{</span>greatest<span class="token punctuation">}</span>
+discoveries in <span class="token function selector">\underline</span><span class="token punctuation">{</span>science<span class="token punctuation">}</span> 
+were made by <span class="token function selector">\textbf</span><span class="token punctuation">{</span><span class="token function selector">\textit</span><span class="token punctuation">{</span>accident<span class="token punctuation">}</span><span class="token punctuation">}</span>.
+<span class="token comment">% The \includegraphics command is </span>
+<span class="token comment">% provided (implemented) by the </span>
+<span class="token comment">% graphicx package</span>
+<span class="token function selector">\begin</span><span class="token punctuation">{</span><span class="token keyword">figure</span><span class="token punctuation">}</span><span class="token punctuation">[</span>h<span class="token punctuation">]</span>
+    <span class="token function selector">\centering</span>
+    <span class="token function selector">\includegraphics</span><span class="token punctuation">[</span>width=0.35<span class="token function selector">\textwidth</span><span class="token punctuation">]</span><span class="token punctuation">{</span>testpic<span class="token punctuation">}</span> <span class="token comment">% 图像宽度设置为文本宽度的35%</span>
+    <span class="token function selector">\caption</span><span class="token punctuation">{</span>The emblem of Dalian Maritime University.<span class="token punctuation">}</span> <span class="token comment">% 图像说明</span>
+    <span class="token function selector">\label</span><span class="token punctuation">{</span><span class="token keyword">fig:testpic</span><span class="token punctuation">}</span> <span class="token comment">% 设置图像标签，课配合\ref{fig:testpic}命令引用这个图</span>
+<span class="token function selector">\end</span><span class="token punctuation">{</span><span class="token keyword">figure</span><span class="token punctuation">}</span> <span class="token comment">% Although the full file name, including its extension, is allowed in the \includegraphics command, it’s considered best practice to omit the file extension because it will prompt LaTeX to search for all the supported formats.</span>
+<span class="token comment">% Unordered lists are produced by the itemize environment. Each list entry must be preceded by the \item command</span>
+<span class="token function selector">\begin</span><span class="token punctuation">{</span><span class="token keyword">itemize</span><span class="token punctuation">}</span>
+  <span class="token function selector">\item</span> The individual entries are indicated with a black dot, a so-called bullet.
+  <span class="token function selector">\item</span> The text in the entries may be of any length.
+<span class="token function selector">\end</span><span class="token punctuation">{</span><span class="token keyword">itemize</span><span class="token punctuation">}</span>
+<span class="token comment">% Ordered lists use the same syntax as unordered lists but are created using the enumerate environment</span>
+<span class="token function selector">\begin</span><span class="token punctuation">{</span><span class="token keyword">enumerate</span><span class="token punctuation">}</span>
+  <span class="token function selector">\item</span> This is the first entry in our list.
+  <span class="token function selector">\item</span> The list numbers increase with each entry we add.
+<span class="token function selector">\end</span><span class="token punctuation">{</span><span class="token keyword">enumerate</span><span class="token punctuation">}</span>
+<span class="token comment">% 内联数学公式</span>
+In physics, the mass-energy equivalence is stated 
+by the equation <span class="token equation string">$E=mc^2$</span>, discovered in 1905 by Albert Einstein.
+<span class="token comment">% 显示数学公式To typeset display-mode math you can use one of these delimiter pairs: \[ ... \], \begin{displaymath} ... \end{displaymath} or \begin{equation} ... \end{equation}. Historically, typesetting display-mode math required use of $$ characters delimiters, as in $$ ... display math here ...$$, but this method is no longer recommended: use LaTeX’s delimiters \[ ... \] instead.</span>
+The mass-energy equivalence is described by the famous equation
+<span class="token equation string">\[ E=mc^2 \]</span> discovered in 1905 by Albert Einstein. 
+
+In natural units (<span class="token equation string">$c = 1$</span>), the formula expresses the identity.
+
+Subscripts in math mode are written as <span class="token equation string">$a_b$</span> and superscripts are written as <span class="token equation string">$a^b$</span>. These can be combined and nested to write expressions such as
+
+<span class="token equation string">\[ T^{i_1 i_2 <span class="token equation-command regex">\dots</span> i_p}_{j_1 j_2 <span class="token equation-command regex">\dots</span> j_q} = T(x^{i_1},<span class="token equation-command regex">\dots</span>,x^{i_p},e_{j_1},<span class="token equation-command regex">\dots</span>,e_{j_q}) \]</span>
+ 
+We write integrals using <span class="token equation string">$<span class="token equation-command regex">\int</span>$</span> and fractions using <span class="token equation string">$<span class="token equation-command regex">\frac</span>{a}{b}$</span>. Limits are placed on integrals using superscripts and subscripts:
+
+<span class="token equation string">\[ <span class="token equation-command regex">\int</span>_0^1 <span class="token equation-command regex">\frac</span>{dx}{e^x} =  <span class="token equation-command regex">\frac</span>{e-1}{e} \]</span>
+
+Lower case Greek letters are written as <span class="token equation string">$<span class="token equation-command regex">\omega</span>$</span> <span class="token equation string">$<span class="token equation-command regex">\delta</span>$</span> etc. while upper case Greek letters are written as <span class="token equation string">$<span class="token equation-command regex">\Omega</span>$</span> <span class="token equation string">$<span class="token equation-command regex">\Delta</span>$</span>.
+
+Mathematical operators are prefixed with a backslash as <span class="token equation string">$<span class="token equation-command regex">\sin</span>(<span class="token equation-command regex">\beta</span>)$</span>, <span class="token equation string">$<span class="token equation-command regex">\cos</span>(<span class="token equation-command regex">\alpha</span>)$</span>, <span class="token equation string">$<span class="token equation-command regex">\log</span>(x)$</span> etc.
+<span class="token comment">% asmath提供的多行公式环境align和数组环境array</span>
+<span class="token function selector">\begin</span><span class="token punctuation">{</span><span class="token keyword">align</span><span class="token punctuation">}</span><span class="token equation string">
+          y &amp; = x <span class="token equation-command regex">\\</span>
+          y &amp; = 3x^2 + 5x + 2
+</span><span class="token function selector">\end</span><span class="token punctuation">{</span><span class="token keyword">align</span><span class="token punctuation">}</span>
+<span class="token comment">%  在latex中只用自带的tabular环境创建表</span>
+<span class="token function selector">\begin</span><span class="token punctuation">{</span><span class="token keyword">table</span><span class="token punctuation">}</span>
+<span class="token function selector">\begin</span><span class="token punctuation">{</span><span class="token keyword">center</span><span class="token punctuation">}</span>
+<span class="token function selector">\begin</span><span class="token punctuation">{</span><span class="token keyword">tabular</span><span class="token punctuation">}</span><span class="token punctuation">{</span>|c |l| r|<span class="token punctuation">}</span> <span class="token comment">% clr表示表格有三列，分别居中、左对齐和右对齐,|表示在相应列添加竖线</span>
+ <span class="token function selector">\hline</span>
+ cell1 <span class="token punctuation">&amp;</span> cell2 <span class="token punctuation">&amp;</span> cell3 <span class="token function selector">\\</span> 
+ cell4 <span class="token punctuation">&amp;</span> cell5 <span class="token punctuation">&amp;</span> cell6 <span class="token function selector">\\</span> 
+ cell7 <span class="token punctuation">&amp;</span> cell8 <span class="token punctuation">&amp;</span> cell9 <span class="token function selector">\\</span> 
+ <span class="token function selector">\hline</span>
+<span class="token function selector">\end</span><span class="token punctuation">{</span><span class="token keyword">tabular</span><span class="token punctuation">}</span>
+<span class="token function selector">\end</span><span class="token punctuation">{</span><span class="token keyword">center</span><span class="token punctuation">}</span>
+<span class="token function selector">\caption</span><span class="token punctuation">{</span>Table to test captions and labels.<span class="token punctuation">}</span>
+<span class="token function selector">\label</span><span class="token punctuation">{</span><span class="token keyword">table:data</span><span class="token punctuation">}</span>
+<span class="token function selector">\end</span><span class="token punctuation">{</span><span class="token keyword">table</span><span class="token punctuation">}</span>
+
+<span class="token function selector">\end</span><span class="token punctuation">{</span><span class="token keyword">document</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<table>
+<tr>
+<td>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/6.webp">
+</center>
+</td>
+<td>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/7.webp">
+</center>
+</td>
+</tr>
+</table>
+<p>不得不说，latex排版确实是比word排版看着舒服。</p>
 <h1 id="参考">参考</h1>
 <ol type="1">
 <li><a href="https://www.bilibili.com/video/BV117w5eyEXv?spm_id_from=333.788.videopod.episodes&amp;vd_source=f12513f7355187e8fe4d5eabc07767fa">全网最全最细的LaTeX排版教程</a></li>
-<li><a href="https://www.bilibili.com/video/BV117w5eyEXv/?spm_id_from=333.788.videopod.episodes&amp;vd_source=f12513f7355187e8fe4d5eabc07767fa">latex排版</a></li>
+<li><a href="https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes#Writing_your_first_piece_of_LaTeX">overleaf——30分钟入门latex排版</a></li>
 <li><a href="https://github.com/LeeYanan/Latex">latex基础语法教程(github)</a></li>
+<li><a href="https://ctan.org/pkg">CTAN官网</a></li>
 </ol>
 ]]></content>
       <categories>
@@ -2633,6 +2648,97 @@ Fig4. 再次编译，成功运行
       </categories>
       <tags>
         <tag>Latex</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Tkinter框架</title>
+    <url>/posts/10440878/</url>
+    <content><![CDATA[<p>怎么用tkinter设计一个GUI，思路就是——首先创建一个根窗口对象（这个一定是最顶层的容器），然后创建容器组件和其它组件（可以嵌套在容器组件里面，容器组件里面还可以嵌套容器组件），给根窗口or组件绑定对应的事件和事件处理函数，而对于各个组件之间的位置关系和布局则通过组件的grid方法来完成。</p>
+<blockquote>
+<p>少记忆，抓重点，是学一个新框架最快的方式。所以本文就忽略繁琐的参数了，知道框架大致怎么用，剩下的查文档就行了… <del><font color="green">主要原因还是不擅长记忆，哈哈</font></del></p>
+</blockquote>
+<h1 id="grid方法实现widget布局组件布局管理">grid方法实现Widget布局（组件布局管理）</h1>
+<p>grid方法以类似excel表格的方式实现组件的布局，这个方法核心的参数包括：</p>
+<ul>
+<li>row,column：设置当前组件所处的“excel表格”，<font color="blue">整个表格的大小是<code>[max(row)+1] x [max(column)+1]</code>。</font></li>
+<li>rowspan,columnspan：类似于excel表格中的合并单元格，rowspan决定列方向上合并多少个单元格，columnspan决定行方向上合并多少个单元格。</li>
+<li>padx,pady：设置控件边界与控件边界和控件边界与窗口边界之间像素距离。</li>
+<li>sticky：设置控件之间的对齐方式，可选参数包括N、S、W、E，组合使用时可能会有拉伸效果。注意时以同行或同列的组件为基准进行最大程度的对齐。</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+Tk类的rowconfigure和columnconfigure方法
+</p>
+<p>
+这两个方法可以用来控制用户缩放根窗口大小时对应的行和列的缩放比例
+</p>
+</div>
+<h1 id="tkinter的四种内置数据类型">tkinter的四种内置数据类型</h1>
+<p>我们可以通过config方法再程序运行过程中修改组件的参数，但当某些控件具有相同的参数时，一个组件一个组件的去调用config修改就太繁琐了。一种解决方法是将参数设置为变量，通过修改变量的值就可以实现批量的修改。<del><font color="red">我们只能使用tkinter的内置数据类型，而不能直接使用python中的数据类型</font></del></p>
+<ul>
+<li>IntVar：整数类型</li>
+<li>StringVar：字符串类型</li>
+<li>DoubleVar：浮点数类型</li>
+<li>BooleanVar：bool类型</li>
+<li>get和set方法：获取和设置tkinter中变量对象的值</li>
+<li>trace方法：对变量进行追踪，如果发生修改（w模式）或读取（r模式）就会调用callback函数，注意callback函数必须包含name,index,mode这三个位置参数，这些参数会在callback被调用时自动传递给它。</li>
+</ul>
+<h1 id="tkinter中的容器类型组件">tkinter中的容器类型组件</h1>
+<p>当设计的GUI比较复杂的时候，最好使用容器组件来管理其它的组件。容器组件和用TK创建的根窗口很类似，它是一种可以容纳组件的组件。再tkinter容器组件有4种</p>
+<ul>
+<li>Frame</li>
+<li>LabelFrame：和Frame的唯一区别就是这个容器组件的左上脚是带标签的</li>
+<li>Toplevel：和Frame的唯一区别就是这个容器组件是脱离根窗口的，回产生一个独立窗口，有自己的窗口标题，关闭这个窗口不会影响根窗口，但是如果根窗口被关闭那么这个容器组件对应的窗口也会被关闭</li>
+<li>Notebook：这个是ttk子模块下的一个容器组件，它的特点是通过选项卡来组织其它组件，当选择不同的选项时可以看到不同的子组件内容</li>
+</ul>
+<h1 id="将事件和函数绑定">将事件和函数绑定</h1>
+<p>在tkinter中事件和事件处理函数绑定有两种方式：（1）使用command参数（2）使用bind方法。同时tkinter支持一个组件对应多个事件进而绑定多个事件处理函数，同时也支持使用bind方法的add参数实现一个事件绑定多个事件处理函数。</p>
+<ul>
+<li>组件状态改变事件和函数的绑定：通过组件的command参数来实现</li>
+<li>鼠标事件和函数的绑定、键盘事件和函数的绑定都可以通过控件的bind方法来实现</li>
+</ul>
+<h1 id="如何将matplotlib嵌入到tkinter当中">如何将matplotlib嵌入到tkinter当中</h1>
+<p>将 Matplotlib 图像嵌入到 Tkinter 中，需要使用 FigureCanvasTkAgg 这个适配器类。这个类常用的方法如下</p>
+<ul>
+<li>draw方法：重新将figure对象上的图像渲染到tk中。</li>
+<li>get_tk_widget()：FigureCanvasTkAgg 本身不是继承自 Tkinter 的 Widget 类，而是一个封装了 Matplotlib 绘图功能的对象，要想使用tkinter的布局管理器必须得是Widget对象，FigureCanvasTkAgg类使用这个方法返回内部创建的真实 Tkinter Canvas 组件，使其能被 Tkinter 的布局系统识别和处理。</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+推荐操作流程
+</p>
+<ol>
+<li>
+创建一个figure对象，传递给FigureCanvasTkAgg，然后获取内部的Widget完成布局
+</li>
+<li>
+与用matplolib绘图一致，在figure上绘图
+</li>
+<li>
+调用draw方法重新渲染figure上的图形到gui中
+</li>
+</ol>
+</div>
+<h1 id="怎么组织一个tkinter项目的结构">怎么组织一个tkinter项目的结构</h1>
+<p>MVC架构是一种用于构建用户界面的软件设计模式，最早在1970年代由Trygve Reenskaug提出。该模式将系统划分为三个主要部分：模型（Model）、视图（View）和控制器（Controller）。这种分离的方式旨在提高代码的模块化程度，促进代码的重用和维护。各个部分的实现要求如下：</p>
+<ol type="1">
+<li>Model（模型）：管理数据和业务逻辑（如数据库操作、计算规则）</li>
+<li>View（视图）：负责UI展示（如窗口、按钮、文本框）</li>
+<li>Controller（控制器）：处理用户输入，协调Model和View的交互</li>
+</ol>
+<p>该框架的数据流为——用户在视图上操作<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.181ex" role="img" focusable="false" viewBox="0 -511 1000 522"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"></path></g></g></g></svg></mjx-container></span>视图调用控制器方法修改数据模型&amp;&amp;数据模型发生变化通知视图完成对应变化。</p>
+<blockquote>
+<p>一个好例子：https://www.runoob.com/design-pattern/mvc-pattern.html</p>
+</blockquote>
+<h1 id="tkinter中引入表格控件">tkinter中引入表格控件</h1>
+<p>目前用的是pandastable这个第三方库，使用非常简单，对数据的管理也非常方便，直接修改Table对象的model属性的df属性为新的dataframe，然后redraw方法重新绘制一下表格就ok了。</p>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>GUI</tag>
+        <tag>Tkinter</tag>
       </tags>
   </entry>
   <entry>
@@ -3001,21 +3107,6 @@ Fig11. Gurobi求解MIP的算法框架
       </categories>
       <tags>
         <tag>整数规划</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>海大的四季</title>
-    <url>/posts/b8ef975e/</url>
-    <content><![CDATA[<div class="gallery-container" data-type="data" data-button="" data-limit="10" data-first="10">
-    <div class="gallery-items">[{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大2.jpg","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大3.jpg","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大4.jpg","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大5.jpg","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大6.jpg","alt":"","title":""}]</div>
-  </div>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
-      <tags>
-        <tag>景象照</tag>
-        <tag>大连海事大学</tag>
       </tags>
   </entry>
   <entry>
@@ -3405,6 +3496,21 @@ Fig2. A*的搜索过程
       </categories>
       <tags>
         <tag>最短路算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>海大的四季</title>
+    <url>/posts/b8ef975e/</url>
+    <content><![CDATA[<div class="gallery-container" data-type="data" data-button="" data-limit="10" data-first="10">
+    <div class="gallery-items">[{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大2.jpg","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大3.jpg","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大4.jpg","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大5.jpg","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大6.jpg","alt":"","title":""}]</div>
+  </div>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>景象照</tag>
+        <tag>大连海事大学</tag>
       </tags>
   </entry>
   <entry>
