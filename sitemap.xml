@@ -226,13 +226,6 @@
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/Gurobi/</loc>
-    <lastmod>2025-08-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://yuanshengshe.github.io/tags/Sublime/</loc>
     <lastmod>2025-08-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -247,7 +240,7 @@
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/Latex/</loc>
+    <loc>https://yuanshengshe.github.io/tags/Gurobi/</loc>
     <lastmod>2025-08-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -276,6 +269,13 @@
   
   <url>
     <loc>https://yuanshengshe.github.io/tags/VRP/</loc>
+    <lastmod>2025-08-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yuanshengshe.github.io/tags/Latex/</loc>
     <lastmod>2025-08-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
