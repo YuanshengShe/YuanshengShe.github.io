@@ -1,122 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Git工具</title>
-    <url>/posts/a97adaa0/</url>
-    <content><![CDATA[<p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
-<h1 id="git环境配置">Git环境配置</h1>
-<p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
-<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
-Fig1. Git仓库的结构
-</center>
-<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
-<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
-<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<blockquote>
-<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
-</blockquote>
-<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
-<span class="token function">git</span> pull origin master --allow-unrelated-histories
-<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-需要注意的点
-</p>
-<ul>
-<li>
-命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。
-</li>
-<li>
-不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master
-</li>
-<li>
-如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接
-</li>
-<li>
-master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去
-</li>
-</ul>
-</div>
-<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
-<ul>
-<li>untracked：一个新创建的文件，没有被add。</li>
-<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
-<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
-<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
-</ul>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
-Fig2. 文件各种状态的转换
-</center>
-<h1 id="git分支管理工作流">Git分支管理工作流</h1>
-<p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
-<center>
-<p><img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%"></p>
-Fig3. 文件各种状态的转换
-</center>
-<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
-<p>最后是多人协作的一般流程</p>
-<ol type="1">
-<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
-<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
-<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
-<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
-</ol>
-<h1 id="常用bash命令和git命令">常用bash命令和git命令</h1>
-<ul>
-<li><code>D：</code>:切换到D磁盘。</li>
-<li><code>cd</code>：打印当前所在目录。</li>
-<li><code>cd d1\e1</code>：切换到当前磁盘下的d11目录。</li>
-<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
-<li><code>dir</code>：列出当前目录下的所有文件。</li>
-<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
-<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
-<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
-<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
-<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
-<li><code>cls</code>: clear screen。</li>
-<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
-<li><code>git status</code>：查询git仓库当前状态。</li>
-<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
-<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
-<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
-<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
-<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
-<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
-<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
-<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
-<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
-<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
-<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
-<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
-<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
-<li><code>git branch</code>：列举处所有分支。</li>
-<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
-<li><code>git branch 分支名</code>：创建分支。</li>
-<li><code>git branch -d 分支名</code>：删除分支。</li>
-<li><code>git switch 分支名</code>：切换到指定分支。</li>
-<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
-<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
-<li><code>git log --graph</code>：git 仓库历史变化图。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Deap源码学习</title>
     <url>/posts/2633a33f/</url>
     <content><![CDATA[<h1 id="base模块">base模块</h1>
@@ -1060,6 +944,122 @@ Fig2. 两种写法深拷贝的差异
       </tags>
   </entry>
   <entry>
+    <title>Git工具</title>
+    <url>/posts/a97adaa0/</url>
+    <content><![CDATA[<p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
+<h1 id="git环境配置">Git环境配置</h1>
+<p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
+Fig1. Git仓库的结构
+</center>
+<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
+<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
+<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<blockquote>
+<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
+</blockquote>
+<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
+<span class="token function">git</span> pull origin master --allow-unrelated-histories
+<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info">
+<p class="admonition-title">
+需要注意的点
+</p>
+<ul>
+<li>
+命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。
+</li>
+<li>
+不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master
+</li>
+<li>
+如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接
+</li>
+<li>
+master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去
+</li>
+</ul>
+</div>
+<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
+<ul>
+<li>untracked：一个新创建的文件，没有被add。</li>
+<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
+<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
+<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
+</ul>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
+Fig2. 文件各种状态的转换
+</center>
+<h1 id="git分支管理工作流">Git分支管理工作流</h1>
+<p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
+<center>
+<p><img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%"></p>
+Fig3. 文件各种状态的转换
+</center>
+<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
+<p>最后是多人协作的一般流程</p>
+<ol type="1">
+<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
+<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
+<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
+<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
+</ol>
+<h1 id="常用bash命令和git命令">常用bash命令和git命令</h1>
+<ul>
+<li><code>D：</code>:切换到D磁盘。</li>
+<li><code>cd</code>：打印当前所在目录。</li>
+<li><code>cd d1\e1</code>：切换到当前磁盘下的d11目录。</li>
+<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
+<li><code>dir</code>：列出当前目录下的所有文件。</li>
+<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
+<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
+<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
+<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
+<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
+<li><code>cls</code>: clear screen。</li>
+<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
+<li><code>git status</code>：查询git仓库当前状态。</li>
+<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
+<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
+<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
+<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
+<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
+<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
+<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
+<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
+<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
+<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
+<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
+<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
+<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
+<li><code>git branch</code>：列举处所有分支。</li>
+<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
+<li><code>git branch 分支名</code>：创建分支。</li>
+<li><code>git branch -d 分支名</code>：删除分支。</li>
+<li><code>git switch 分支名</code>：切换到指定分支。</li>
+<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
+<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
+<li><code>git log --graph</code>：git 仓库历史变化图。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo相关基础和配置</title>
     <url>/posts/a4cc4fab/</url>
     <content><![CDATA[<h1 id="hexo的基本命令">Hexo的基本命令</h1>
@@ -1536,6 +1536,97 @@ c <span class="token operator">=</span> a<span class="token operator">+</span>b 
       </tags>
   </entry>
   <entry>
+    <title>Tkinter框架</title>
+    <url>/posts/10440878/</url>
+    <content><![CDATA[<p>怎么用tkinter设计一个GUI，思路就是——首先创建一个根窗口对象（这个一定是最顶层的容器），然后创建容器组件和其它组件（可以嵌套在容器组件里面，容器组件里面还可以嵌套容器组件），给根窗口or组件绑定对应的事件和事件处理函数，而对于各个组件之间的位置关系和布局则通过组件的grid方法来完成。</p>
+<blockquote>
+<p>少记忆，抓重点，是学一个新框架最快的方式。所以本文就忽略繁琐的参数了，知道框架大致怎么用，剩下的查文档就行了… <del><font color="green">主要原因还是不擅长记忆，哈哈</font></del></p>
+</blockquote>
+<h1 id="grid方法实现widget布局组件布局管理">grid方法实现Widget布局（组件布局管理）</h1>
+<p>grid方法以类似excel表格的方式实现组件的布局，这个方法核心的参数包括：</p>
+<ul>
+<li>row,column：设置当前组件所处的“excel表格”，<font color="blue">整个表格的大小是<code>[max(row)+1] x [max(column)+1]</code>。</font></li>
+<li>rowspan,columnspan：类似于excel表格中的合并单元格，rowspan决定列方向上合并多少个单元格，columnspan决定行方向上合并多少个单元格。</li>
+<li>padx,pady：设置控件边界与控件边界和控件边界与窗口边界之间像素距离。</li>
+<li>sticky：设置控件之间的对齐方式，可选参数包括N、S、W、E，组合使用时可能会有拉伸效果。注意时以同行或同列的组件为基准进行最大程度的对齐。</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+Tk类的rowconfigure和columnconfigure方法
+</p>
+<p>
+这两个方法可以用来控制用户缩放根窗口大小时对应的行和列的缩放比例
+</p>
+</div>
+<h1 id="tkinter的四种内置数据类型">tkinter的四种内置数据类型</h1>
+<p>我们可以通过config方法再程序运行过程中修改组件的参数，但当某些控件具有相同的参数时，一个组件一个组件的去调用config修改就太繁琐了。一种解决方法是将参数设置为变量，通过修改变量的值就可以实现批量的修改。<del><font color="red">我们只能使用tkinter的内置数据类型，而不能直接使用python中的数据类型</font></del></p>
+<ul>
+<li>IntVar：整数类型</li>
+<li>StringVar：字符串类型</li>
+<li>DoubleVar：浮点数类型</li>
+<li>BooleanVar：bool类型</li>
+<li>get和set方法：获取和设置tkinter中变量对象的值</li>
+<li>trace方法：对变量进行追踪，如果发生修改（w模式）或读取（r模式）就会调用callback函数，注意callback函数必须包含name,index,mode这三个位置参数，这些参数会在callback被调用时自动传递给它。</li>
+</ul>
+<h1 id="tkinter中的容器类型组件">tkinter中的容器类型组件</h1>
+<p>当设计的GUI比较复杂的时候，最好使用容器组件来管理其它的组件。容器组件和用TK创建的根窗口很类似，它是一种可以容纳组件的组件。再tkinter容器组件有4种</p>
+<ul>
+<li>Frame</li>
+<li>LabelFrame：和Frame的唯一区别就是这个容器组件的左上脚是带标签的</li>
+<li>Toplevel：和Frame的唯一区别就是这个容器组件是脱离根窗口的，回产生一个独立窗口，有自己的窗口标题，关闭这个窗口不会影响根窗口，但是如果根窗口被关闭那么这个容器组件对应的窗口也会被关闭</li>
+<li>Notebook：这个是ttk子模块下的一个容器组件，它的特点是通过选项卡来组织其它组件，当选择不同的选项时可以看到不同的子组件内容</li>
+</ul>
+<h1 id="将事件和函数绑定">将事件和函数绑定</h1>
+<p>在tkinter中事件和事件处理函数绑定有两种方式：（1）使用command参数（2）使用bind方法。同时tkinter支持一个组件对应多个事件进而绑定多个事件处理函数，同时也支持使用bind方法的add参数实现一个事件绑定多个事件处理函数。</p>
+<ul>
+<li>组件状态改变事件和函数的绑定：通过组件的command参数来实现</li>
+<li>鼠标事件和函数的绑定、键盘事件和函数的绑定都可以通过控件的bind方法来实现</li>
+</ul>
+<h1 id="如何将matplotlib嵌入到tkinter当中">如何将matplotlib嵌入到tkinter当中</h1>
+<p>将 Matplotlib 图像嵌入到 Tkinter 中，需要使用 FigureCanvasTkAgg 这个适配器类。这个类常用的方法如下</p>
+<ul>
+<li>draw方法：重新将figure对象上的图像渲染到tk中。</li>
+<li>get_tk_widget()：FigureCanvasTkAgg 本身不是继承自 Tkinter 的 Widget 类，而是一个封装了 Matplotlib 绘图功能的对象，要想使用tkinter的布局管理器必须得是Widget对象，FigureCanvasTkAgg类使用这个方法返回内部创建的真实 Tkinter Canvas 组件，使其能被 Tkinter 的布局系统识别和处理。</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+推荐操作流程
+</p>
+<ol>
+<li>
+创建一个figure对象，传递给FigureCanvasTkAgg，然后获取内部的Widget完成布局
+</li>
+<li>
+与用matplolib绘图一致，在figure上绘图
+</li>
+<li>
+调用draw方法重新渲染figure上的图形到gui中
+</li>
+</ol>
+</div>
+<h1 id="怎么组织一个tkinter项目的结构">怎么组织一个tkinter项目的结构</h1>
+<p>MVC架构是一种用于构建用户界面的软件设计模式，最早在1970年代由Trygve Reenskaug提出。该模式将系统划分为三个主要部分：模型（Model）、视图（View）和控制器（Controller）。这种分离的方式旨在提高代码的模块化程度，促进代码的重用和维护。各个部分的实现要求如下：</p>
+<ol type="1">
+<li>Model（模型）：管理数据和业务逻辑（如数据库操作、计算规则）</li>
+<li>View（视图）：负责UI展示（如窗口、按钮、文本框）</li>
+<li>Controller（控制器）：处理用户输入，协调Model和View的交互</li>
+</ol>
+<p>该框架的数据流为——用户在视图上操作<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.181ex" role="img" focusable="false" viewBox="0 -511 1000 522"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"></path></g></g></g></svg></mjx-container></span>视图调用控制器方法修改数据模型&amp;&amp;数据模型发生变化通知视图完成对应变化。</p>
+<blockquote>
+<p>一个好例子：https://www.runoob.com/design-pattern/mvc-pattern.html</p>
+</blockquote>
+<h1 id="tkinter中引入表格控件">tkinter中引入表格控件</h1>
+<p>目前用的是pandastable这个第三方库，使用非常简单，对数据的管理也非常方便，直接修改Table对象的model属性的df属性为新的dataframe，然后redraw方法重新绘制一下表格就ok了。</p>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>GUI</tag>
+        <tag>Tkinter</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Sublime</title>
     <url>/posts/ec31ac22/</url>
     <content><![CDATA[<h1 id="snippet效率神器">Snippet效率神器</h1>
@@ -1878,94 +1969,105 @@ Fig2. sublime tmpl的模板文件
       </tags>
   </entry>
   <entry>
-    <title>Tkinter框架</title>
-    <url>/posts/10440878/</url>
-    <content><![CDATA[<p>怎么用tkinter设计一个GUI，思路就是——首先创建一个根窗口对象（这个一定是最顶层的容器），然后创建容器组件和其它组件（可以嵌套在容器组件里面，容器组件里面还可以嵌套容器组件），给根窗口or组件绑定对应的事件和事件处理函数，而对于各个组件之间的位置关系和布局则通过组件的grid方法来完成。</p>
-<blockquote>
-<p>少记忆，抓重点，是学一个新框架最快的方式。所以本文就忽略繁琐的参数了，知道框架大致怎么用，剩下的查文档就行了… <del><font color="green">主要原因还是不擅长记忆，哈哈</font></del></p>
-</blockquote>
-<h1 id="grid方法实现widget布局组件布局管理">grid方法实现Widget布局（组件布局管理）</h1>
-<p>grid方法以类似excel表格的方式实现组件的布局，这个方法核心的参数包括：</p>
+    <title>Latex环境配置与模板</title>
+    <url>/posts/effed353/</url>
+    <content><![CDATA[<h1 id="环境配置">环境配置</h1>
+<p>说明配置问题前得先提一下Tex,Latex,Texlive的关系——Texlive实际就是Tex的一种发行版，可以类比成编译器、而Latex可以简单理解成一种排版语言，用latex写好文章之后交给Texlive编译就可以得到对应的pdf，很多资料中提到的Texstudio实际上就只是一个专门写latex的编辑器<del>就像pycharm专门写python一样</del>。我的主力编辑器是sublime，本着降低学习成本的原则，就不装texstudio了，直接在sublime里面配好latex的环境。</p>
+<p>要想在sublime中使用latex得下载：</p>
 <ul>
-<li>row,column：设置当前组件所处的“excel表格”，<font color="blue">整个表格的大小是<code>[max(row)+1] x [max(column)+1]</code>。</font></li>
-<li>rowspan,columnspan：类似于excel表格中的合并单元格，rowspan决定列方向上合并多少个单元格，columnspan决定行方向上合并多少个单元格。</li>
-<li>padx,pady：设置控件边界与控件边界和控件边界与窗口边界之间像素距离。</li>
-<li>sticky：设置控件之间的对齐方式，可选参数包括N、S、W、E，组合使用时可能会有拉伸效果。注意时以同行或同列的组件为基准进行最大程度的对齐。</li>
+<li>Texlive（编译器）</li>
+<li>Sumatra（极简版pdf阅读器）</li>
+<li>LaTeXTools（sl的插件）：核心解决的是编辑-编译-预览-调试工作流，使得sublime可以去调用latex的编译器、实时预览编译结果并双向同步（<font color="blue">使用sumatra这个软件作为pdf预览的后端，sublime是不直接支持pdf预览的</font>）、提供latex的语法高亮、以及latex中常用环境的snippet。</li>
+<li>Latex-cwl（sl的插件）：提供超全、精准、带参数提示的命令和环境补全功能。</li>
 </ul>
-<div class="admonition info">
-<p class="admonition-title">
-Tk类的rowconfigure和columnconfigure方法
-</p>
-<p>
-这两个方法可以用来控制用户缩放根窗口大小时对应的行和列的缩放比例
-</p>
-</div>
-<h1 id="tkinter的四种内置数据类型">tkinter的四种内置数据类型</h1>
-<p>我们可以通过config方法再程序运行过程中修改组件的参数，但当某些控件具有相同的参数时，一个组件一个组件的去调用config修改就太繁琐了。一种解决方法是将参数设置为变量，通过修改变量的值就可以实现批量的修改。<del><font color="red">我们只能使用tkinter的内置数据类型，而不能直接使用python中的数据类型</font></del></p>
-<ul>
-<li>IntVar：整数类型</li>
-<li>StringVar：字符串类型</li>
-<li>DoubleVar：浮点数类型</li>
-<li>BooleanVar：bool类型</li>
-<li>get和set方法：获取和设置tkinter中变量对象的值</li>
-<li>trace方法：对变量进行追踪，如果发生修改（w模式）或读取（r模式）就会调用callback函数，注意callback函数必须包含name,index,mode这三个位置参数，这些参数会在callback被调用时自动传递给它。</li>
-</ul>
-<h1 id="tkinter中的容器类型组件">tkinter中的容器类型组件</h1>
-<p>当设计的GUI比较复杂的时候，最好使用容器组件来管理其它的组件。容器组件和用TK创建的根窗口很类似，它是一种可以容纳组件的组件。再tkinter容器组件有4种</p>
-<ul>
-<li>Frame</li>
-<li>LabelFrame：和Frame的唯一区别就是这个容器组件的左上脚是带标签的</li>
-<li>Toplevel：和Frame的唯一区别就是这个容器组件是脱离根窗口的，回产生一个独立窗口，有自己的窗口标题，关闭这个窗口不会影响根窗口，但是如果根窗口被关闭那么这个容器组件对应的窗口也会被关闭</li>
-<li>Notebook：这个是ttk子模块下的一个容器组件，它的特点是通过选项卡来组织其它组件，当选择不同的选项时可以看到不同的子组件内容</li>
-</ul>
-<h1 id="将事件和函数绑定">将事件和函数绑定</h1>
-<p>在tkinter中事件和事件处理函数绑定有两种方式：（1）使用command参数（2）使用bind方法。同时tkinter支持一个组件对应多个事件进而绑定多个事件处理函数，同时也支持使用bind方法的add参数实现一个事件绑定多个事件处理函数。</p>
-<ul>
-<li>组件状态改变事件和函数的绑定：通过组件的command参数来实现</li>
-<li>鼠标事件和函数的绑定、键盘事件和函数的绑定都可以通过控件的bind方法来实现</li>
-</ul>
-<h1 id="如何将matplotlib嵌入到tkinter当中">如何将matplotlib嵌入到tkinter当中</h1>
-<p>将 Matplotlib 图像嵌入到 Tkinter 中，需要使用 FigureCanvasTkAgg 这个适配器类。这个类常用的方法如下</p>
-<ul>
-<li>draw方法：重新将figure对象上的图像渲染到tk中。</li>
-<li>get_tk_widget()：FigureCanvasTkAgg 本身不是继承自 Tkinter 的 Widget 类，而是一个封装了 Matplotlib 绘图功能的对象，要想使用tkinter的布局管理器必须得是Widget对象，FigureCanvasTkAgg类使用这个方法返回内部创建的真实 Tkinter Canvas 组件，使其能被 Tkinter 的布局系统识别和处理。</li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">
-推荐操作流程
-</p>
-<ol>
-<li>
-创建一个figure对象，传递给FigureCanvasTkAgg，然后获取内部的Widget完成布局
-</li>
-<li>
-与用matplolib绘图一致，在figure上绘图
-</li>
-<li>
-调用draw方法重新渲染figure上的图形到gui中
-</li>
-</ol>
-</div>
-<h1 id="怎么组织一个tkinter项目的结构">怎么组织一个tkinter项目的结构</h1>
-<p>MVC架构是一种用于构建用户界面的软件设计模式，最早在1970年代由Trygve Reenskaug提出。该模式将系统划分为三个主要部分：模型（Model）、视图（View）和控制器（Controller）。这种分离的方式旨在提高代码的模块化程度，促进代码的重用和维护。各个部分的实现要求如下：</p>
+<p>然后需要设置下laTexTools的相关配置：</p>
+<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>配置pdf预览后端</span></div><code class="language-plain">"windows": {
+    // Path used when invoking tex &amp; friends; "" is fine for MiKTeX
+    // For TeXlive 2011 (or other years) use
+    // "texpath" : "C:\\texlive\\2011\\bin\\win32;$PATH",
+    "texpath" : "D:\\texlive\\2017\\bin\\win32;$PATH",
+    // TeX distro: "miktex" or "texlive"
+    "distro" : "texlive",
+    // Command to invoke Sumatra. If blank, "SumatraPDF.exe" is used (it has to be on your PATH，注意改成自己的地址)
+    "sumatra": "D:\\Program Files\\SumatraPDF\\SumatraPDF.exe",
+    // Command to invoke Sublime Text. Used if the keep_focus toggle is true.
+    // If blank, "subl.exe" or "sublime_text.exe" will be used.
+    "sublime_executable": "",
+    // how long (in seconds) to wait after the jump_to_pdf command completes
+    // before switching focus back to Sublime Text. This may need to be
+    // adjusted depending on your machine and configuration.
+    "keep_focus_delay": 0.5
+  },<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>latex相关快捷键</span></div><code class="language-plain">// 给latex环境绑定的快捷键 跳转到pdf、查看目录（实际上用sumlime自带的ctrl+r也行）
+{   "keys": ["ctrl+1"], 
+    "context":  [
+        {"key": "selector", "operator": "equal", "operand": "text.tex.latex"}],
+    "command": "latextools_jumpto_pdf", "args": {"from_keybinding": true}},
+{ "keys": ["ctrl+2"],
+    "args": {"only_current_file": true},
+    "context":  [
+        {"key": "selector", "operator": "equal", "operand": "text.tex"}],
+    "command": "latextools_toc_quickpanel"},<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后来添加正向索引（从tex文件索引到pdf对应位置）和反向索引（从pdf对应位置索引到tex文件对应位置）的功能：</p>
 <ol type="1">
-<li>Model（模型）：管理数据和业务逻辑（如数据库操作、计算规则）</li>
-<li>View（视图）：负责UI展示（如窗口、按钮、文本框）</li>
-<li>Controller（控制器）：处理用户输入，协调Model和View的交互</li>
+<li>把sumatra添加到环境变量（<font color="red">切换为自己相应的位置</font>），让系统能找到它。
+<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>添加环境变量</span></div><code class="language-plain">D:\Program Files\SumatraPDF<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li>在cmd中输入如下命令
+<pre class="line-numbers language-dash" data-language="dash"><div class="caption"><span>配置反向搜索的命令</span></div><code class="language-dash">sumatrapdf.exe -inverse-search "\"C:\Program Files\Sublime Text\sublime_text.exe\" \"%f:%l\"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li>最后在sumatra的设置-选项中将双击时执行的命令一栏设置为
+<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">"C:\Program Files\Sublime Text\sublime_text.exe" "%f:%l"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
 </ol>
-<p>该框架的数据流为——用户在视图上操作<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.181ex" role="img" focusable="false" viewBox="0 -511 1000 522"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"></path></g></g></g></svg></mjx-container></span>视图调用控制器方法修改数据模型&amp;&amp;数据模型发生变化通知视图完成对应变化。</p>
+<p>至此，就成功在sublime上搭建好latex的环境了！</p>
+<h1 id="latex排版入门">latex排版入门</h1>
+<h2 id="关于latex的包管理">关于latex的包管理</h2>
+<p>和python一样，基础的latex提供有限的功能，想要更多的功能必须使用第三方包，如果下载的式texlive，那么基本上大部分包都已经安装到电脑上了。如果需要对包进行管理，可以使用texlive提供的tlmgr（但这种方式老是报错），下面就介绍怎么手动安装自己需要的latex宏包（\documentcalss{}中写的文档模板也是一样的操作）。就我的电脑而言，所有的宏包都放在C:/texlive/2017/texmf-dist/tex/latex这个路径下边。要新增宏包，就在这个目录下新建一个<font color="green">同名</font>文件夹然后把对应的包文件（如后缀为sty，cls的文件）放到这个目录下，最后以管理员身份在命令行中输入texhash 命令刷新，就可以在tex文件中导入你新增的宏包了。</p>
 <blockquote>
-<p>一个好例子：https://www.runoob.com/design-pattern/mvc-pattern.html</p>
+<p>想要什么包都可以去 https://ctan.org/pkg 这个网站下载相应的sty文件。</p>
 </blockquote>
-<h1 id="tkinter中引入表格控件">tkinter中引入表格控件</h1>
-<p>目前用的是pandastable这个第三方库，使用非常简单，对数据的管理也非常方便，直接修改Table对象的model属性的df属性为新的dataframe，然后redraw方法重新绘制一下表格就ok了。</p>
+<h2 id="关于latex的模板">关于latex的模板</h2>
+latex强就强在可以非常快速的套别人做好的模板，例如https://www.overleaf.com/latex/templates? 这个网站基本上可以搜索到所有期刊提供写作模板，下载下来，放到C:/texlive/2017/texmf-dist/tex/latex这个路径下边，就可以开始愉快的套模板了。下面以trasportaion science提供的模板为例：<br>
+(1) 去上面提到的网站找模板，复制下来。<br>
+
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/1.webp" weight="50%" height="50%">
+Fig1. 去网站上找模板
+</center>
+<ol start="2" type="1">
+<li>然后把复制内容写道tex文件里编译，这时会提醒你缺失了informs3.cls模板文件。因为上面的trasportaion science模板用了这个模板文件，所以我们必须下载它。上github找这个模板文件，然后放到C:/texlive/2017/texmf-dist/tex/latex这个路径下边（<font color="red">别忘了管理员模式下texhash下</font>），最后就大功告成了。</li>
+</ol>
+<table>
+<tr>
+<td>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/3.webp">
+Fig2. 编译看看缺了inform3.cls文件
+</center>
+</td>
+<td>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/4.webp">
+Fig3. 去网上找inform3.cls文件然后放到本地
+</center>
+</td>
+</tr>
+</table>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/5.webp">
+Fig4. 再次编译，成功运行
+</center>
+<h2 id="关于latex语法">关于latex语法</h2>
+<p>这块儿目前还没有很迫切的需求去详细学习，参考https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes ，计划在使用别人做好的模板的过程中遇到问题再补充，就先略过了。</p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a href="https://www.bilibili.com/video/BV117w5eyEXv?spm_id_from=333.788.videopod.episodes&amp;vd_source=f12513f7355187e8fe4d5eabc07767fa">全网最全最细的LaTeX排版教程</a></li>
+<li><a href="https://www.bilibili.com/video/BV117w5eyEXv/?spm_id_from=333.788.videopod.episodes&amp;vd_source=f12513f7355187e8fe4d5eabc07767fa">latex排版</a></li>
+</ol>
 ]]></content>
       <categories>
         <category>计算机技术</category>
       </categories>
       <tags>
-        <tag>GUI</tag>
-        <tag>Tkinter</tag>
+        <tag>Latex</tag>
       </tags>
   </entry>
   <entry>
@@ -2532,108 +2634,6 @@ FEASRELAX_CARDINALITY = 2<span aria-hidden="true" class="line-numbers-rows"><spa
       </tags>
   </entry>
   <entry>
-    <title>Latex环境配置与模板</title>
-    <url>/posts/effed353/</url>
-    <content><![CDATA[<h1 id="环境配置">环境配置</h1>
-<p>说明配置问题前得先提一下Tex,Latex,Texlive的关系——Texlive实际就是Tex的一种发行版，可以类比成编译器、而Latex可以简单理解成一种排版语言，用latex写好文章之后交给Texlive编译就可以得到对应的pdf，很多资料中提到的Texstudio实际上就只是一个专门写latex的编辑器<del>就像pycharm专门写python一样</del>。我的主力编辑器是sublime，本着降低学习成本的原则，就不装texstudio了，直接在sublime里面配好latex的环境。</p>
-<p>要想在sublime中使用latex得下载：</p>
-<ul>
-<li>Texlive（编译器）</li>
-<li>Sumatra（极简版pdf阅读器）</li>
-<li>LaTeXTools（sl的插件）：核心解决的是编辑-编译-预览-调试工作流，使得sublime可以去调用latex的编译器、实时预览编译结果并双向同步（<font color="blue">使用sumatra这个软件作为pdf预览的后端，sublime是不直接支持pdf预览的</font>）、提供latex的语法高亮、以及latex中常用环境的snippet。</li>
-<li>Latex-cwl（sl的插件）：提供超全、精准、带参数提示的命令和环境补全功能。</li>
-</ul>
-<p>然后需要设置下laTexTools的相关配置：</p>
-<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>配置pdf预览后端</span></div><code class="language-plain">"windows": {
-    // Path used when invoking tex &amp; friends; "" is fine for MiKTeX
-    // For TeXlive 2011 (or other years) use
-    // "texpath" : "C:\\texlive\\2011\\bin\\win32;$PATH",
-    "texpath" : "D:\\texlive\\2017\\bin\\win32;$PATH",
-    // TeX distro: "miktex" or "texlive"
-    "distro" : "texlive",
-    // Command to invoke Sumatra. If blank, "SumatraPDF.exe" is used (it has to be on your PATH，注意改成自己的地址)
-    "sumatra": "D:\\Program Files\\SumatraPDF\\SumatraPDF.exe",
-    // Command to invoke Sublime Text. Used if the keep_focus toggle is true.
-    // If blank, "subl.exe" or "sublime_text.exe" will be used.
-    "sublime_executable": "",
-    // how long (in seconds) to wait after the jump_to_pdf command completes
-    // before switching focus back to Sublime Text. This may need to be
-    // adjusted depending on your machine and configuration.
-    "keep_focus_delay": 0.5
-  },<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>latex相关快捷键</span></div><code class="language-plain">// 给latex环境绑定的快捷键 跳转到pdf、查看目录（实际上用sumlime自带的ctrl+r也行）
-{   "keys": ["ctrl+1"], 
-    "context":  [
-        {"key": "selector", "operator": "equal", "operand": "text.tex.latex"}],
-    "command": "latextools_jumpto_pdf", "args": {"from_keybinding": true}},
-{ "keys": ["ctrl+2"],
-    "args": {"only_current_file": true},
-    "context":  [
-        {"key": "selector", "operator": "equal", "operand": "text.tex"}],
-    "command": "latextools_toc_quickpanel"},<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>然后来添加正向索引（从tex文件索引到pdf对应位置）和反向索引（从pdf对应位置索引到tex文件对应位置）的功能：</p>
-<ol type="1">
-<li>把sumatra添加到环境变量（<font color="red">切换为自己相应的位置</font>），让系统能找到它。
-<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>添加环境变量</span></div><code class="language-plain">D:\Program Files\SumatraPDF<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
-<li>在cmd中输入如下命令
-<pre class="line-numbers language-dash" data-language="dash"><div class="caption"><span>配置反向搜索的命令</span></div><code class="language-dash">sumatrapdf.exe -inverse-search "\"C:\Program Files\Sublime Text\sublime_text.exe\" \"%f:%l\"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
-<li>最后在sumatra的设置-选项中将双击时执行的命令一栏设置为
-<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">"C:\Program Files\Sublime Text\sublime_text.exe" "%f:%l"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
-</ol>
-<p>至此，就成功在sublime上搭建好latex的环境了！</p>
-<h1 id="latex排版入门">latex排版入门</h1>
-<h2 id="关于latex的包管理">关于latex的包管理</h2>
-<p>和python一样，基础的latex提供有限的功能，想要更多的功能必须使用第三方包，如果下载的式texlive，那么基本上大部分包都已经安装到电脑上了。如果需要对包进行管理，可以使用texlive提供的tlmgr（但这种方式老是报错），下面就介绍怎么手动安装自己需要的latex宏包（\documentcalss{}中写的文档模板也是一样的操作）。就我的电脑而言，所有的宏包都放在C:/texlive/2017/texmf-dist/tex/latex这个路径下边。要新增宏包，就在这个目录下新建一个<font color="green">同名</font>文件夹然后把对应的包文件（如后缀为sty，cls的文件）放到这个目录下，最后以管理员身份在命令行中输入texhash 命令刷新，就可以在tex文件中导入你新增的宏包了。</p>
-<blockquote>
-<p>想要什么包都可以去 https://ctan.org/pkg 这个网站下载相应的sty文件。</p>
-</blockquote>
-<h2 id="关于latex的模板">关于latex的模板</h2>
-latex强就强在可以非常快速的套别人做好的模板，例如https://www.overleaf.com/latex/templates? 这个网站基本上可以搜索到所有期刊提供写作模板，下载下来，放到C:/texlive/2017/texmf-dist/tex/latex这个路径下边，就可以开始愉快的套模板了。下面以trasportaion science提供的模板为例：<br>
-(1) 去上面提到的网站找模板，复制下来。<br>
-
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/1.webp" weight="50%" height="50%">
-Fig1. 去网站上找模板
-</center>
-<ol start="2" type="1">
-<li>然后把复制内容写道tex文件里编译，这时会提醒你缺失了informs3.cls模板文件。因为上面的trasportaion science模板用了这个模板文件，所以我们必须下载它。上github找这个模板文件，然后放到C:/texlive/2017/texmf-dist/tex/latex这个路径下边（<font color="red">别忘了管理员模式下texhash下</font>），最后就大功告成了。</li>
-</ol>
-<table>
-<tr>
-<td>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/3.webp">
-Fig2. 编译看看缺了inform3.cls文件
-</center>
-</td>
-<td>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/4.webp">
-Fig3. 去网上找inform3.cls文件然后放到本地
-</center>
-</td>
-</tr>
-</table>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/5.webp">
-Fig4. 再次编译，成功运行
-</center>
-<h2 id="关于latex语法">关于latex语法</h2>
-<p>这块儿目前还没有很迫切的需求去详细学习，参考https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes ，计划在使用别人做好的模板的过程中遇到问题再补充，就先略过了。</p>
-<h1 id="参考">参考</h1>
-<ol type="1">
-<li><a href="https://www.bilibili.com/video/BV117w5eyEXv?spm_id_from=333.788.videopod.episodes&amp;vd_source=f12513f7355187e8fe4d5eabc07767fa">全网最全最细的LaTeX排版教程</a></li>
-<li><a href="https://www.bilibili.com/video/BV117w5eyEXv/?spm_id_from=333.788.videopod.episodes&amp;vd_source=f12513f7355187e8fe4d5eabc07767fa">latex排版</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>Latex</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>子回路消除约束</title>
     <url>/posts/862732fe/</url>
     <content><![CDATA[<h1 id="什么是子回路">什么是子回路</h1>
@@ -2718,8 +2718,17 @@ Fig4. 再次编译，成功运行
   <entry>
     <title>川西行</title>
     <url>/posts/37a60c36/</url>
-    <content><![CDATA[
+    <content><![CDATA[<div class="gallery-container" data-type="data" data-button="" data-limit="10" data-first="10">
+    <div class="gallery-items">[{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/1.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/2.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/3.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/4.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/5.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/6.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/7.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/8.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/9.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/10.webp","alt":"","title":""}]</div>
+  </div>
 ]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>川西</tag>
+        <tag>景象照</tag>
+      </tags>
   </entry>
   <entry>
     <title>整数规划课程笔记（孙小玲主讲）</title>
@@ -3392,8 +3401,8 @@ Fig2. A*的搜索过程
         <category>生活</category>
       </categories>
       <tags>
-        <tag>大连海事大学</tag>
         <tag>景象照</tag>
+        <tag>大连海事大学</tag>
       </tags>
   </entry>
   <entry>
