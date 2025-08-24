@@ -1,6 +1,399 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Git工具</title>
+    <url>/posts/a97adaa0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
+<h1 id="git环境配置">Git环境配置</h1>
+<p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
+<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
+Fig1. Git仓库的结构
+</center>
+<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
+<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
+<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<blockquote>
+<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
+</blockquote>
+<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
+<span class="token function">git</span> pull origin master --allow-unrelated-histories
+<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info">
+<p class="admonition-title">
+需要注意的点
+</p>
+<ul>
+<li>
+命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。
+</li>
+<li>
+不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master
+</li>
+<li>
+如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接
+</li>
+<li>
+master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去
+</li>
+</ul>
+</div>
+<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
+<ul>
+<li>untracked：一个新创建的文件，没有被add。</li>
+<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
+<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
+<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
+</ul>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
+Fig2. 文件各种状态的转换
+</center>
+<h1 id="git分支管理工作流">Git分支管理工作流</h1>
+<p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
+<center>
+<p><img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%"></p>
+Fig3. 文件各种状态的转换
+</center>
+<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
+<p>最后是多人协作的一般流程</p>
+<ol type="1">
+<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
+<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
+<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
+<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
+</ol>
+<h1 id="常用bash命令和git命令">常用bash命令和git命令</h1>
+<ul>
+<li><code>D：</code>:切换到D磁盘。</li>
+<li><code>cd</code>：打印当前所在目录。</li>
+<li><code>cd d1\e1</code>：切换到当前磁盘下的d11目录。</li>
+<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
+<li><code>dir</code>：列出当前目录下的所有文件。</li>
+<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
+<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
+<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
+<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
+<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
+<li><code>cls</code>: clear screen。</li>
+<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
+<li><code>git status</code>：查询git仓库当前状态。</li>
+<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
+<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
+<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
+<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
+<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
+<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
+<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
+<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
+<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
+<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
+<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
+<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
+<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
+<li><code>git branch</code>：列举处所有分支。</li>
+<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
+<li><code>git branch 分支名</code>：创建分支。</li>
+<li><code>git branch -d 分支名</code>：删除分支。</li>
+<li><code>git switch 分支名</code>：切换到指定分支。</li>
+<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
+<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
+<li><code>git log --graph</code>：git 仓库历史变化图。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo相关基础和配置</title>
+    <url>/posts/a4cc4fab/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="hexo的基本命令">Hexo的基本命令</h1>
+<ul>
+<li>创建制定布局的文章：<code>hexo new [layout] &lt;title&gt;</code>，其中layout参数的默认值是post，注意如果title有空格则必须写在引号里面。<br>
+</li>
+<li>将草稿类布局转换为post布局： <code>hexo publish</code> “草稿布局文章的标题”。<br>
+</li>
+<li>渲染，生成静态文件的文件夹public：<code>hexo generate</code>。</li>
+<li>清理缓存和原先的public文件：<code>hexo clean</code>。</li>
+<li>将public文件夹部署到远端：<code>hexo deploy</code>。</li>
+</ul>
+<h1 id="hexo的渲染器和mathjax">Hexo的渲染器和Mathjax</h1>
+<p>先说结论，Hexo渲染器的作用是将Markdown转换为对应的HTML代码，而Mathjax的作用则是去解析HTML代码当中的数学公式并基于SVG或HTML+CSS将其转换为美观的数学公式。</p>
+<p>Hexo的渲染器很多，这里就介绍hexo-renderer-pandoc。它实际上是Hexo的一个插件（用于调用Pandoc将Markdown转换为对应的html代码）。Hexo默认用的渲染器hexo-renderer-marked效果很糟糕，执行以下命令就可以将渲染器切换为hexo-renderer-pandoc。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> uninstall hexo-renderer-marked <span class="token parameter variable">--save</span>  <span class="token comment"># 移除默认渲染器</span>
+<span class="token function">npm</span> <span class="token function">install</span> hexo-renderer-pandoc <span class="token parameter variable">--save</span>    <span class="token comment"># 安装 Pandoc 渲染器</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>MathJax 是一个开源的 JavaScript 库，用于在网页中高质量地解析并可视化数学公式。与kaTex相比Mathjax除了支持Latex的完整语法，还支持相关的拓展包语法。在Hexo根目录中添加以下配置就可以自己的博客完美地显示数学公式了！</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># 支持公式</span>
+<span class="token key atrule">pandoc</span><span class="token punctuation">:</span>
+  <span class="token key atrule">args</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token string">"--mathjax"</span>                   <span class="token comment"># 启用 MathJax 支持</span>
+    <span class="token punctuation">-</span> <span class="token string">"--wrap=preserve"</span>             <span class="token comment"># 防止代码换行破坏公式</span>
+  <span class="token key atrule">extensions</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token string">"+tex_math_dollars"</span>           <span class="token comment"># 允许 $...$ 行内公式</span>
+    <span class="token punctuation">-</span> <span class="token string">"+raw_tex"</span>                    <span class="token comment"># 保留原始 LaTeX 代码</span>
+<span class="token key atrule">mathjax</span><span class="token punctuation">:</span>
+  <span class="token key atrule">tags</span><span class="token punctuation">:</span> none <span class="token comment"># or 'ams' or 'all'</span>
+  <span class="token key atrule">single_dollars</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># enable single dollar signs as in-line math delimiters</span>
+  <span class="token key atrule">cjk_width</span><span class="token punctuation">:</span> <span class="token number">0.9</span> <span class="token comment"># relative CJK char width</span>
+  <span class="token key atrule">normal_width</span><span class="token punctuation">:</span> <span class="token number">0.6</span> <span class="token comment"># relative normal (monospace) width</span>
+  <span class="token key atrule">append_css</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># add CSS to pages rendered by MathJax</span>
+  <span class="token key atrule">every_page</span><span class="token punctuation">:</span> <span class="token boolean important">false</span> <span class="token comment"># if true, every page will be rendered by MathJax regardless the `mathjax` setting in Front-matter</span>
+  <span class="token key atrule">packages</span><span class="token punctuation">:</span> <span class="token comment"># extra packages to load</span>
+  <span class="token key atrule">extension_options</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token comment"># you can put your extension options here</span>
+    <span class="token comment"># see http://docs.mathjax.org/en/latest/options/input/tex.html#tex-extension-options for more detail</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-latex" data-language="latex"><code class="language-latex"><span class="token equation string">$$
+<span class="token equation-command regex">\begin</span>{align}
+    <span class="token equation-command regex">\min</span>        &amp; <span class="token equation-command regex">\quad</span> <span class="token equation-command regex">\sum</span> c_i x_i <span class="token equation-command regex">\\</span>
+    <span class="token equation-command regex">\text</span>{s.t.} &amp; <span class="token equation-command regex">\quad</span> <span class="token equation-command regex">\sum</span> a_{ij}x_j <span class="token equation-command regex">\leq</span> b_i, &amp;&amp; i = 1,<span class="token equation-command regex">\dots</span>,k <span class="token equation-command regex">\\</span>
+                &amp; <span class="token equation-command regex">\quad</span> x_j <span class="token equation-command regex">\geq</span> 0,              &amp;&amp; j = 1,<span class="token equation-command regex">\dots</span>,n
+<span class="token equation-command regex">\end</span>{align}
+$$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><span class="math display"><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -4.462ex;" xmlns="http://www.w3.org/2000/svg" width="35.775ex" height="10.055ex" role="img" focusable="false" viewBox="0 -2472.1 15812.3 4444.2"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mtable"><g data-mml-node="mtr" transform="translate(0,1522.1)"><g data-mml-node="mtd"><g data-mml-node="mo"><path data-c="6D" d="M41 46H55Q94 46 102 60V68Q102 77 102 91T102 122T103 161T103 203Q103 234 103 269T102 328V351Q99 370 88 376T43 385H25V408Q25 431 27 431L37 432Q47 433 65 434T102 436Q119 437 138 438T167 441T178 442H181V402Q181 364 182 364T187 369T199 384T218 402T247 421T285 437Q305 442 336 442Q351 442 364 440T387 434T406 426T421 417T432 406T441 395T448 384T452 374T455 366L457 361L460 365Q463 369 466 373T475 384T488 397T503 410T523 422T546 432T572 439T603 442Q729 442 740 329Q741 322 741 190V104Q741 66 743 59T754 49Q775 46 803 46H819V0H811L788 1Q764 2 737 2T699 3Q596 3 587 0H579V46H595Q656 46 656 62Q657 64 657 200Q656 335 655 343Q649 371 635 385T611 402T585 404Q540 404 506 370Q479 343 472 315T464 232V168V108Q464 78 465 68T468 55T477 49Q498 46 526 46H542V0H534L510 1Q487 2 460 2T422 3Q319 3 310 0H302V46H318Q379 46 379 62Q380 64 380 200Q379 335 378 343Q372 371 358 385T334 402T308 404Q263 404 229 370Q202 343 195 315T187 232V168V108Q187 78 188 68T191 55T200 49Q221 46 249 46H265V0H257L234 1Q210 2 183 2T145 3Q42 3 33 0H25V46H41Z"></path><path data-c="69" d="M69 609Q69 637 87 653T131 669Q154 667 171 652T188 609Q188 579 171 564T129 549Q104 549 87 564T69 609ZM247 0Q232 3 143 3Q132 3 106 3T56 1L34 0H26V46H42Q70 46 91 49Q100 53 102 60T104 102V205V293Q104 345 102 359T88 378Q74 385 41 385H30V408Q30 431 32 431L42 432Q52 433 70 434T106 436Q123 437 142 438T171 441T182 442H185V62Q190 52 197 50T232 46H255V0H247Z" transform="translate(833,0)"></path><path data-c="6E" d="M41 46H55Q94 46 102 60V68Q102 77 102 91T102 122T103 161T103 203Q103 234 103 269T102 328V351Q99 370 88 376T43 385H25V408Q25 431 27 431L37 432Q47 433 65 434T102 436Q119 437 138 438T167 441T178 442H181V402Q181 364 182 364T187 369T199 384T218 402T247 421T285 437Q305 442 336 442Q450 438 463 329Q464 322 464 190V104Q464 66 466 59T477 49Q498 46 526 46H542V0H534L510 1Q487 2 460 2T422 3Q319 3 310 0H302V46H318Q379 46 379 62Q380 64 380 200Q379 335 378 343Q372 371 358 385T334 402T308 404Q263 404 229 370Q202 343 195 315T187 232V168V108Q187 78 188 68T191 55T200 49Q221 46 249 46H265V0H257L234 1Q210 2 183 2T145 3Q42 3 33 0H25V46H41Z" transform="translate(1111,0)"></path></g></g><g data-mml-node="mtd" transform="translate(1667,0)"><g data-mml-node="mstyle"><g data-mml-node="mspace"></g></g><g data-mml-node="mo" transform="translate(1000,0)"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="msub" transform="translate(2610.7,0)"><g data-mml-node="mi"><path data-c="1D450" d="M34 159Q34 268 120 355T306 442Q362 442 394 418T427 355Q427 326 408 306T360 285Q341 285 330 295T319 325T330 359T352 380T366 386H367Q367 388 361 392T340 400T306 404Q276 404 249 390Q228 381 206 359Q162 315 142 235T121 119Q121 73 147 50Q169 26 205 26H209Q321 26 394 111Q403 121 406 121Q410 121 419 112T429 98T420 83T391 55T346 25T282 0T202 -11Q127 -11 81 37T34 159Z"></path></g><g data-mml-node="mi" transform="translate(466,-150) scale(0.707)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g><g data-mml-node="msub" transform="translate(3370.6,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="mi" transform="translate(605,-150) scale(0.707)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g></g></g><g data-mml-node="mtr" transform="translate(0,-177.9)"><g data-mml-node="mtd" transform="translate(328,0)"><g data-mml-node="mtext"><path data-c="73" d="M295 316Q295 356 268 385T190 414Q154 414 128 401Q98 382 98 349Q97 344 98 336T114 312T157 287Q175 282 201 278T245 269T277 256Q294 248 310 236T342 195T359 133Q359 71 321 31T198 -10H190Q138 -10 94 26L86 19L77 10Q71 4 65 -1L54 -11H46H42Q39 -11 33 -5V74V132Q33 153 35 157T45 162H54Q66 162 70 158T75 146T82 119T101 77Q136 26 198 26Q295 26 295 104Q295 133 277 151Q257 175 194 187T111 210Q75 227 54 256T33 318Q33 357 50 384T93 424T143 442T187 447H198Q238 447 268 432L283 424L292 431Q302 440 314 448H322H326Q329 448 335 442V310L329 304H301Q295 310 295 316Z"></path><path data-c="2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z" transform="translate(394,0)"></path><path data-c="74" d="M27 422Q80 426 109 478T141 600V615H181V431H316V385H181V241Q182 116 182 100T189 68Q203 29 238 29Q282 29 292 100Q293 108 293 146V181H333V146V134Q333 57 291 17Q264 -10 221 -10Q187 -10 162 2T124 33T105 68T98 100Q97 107 97 248V385H18V422H27Z" transform="translate(672,0)"></path><path data-c="2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z" transform="translate(1061,0)"></path></g></g><g data-mml-node="mtd" transform="translate(1667,0)"><g data-mml-node="mstyle"><g data-mml-node="mspace"></g></g><g data-mml-node="mo" transform="translate(1000,0)"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="msub" transform="translate(2610.7,0)"><g data-mml-node="mi"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(345,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g></g><g data-mml-node="msub" transform="translate(3757.9,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="mi" transform="translate(605,-150) scale(0.707)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g><g data-mml-node="mo" transform="translate(4982.1,0)"><path data-c="2264" d="M674 636Q682 636 688 630T694 615T687 601Q686 600 417 472L151 346L399 228Q687 92 691 87Q694 81 694 76Q694 58 676 56H670L382 192Q92 329 90 331Q83 336 83 348Q84 359 96 365Q104 369 382 500T665 634Q669 636 674 636ZM84 -118Q84 -108 99 -98H678Q694 -104 694 -118Q694 -130 679 -138H98Q84 -131 84 -118Z"></path></g><g data-mml-node="msub" transform="translate(6037.8,0)"><g data-mml-node="mi"><path data-c="1D44F" d="M73 647Q73 657 77 670T89 683Q90 683 161 688T234 694Q246 694 246 685T212 542Q204 508 195 472T180 418L176 399Q176 396 182 402Q231 442 283 442Q345 442 383 396T422 280Q422 169 343 79T173 -11Q123 -11 82 27T40 150V159Q40 180 48 217T97 414Q147 611 147 623T109 637Q104 637 101 637H96Q86 637 83 637T76 640T73 647ZM336 325V331Q336 405 275 405Q258 405 240 397T207 376T181 352T163 330L157 322L136 236Q114 150 114 114Q114 66 138 42Q154 26 178 26Q211 26 245 58Q270 81 285 114T318 219Q336 291 336 325Z"></path></g><g data-mml-node="mi" transform="translate(462,-150) scale(0.707)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g><g data-mml-node="mo" transform="translate(6793.8,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g></g><g data-mml-node="mtd" transform="translate(10738.8,0)"></g><g data-mml-node="mtd" transform="translate(10738.8,0)"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(622.8,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mn" transform="translate(1678.6,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(2178.6,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mo" transform="translate(2623.2,0)"><path data-c="2026" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60ZM525 60Q525 84 542 102T585 120Q609 120 627 104T646 61Q646 36 629 18T586 0T543 17T525 60ZM972 60Q972 84 989 102T1032 120Q1056 120 1074 104T1093 61Q1093 36 1076 18T1033 0T990 17T972 60Z"></path></g><g data-mml-node="mo" transform="translate(3961.9,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mi" transform="translate(4406.6,0)"><path data-c="1D458" d="M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z"></path></g></g></g><g data-mml-node="mtr" transform="translate(0,-1677.9)"><g data-mml-node="mtd" transform="translate(1667,0)"></g><g data-mml-node="mtd" transform="translate(1667,0)"><g data-mml-node="mstyle"><g data-mml-node="mspace"></g></g><g data-mml-node="msub" transform="translate(1000,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="mi" transform="translate(605,-150) scale(0.707)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g><g data-mml-node="mo" transform="translate(2224.1,0)"><path data-c="2265" d="M83 616Q83 624 89 630T99 636Q107 636 253 568T543 431T687 361Q694 356 694 346T687 331Q685 329 395 192L107 56H101Q83 58 83 76Q83 77 83 79Q82 86 98 95Q117 105 248 167Q326 204 378 228L626 346L360 472Q291 505 200 548Q112 589 98 597T83 616ZM84 -118Q84 -108 99 -98H678Q694 -104 694 -118Q694 -130 679 -138H98Q84 -131 84 -118Z"></path></g><g data-mml-node="mn" transform="translate(3279.9,0)"><path data-c="30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></g><g data-mml-node="mo" transform="translate(3779.9,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g></g><g data-mml-node="mtd" transform="translate(10738.8,0)"></g><g data-mml-node="mtd" transform="translate(10738.8,0)"><g data-mml-node="mi"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g><g data-mml-node="mo" transform="translate(689.8,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mn" transform="translate(1745.6,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(2245.6,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mo" transform="translate(2690.2,0)"><path data-c="2026" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60ZM525 60Q525 84 542 102T585 120Q609 120 627 104T646 61Q646 36 629 18T586 0T543 17T525 60ZM972 60Q972 84 989 102T1032 120Q1056 120 1074 104T1093 61Q1093 36 1076 18T1033 0T990 17T972 60Z"></path></g><g data-mml-node="mo" transform="translate(4028.9,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mi" transform="translate(4473.6,0)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g></g></g></g></g></g></svg></mjx-container></span></p>
+<h1 id="category和tag的区别">category和tag的区别</h1>
+<p>知乎用户鲁大荒对Categories和Tags的理解我感觉挺有道理：“Catagory是共性因素，Tag是个性因素；对使用者而言，前者是被动引导，后者是主动引导；前者有内部层级关系，后者没有内部层级关系；二者也有共性，可以互为转换，但catagory的量不宜过大，否则就失去了索引的意义和效果。”所以之后我的博客在categories上就计划分成五类：</p>
+<ul>
+<li>计算机技术：主要写和编程相关的技术。</li>
+<li>数学建模与运筹学：主要写和建模技巧、算法相关的东西，机器学习可以看成运筹学的分支，相关算法的学习也放这个类下边。</li>
+<li>论文阅读：精读笔记和每周。小结一周阅读的文献时不要翻资料，强迫自己回忆。</li>
+<li>生活：记录生活的精彩。</li>
+<li>其它：一些规划、想法之类的东西。</li>
+</ul>
+<p>而tags就根据每篇文章的内容取一个或多个，让tags在文章所属的特定category下进一步凸显自身的特性。</p>
+<h1 id="hexo中的路径问题">Hexo中的路径问题</h1>
+<p>首先得讲一下路径分隔符<code>/</code>和<code>\</code>的区别。它俩都可以作为路径分隔符，但是在linux，macos和web和各种编程语言如python中不支持使用<code>\</code>作为路径分隔符，<del><font color="blue">python里面其实也可以用r取消转义…</font></del>所以平时写路径就最好用<code>/</code>作为分隔符，特别是在用hexo写博客的时候，如果不用<code>/</code>作为路径分隔符，你把博客deploy之后是看不到里面的图片的。</p>
+<p>另一个需要注意的点就是public文件夹和source文件夹的结构不同，比如咱们正在写位于_posts文件夹下的subime这篇文章，然后咱想插入一张图片，一般来说咱会使用相对路径写成<code>./images/sublime.xxx.png</code>。但当你预览时会发现根本找不到这张图片！！！为什么？就是因为public文件夹和source文件夹结构不同。<font color="red">在写图片地址的时候必须得告诉浏览器怎么在public文件夹中找到对应的图片</font>，所以正确的写法可以是。</p>
+<pre class="line-numbers language-markup" data-language="markup"><div class="caption"><span>从根路径开始找</span></div><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>center</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>
+    Fig1. 创建项目 
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>center</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-markup" data-language="markup"><div class="caption"><span>还是用相对路径</span></div><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>center</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../../../../images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>
+    Fig1. 创建项目 
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>center</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info">
+<p class="admonition-title">
+相对路径表示
+</p>
+<ul>
+<li>
+<code>.</code>表示当前文件所处的目录
+</li>
+<li>
+<code>..</code>表示当前文件所处目录的上一级目录
+</li>
+<li>
+<code>/</code>表示的是根目录
+</li>
+</ul>
+<p>
+例如当前目录下有一个xxx.png，那么路径可以直接写成’xxx.png’,也可以写成’./xxx.png’
+</p>
+</div>
+<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>text source文件夹结构</span></div><code class="language-plain">D:.
+├─abouts
+├─archives
+├─categories
+├─datasets
+├─images
+│  ├─Deap源码学习
+│  ├─Hexo相关基础和配置
+│  ├─sublime
+│  ├─子回路消除约束
+│  ├─数据集
+│  ├─海大的四季
+│  ├─科研指南
+│  └─顶部图
+├─tags
+├─_data
+├─_drafts
+└─_posts<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>text public文件夹结构</span></div><code class="language-plain">D:.
+├─2025
+│  └─05
+│      ├─05
+│      │  └─海大的四季
+│      ├─11
+│      │  ├─Hexo相关基础和配置
+│      │  └─Sublime
+│      └─17
+│          ├─Deap源码学习
+│          ├─子回路消除约束
+│          └─科研指南
+├─abouts
+├─archives
+│  └─2025
+│      └─05
+├─categories
+│  ├─数学建模与运筹学
+│  ├─生活
+│  ├─计算机技术
+│  └─论文阅读
+├─css
+├─datasets
+├─images
+│  ├─Deap源码学习
+│  ├─sublime
+│  ├─子回路消除约束
+│  ├─数据集
+│  ├─海大的四季
+│  ├─科研指南
+│  └─顶部图
+├─img
+├─js
+│  └─search
+└─tags
+    ├─Deap
+    ├─Hexo
+    ├─Sublime
+    ├─TSP
+    ├─VRP
+    ├─大连海事大学
+    ├─快捷键
+    ├─景象照
+    ├─研究生生涯规划
+    ├─科研方法论
+    └─遗传算法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="hexo部署报错">Hexo部署报错</h1>
+<p><del><font color="red">解决方法是进入先.deploy_git文件夹,执行<code>git config --global core.autocrlf false</code>命令，然后在depoly就不会报错了。用这个方法还是会时不时报错</font></del>，于是又考虑将depoly中repo的设置从https协议转换成ssh协议——目前暂时没出过报错。</p>
+<h1 id="性能优化">性能优化</h1>
+<p>我的博客是部署在github上的，国内访问的速度非常慢。经过检查，页面加载时间主要是耗在了图片加载上，经过一番折腾最终使用gitHub提供的原始文件直链服务解决了这个问题。基本原理就是通过raw.githubusercontent.com的国内镜像raw.gitmirror.com绕过 gitHub页面渲染，直接返回文件的原始数据。这样做能提速的原理是gitHub在全球部署了内容分发网络（CDN），raw.gitmirror.com的请求会被路由到离用户最近的边缘节点，减少物理距离带来的延迟。</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>  # 一般写法
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://hub.gitmirror.com/https://raw.githubusercontent.com//YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span> # 使用直链服务的国内镜像的写法
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://gh.llkk.cc/https://raw.githubusercontent.com//YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>除了使用直链服务加速，还可以直接通过对图片进行压缩来提速，例如将图片转换为webp格式或将默认的jsdelivr的CDN切换成<a href="https://jsd-proxy.ygxz.in/index.html">国内镜像</a>或<a href="https://www.staticfile.net/">其它CDN服务</a>。</p>
+</blockquote>
+<h1 id="在hexo中使用自定义字体">在Hexo中使用自定义字体</h1>
+<p>在themes/butterfly/source/下创建fonts文件夹，将想用的字体HarmonyOS_Sans_SC_Regular.ttf和JetBrainsMono-Regular.ttf放进fonts文件夹。在themes/butterfly/source/css/下创建font.css。</p>
+<pre class="line-numbers language-css" data-language="css"><div class="caption"><span>font.css</span></div><code class="language-css"><span class="token atrule"><span class="token rule">@font-face</span></span><span class="token punctuation">{</span>
+    <span class="token property">font-family</span><span class="token punctuation">:</span> <span class="token string">'JetBrains Mono'</span><span class="token punctuation">;</span>
+    <span class="token property">font-display</span><span class="token punctuation">:</span> swap<span class="token punctuation">;</span>
+    <span class="token property">src</span><span class="token punctuation">:</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span><span class="token string url">'../fonts/JetBrainsMono-Regular.ttf'</span><span class="token punctuation">)</span></span> <span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"truetype"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token atrule"><span class="token rule">@font-face</span></span><span class="token punctuation">{</span>
+    <span class="token property">font-family</span><span class="token punctuation">:</span> <span class="token string">'HarmonyOS Sans SC'</span><span class="token punctuation">;</span>
+    <span class="token property">font-display</span><span class="token punctuation">:</span> swap<span class="token punctuation">;</span>
+    <span class="token property">src</span><span class="token punctuation">:</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span><span class="token string url">'../fonts/HarmonyOS_Sans_SC_Regular.ttf'</span><span class="token punctuation">)</span></span> <span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"truetype"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">body</span> <span class="token punctuation">{</span>
+    <span class="token property">font-family</span><span class="token punctuation">:</span> <span class="token string">'JetBrains Mono'</span><span class="token punctuation">,</span><span class="token string">'HarmonyOS Sans SC'</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后将自己的css注入。
+<pre class="line-numbers language-yaml" data-language="yaml"><div class="caption"><span>在_config.butterfly.yml的inject下添加</span></div><code class="language-yaml">&lt;link rel="stylesheet" href="/css/font.css"<span class="token punctuation">&gt;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<h1 id="给博客下方添加动漫人物">给博客下方添加动漫人物</h1>
+<p>下载js库hexo-helper-live2d，和对应<a href="https://www.cnblogs.com/Friends-A/p/11054968.html#live2dwidgetmodelchitose_12">卡通模型</a>。
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> <span class="token function">install</span> <span class="token parameter variable">--save</span> hexo-helper-live2d
+<span class="token function">npm</span> <span class="token function">install</span> live2d-widget-model-shizuku<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+在<font color="red">配置文件,注意不是主题配置文件，而是hexo的配置文件</font>中添加以下代码，设置use为所下载的模型。
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">live2d</span><span class="token punctuation">:</span>
+  <span class="token key atrule">enable</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">scriptFrom</span><span class="token punctuation">:</span> local
+  <span class="token key atrule">pluginRootPath</span><span class="token punctuation">:</span> live2dw/
+  <span class="token key atrule">pluginJsPath</span><span class="token punctuation">:</span> lib/
+  <span class="token key atrule">pluginModelPath</span><span class="token punctuation">:</span> assets/
+  <span class="token key atrule">tagMode</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+  <span class="token key atrule">debug</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+  <span class="token key atrule">model</span><span class="token punctuation">:</span>
+    <span class="token key atrule">use</span><span class="token punctuation">:</span> live2d<span class="token punctuation">-</span>widget<span class="token punctuation">-</span>model<span class="token punctuation">-</span>shizuku
+  <span class="token key atrule">display</span><span class="token punctuation">:</span>
+    <span class="token key atrule">position</span><span class="token punctuation">:</span> right
+    <span class="token key atrule">width</span><span class="token punctuation">:</span> <span class="token number">150</span>
+    <span class="token key atrule">height</span><span class="token punctuation">:</span> <span class="token number">300</span>
+  <span class="token key atrule">mobile</span><span class="token punctuation">:</span>
+    <span class="token key atrule">show</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">react</span><span class="token punctuation">:</span>
+    <span class="token key atrule">opacity</span><span class="token punctuation">:</span> <span class="token number">0.7</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<h1 id="hexo该加载动画">Hexo该加载动画</h1>
+<p>参考<a href="https://www.pokemon.vip/index.php/archives/446/index.html">给博客添加加载动画</a>这篇文章，就是改一下pug和styl文件。</p>
+<h1 id="磨砂渐变效果">磨砂渐变效果</h1>
+<p>新建一个css，然后输入以下内容，再把这个css注入到butterfly主题中。</p>
+<pre class="line-numbers language-css" data-language="css"><div class="caption"><span>磨砂渐变效果</span></div><code class="language-css"><span class="token comment">/* ===== 通用毛玻璃基础样式 ===== */</span>
+<span class="token selector">.card-widget</span> <span class="token punctuation">{</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>
+    -45deg<span class="token punctuation">,</span> 
+    #a8d8ff33<span class="token punctuation">,</span>  <span class="token comment">/* 淡天蓝（约 20% 不透明） */</span>
+    #77b5ff33<span class="token punctuation">,</span>  <span class="token comment">/* 明亮蓝（约 20% 不透明） */</span>
+    #6a8dff33<span class="token punctuation">,</span>  <span class="token comment">/* 紫调蓝（约 20% 不透明） */</span>
+    #a3b8ff33   <span class="token comment">/* 柔紫蓝（约 20% 不透明） */</span>
+  <span class="token punctuation">)</span> <span class="token important">!important</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">/* ===== 动画定义 ===== */</span>
+<span class="token atrule"><span class="token rule">@keyframes</span> Gradient</span> <span class="token punctuation">{</span>
+  <span class="token selector">0%</span> <span class="token punctuation">{</span> <span class="token property">background-position</span><span class="token punctuation">:</span> 0% 50%<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+  <span class="token selector">50%</span> <span class="token punctuation">{</span> <span class="token property">background-position</span><span class="token punctuation">:</span> 100% 50%<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+  <span class="token selector">100%</span> <span class="token punctuation">{</span> <span class="token property">background-position</span><span class="token punctuation">:</span> 0% 50%<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment">/*主页文章列表页面卡片*/</span>
+<span class="token selector">#recent-posts &gt; .recent-post-items .recent-post-item</span> <span class="token punctuation">{</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>
+    -45deg<span class="token punctuation">,</span>
+    #a8d8ff33<span class="token punctuation">,</span>  <span class="token comment">/* 淡天蓝（约 20% 不透明） */</span>
+    #77b5ff33<span class="token punctuation">,</span>  <span class="token comment">/* 明亮蓝（约 20% 不透明） */</span>
+    #6a8dff33<span class="token punctuation">,</span>  <span class="token comment">/* 紫调蓝（约 20% 不透明） */</span>
+    #a3b8ff33   <span class="token comment">/* 柔紫蓝（约 20% 不透明） */</span>
+  <span class="token punctuation">)</span> <span class="token important">!important</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">/*导航栏*/</span>
+<span class="token selector">.nav-fixed &gt; #nav</span> <span class="token punctuation">{</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>
+    -45deg<span class="token punctuation">,</span>
+    #a8d8ff33<span class="token punctuation">,</span>  <span class="token comment">/* 淡天蓝（约 20% 不透明） */</span>
+    #77b5ff33<span class="token punctuation">,</span>  <span class="token comment">/* 明亮蓝（约 20% 不透明） */</span>
+    #6a8dff33<span class="token punctuation">,</span>  <span class="token comment">/* 紫调蓝（约 20% 不透明） */</span>
+    #a3b8ff33   <span class="token comment">/* 柔紫蓝（约 20% 不透明） */</span>
+  <span class="token punctuation">)</span> <span class="token important">!important</span><span class="token punctuation">;</span>
+  <span class="token property">backdrop-filter</span><span class="token punctuation">:</span> <span class="token function">blur</span><span class="token punctuation">(</span>10px<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">/*文章页面*/</span>
+<span class="token selector">.layout&gt;#post</span> <span class="token punctuation">{</span>
+  <span class="token property">background</span><span class="token punctuation">:</span><span class="token function">linear-gradient</span><span class="token punctuation">(</span>
+    -45deg<span class="token punctuation">,</span>
+    #a8d8ff33<span class="token punctuation">,</span>  <span class="token comment">/* 淡天蓝（约 20% 不透明） */</span>
+    #77b5ff33<span class="token punctuation">,</span>  <span class="token comment">/* 明亮蓝（约 20% 不透明） */</span>
+    #6a8dff33<span class="token punctuation">,</span>  <span class="token comment">/* 紫调蓝（约 20% 不透明） */</span>
+    #a3b8ff33   <span class="token comment">/* 柔紫蓝（约 20% 不透明） */</span>
+<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="文章链接中文编码问题">文章链接中文编码问题</h1>
+<p>如果标题中含有中文文章链接会非常非常长，可以使用 abbrlink 插件实现链接地址转数字，使用流程如下。</p>
+<pre class="line-numbers language-dash" data-language="dash"><code class="language-dash">npm install hexo-abbrlink --save<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><div class="caption"><span>修改_config.yml对应属性</span></div><code class="language-yaml"><span class="token key atrule">permalink</span><span class="token punctuation">:</span> posts/<span class="token punctuation">:</span>abbrlink.html
+<span class="token comment"># abbrlink config</span>
+<span class="token key atrule">abbrlink</span><span class="token punctuation">:</span>
+  <span class="token key atrule">alg</span><span class="token punctuation">:</span> crc32      <span class="token comment"># Algorithm used to calc abbrlink. Support crc16(default) and crc32</span>
+  <span class="token key atrule">rep</span><span class="token punctuation">:</span> hex        <span class="token comment"># Representation of abbrlink in URLs. Support dec(default) and hex</span>
+  <span class="token key atrule">drafts</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>   <span class="token comment"># Whether to generate abbrlink for drafts. (false in default)</span>
+  <span class="token key atrule">force</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>    <span class="token comment"># Enable force mode. In this mode, the plugin will ignore the cache, and calc the abbrlink for every post even it already had an abbrlink. (false in default)</span>
+  <span class="token key atrule">writeback</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># Whether to write changes to front-matters back to the actual markdown files. (true in default)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="参考资料">参考资料</h1>
+<ol type="1">
+<li><a href="https://blog.csdn.net/CQG1988/article/details/101652805">利用直链服务加速图像</a></li>
+<li><a href="https://blog.zhheo.com/p/128998ac.html">Hexo部署报错处理思路</a></li>
+<li><a href="https://blog.zhheo.com/p/790087d9.html">切换CDN服务</a></li>
+<li><a href="https://niezicheng.github.io/blog-hexo/posts/b86e2546/">添加卡通人物</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Deap源码学习</title>
     <url>/posts/2633a33f/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="base模块">base模块</h1>
@@ -944,399 +1337,6 @@ Fig2. 两种写法深拷贝的差异
       </tags>
   </entry>
   <entry>
-    <title>Git工具</title>
-    <url>/posts/a97adaa0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>版本控制产品非常的多，现在影响力最大且使用最广泛的是Git与SVN，其中Git属于分布式版本控制器而SVN属于集中式版本控制器。对于分布式版本控制器，每台工作的电脑都有版本库，而集中式版本控制器的版本库放在一个中央服务器上。分布式版本控制器很安全，不用担心中央服务器崩掉后版本库就没了。</p>
-<h1 id="git环境配置">Git环境配置</h1>
-<p>windows直接去官网下载就行了，装完之后唯一需要配置的就是用户名和邮箱，因为git是分布式版本控制，每台电脑都得有相应的标识。使用下面的git命令完成配置。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name xxx
-<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>git仓库包括四个工作区域——working directory（工作目录）、stage（暂存区）、local repository（本地仓库）、remote repository（远程仓库）。使用如下的命令可以将当前所处文件夹转换成git仓库（不包含remote repository）。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>这个文件夹的结构如下图所示，其中stage（暂存区）、local repository（本地仓库）位于隐藏子文件夹.git内。</p>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/1.webp" weight="50%" height="50%">
-Fig1. Git仓库的结构
-</center>
-<p>使用如下命令将git仓库和一个远程仓库关联起来，这里以gitee为例。要使用gitee提供的远程仓库，首先要配置ssh，使用如下命令获得ssh公钥。</p>
-<pre class="line-numbers language-bash" data-language="bash"><div class="caption"><span>在gitee配置ssh公钥</span></div><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token comment"># 获取</span>
-<span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@gitee.com <span class="token comment"># 检查是否配置成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<blockquote>
-<p>把公钥告诉gitee，之后gitee就允许你用git命令进行操作了。注意，这个操作只需要做一次！！！不是每次都要配置一遍公钥！！！</p>
-</blockquote>
-<p>然后再gitee上面新建一个远程仓库，就可以使用下面的命令将git仓库和这个远程仓库关联起来了。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin 要链接的那个远程仓库的ssh 
-<span class="token function">git</span> pull origin master --allow-unrelated-histories
-<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-需要注意的点
-</p>
-<ul>
-<li>
-命令中的origin是这个远程仓库的别名，命名为origin是一种习惯，不是强制要求。
-</li>
-<li>
-不加-u参数只是将local repository中的内容推送到远程，加上-u则会额外进行关联操作，关联之后再推送就可以不加-u参数了，直接写成git push origin master
-</li>
-<li>
-如果连接错了仓库了，使用<code>git remote rm &lt;仓库别名&gt;</code>删除该连接
-</li>
-<li>
-master是git默认的主分支。当前push的分支必须和远程分支相对应，不然会报错，push不上去
-</li>
-</ul>
-</div>
-<p>上面说的是先初始化一个git仓库再和远程仓库进行关联，还有一种方法可以直接得到和远程仓库关联的git仓库，这种方法就是先创建远程仓库，再克隆到本地，使用如下命令。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone 仓库的ssh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>到此为止，我们已经顺利得到一个包含四个工作区域的git仓库了！下面讲一下如何在四个工作区域之间传递（如下图）以及git中文件的4中状态。</p>
-<ul>
-<li>untracked：一个新创建的文件，没有被add。</li>
-<li>unmodified：文件已经在（local）repository了且对应work directory中的文件没有发生修改。</li>
-<li>modified：文件已经在（local）repository了且对应work directory中的文件发生了修改。</li>
-<li>staged：暂存状态，放在stage（index）区的文件，等待被一次性commit到（local）repository。</li>
-</ul>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/2.webp" weight="50%" height="50%">
-Fig2. 文件各种状态的转换
-</center>
-<h1 id="git分支管理工作流">Git分支管理工作流</h1>
-<p>git对分支进行管理速度非常快，因为它实际上管理的是指针。其中Head指针用于确定当前所处分支，“分支名”指针用于确定当前所处分支的最新提交。各个分支之间可以认为是平行宇宙，互不影响（在A分支下创建新分支B之初，A和B的working directory是完全相同的，不需要再粘贴复制一遍文件，完全通过指针实现，但是新建文件并commit到B分支后，A的working directory就是没有这个文件的，就此分叉了）。</p>
-<center>
-<p><img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Git工具/3.webp" weight="50%" height="50%"></p>
-Fig3. 文件各种状态的转换
-</center>
-<p>既然是平行宇宙，下面考虑这样一种情况——如果A和B分支commit了一个叫test.txt的文本文件，但是二者内容并不相同，此时想将B合并到A分支，会发生什么呢？会报错！发生冲突。虽然报错了，但是我们还是会得到一个“合并的”test.txt文件，只不过这个文件内被git使用特定符号进行标注了，告知我们哪里发生了冲突。要想解决冲突，就得手动修改“合并的”这个test文件。然后再提交。</p>
-<p>最后是多人协作的一般流程</p>
-<ol type="1">
-<li>首先，可以尝试用<code>git push origin &lt;branch-name&gt;</code>推送自己的修改；</li>
-<li>如果推送失败，则因为远程分支比你的本地更新，需要先用<code>git pull</code>试图合并，如果<code>git pull</code>提示<code>no tracking information</code>，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt;</code>；</li>
-<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
-<li>没有冲突或者解决掉冲突后，再用<code>git push origin &lt;branch-name&gt;</code>推送就能成功！</li>
-</ol>
-<h1 id="常用bash命令和git命令">常用bash命令和git命令</h1>
-<ul>
-<li><code>D：</code>:切换到D磁盘。</li>
-<li><code>cd</code>：打印当前所在目录。</li>
-<li><code>cd d1\e1</code>：切换到当前磁盘下的d11目录。</li>
-<li><code>cd ..</code>：回退到当前磁盘下的上一级目录。</li>
-<li><code>dir</code>：列出当前目录下的所有文件。</li>
-<li><code>mkdir dd</code>：当前所在目录下创建名为dd的目录。</li>
-<li><code>rmdir dd</code>：当前所在目录下删除名为dd的目录。</li>
-<li><code>type nul&gt;123.txt</code>：当前所在目录下创建名为123的txt文件。</li>
-<li><code>del 123.txt</code>：删除当前所在目录下名为123的txt文件。</li>
-<li><code>move 源文件路径 新目录路径</code>：移动文件。</li>
-<li><code>cls</code>: clear screen。</li>
-<li><code>git init</code>：将一个文件夹初始化为git仓库（不含remote repository）。</li>
-<li><code>git status</code>：查询git仓库当前状态。</li>
-<li><code>git add .</code>：将所有文件的修改放到stage区等待commit。</li>
-<li><code>git add filename</code>：将filename指定的文件修改放到stage区等待commit后进入local repository。</li>
-<li><code>git rm filename</code>：将filename指定的文件修改放到stage区等待commit后彻底移除。</li>
-<li><code>git commit -m “里面写此次修改的提示信息”</code>：将stage区的修改提交到（local）repository。</li>
-<li><code>git checkout -- filename</code>：使用（local）repository中对应filename的文件覆盖带掉work directory中的，用于撤销修改。</li>
-<li><code>git diff filename</code>：查看还没有add到stage区的名为filename的文件和（local）repository中对应文件的区别。</li>
-<li><code>git log --pretty=oneline</code>：查看历次版本信息和版本号。</li>
-<li><code>git reset --hard 版本号</code>：将（local）repository回退到指定版本号。</li>
-<li><code>git reflog</code>：查看历史信息，用于当从版本3跳到版本1，又想在找到版本3的版本号从而回跳到版本3。</li>
-<li><code>git remote add 远程库别名 要链接的那个远程仓库的ssh</code> ：添加一个远程链接。</li>
-<li><code>git pull 远程库别名 分支名</code>：将指定远程库的指定分支抓取下来和local repository中的内容合并。</li>
-<li><code>git push 远程库别名 分支名</code>：将本地分支（注意和远程仓库分支的对应）推送到远程库，如果远程库没有该分支则进行创建。</li>
-<li><code>git clone 要链接的那个远程仓库的ssh</code>：将一个远程仓库克隆到本地并建立链接。</li>
-<li><code>git branch</code>：列举处所有分支。</li>
-<li><code>git branch -m 新分支名</code>：重新命名当前分支。</li>
-<li><code>git branch 分支名</code>：创建分支。</li>
-<li><code>git branch -d 分支名</code>：删除分支。</li>
-<li><code>git switch 分支名</code>：切换到指定分支。</li>
-<li><code>git switch -c 分支名</code>：创建再切换分支。</li>
-<li><code>git merge 分支名</code>：将指定分支合并到当前分支。</li>
-<li><code>git log --graph</code>：git 仓库历史变化图。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hexo相关基础和配置</title>
-    <url>/posts/a4cc4fab/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="hexo的基本命令">Hexo的基本命令</h1>
-<ul>
-<li>创建制定布局的文章：<code>hexo new [layout] &lt;title&gt;</code>，其中layout参数的默认值是post，注意如果title有空格则必须写在引号里面。<br>
-</li>
-<li>将草稿类布局转换为post布局： <code>hexo publish</code> “草稿布局文章的标题”。<br>
-</li>
-<li>渲染，生成静态文件的文件夹public：<code>hexo generate</code>。</li>
-<li>清理缓存和原先的public文件：<code>hexo clean</code>。</li>
-<li>将public文件夹部署到远端：<code>hexo deploy</code>。</li>
-</ul>
-<h1 id="hexo的渲染器和mathjax">Hexo的渲染器和Mathjax</h1>
-<p>先说结论，Hexo渲染器的作用是将Markdown转换为对应的HTML代码，而Mathjax的作用则是去解析HTML代码当中的数学公式并基于SVG或HTML+CSS将其转换为美观的数学公式。</p>
-<p>Hexo的渲染器很多，这里就介绍hexo-renderer-pandoc。它实际上是Hexo的一个插件（用于调用Pandoc将Markdown转换为对应的html代码）。Hexo默认用的渲染器hexo-renderer-marked效果很糟糕，执行以下命令就可以将渲染器切换为hexo-renderer-pandoc。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> uninstall hexo-renderer-marked <span class="token parameter variable">--save</span>  <span class="token comment"># 移除默认渲染器</span>
-<span class="token function">npm</span> <span class="token function">install</span> hexo-renderer-pandoc <span class="token parameter variable">--save</span>    <span class="token comment"># 安装 Pandoc 渲染器</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>MathJax 是一个开源的 JavaScript 库，用于在网页中高质量地解析并可视化数学公式。与kaTex相比Mathjax除了支持Latex的完整语法，还支持相关的拓展包语法。在Hexo根目录中添加以下配置就可以自己的博客完美地显示数学公式了！</p>
-<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># 支持公式</span>
-<span class="token key atrule">pandoc</span><span class="token punctuation">:</span>
-  <span class="token key atrule">args</span><span class="token punctuation">:</span>
-    <span class="token punctuation">-</span> <span class="token string">"--mathjax"</span>                   <span class="token comment"># 启用 MathJax 支持</span>
-    <span class="token punctuation">-</span> <span class="token string">"--wrap=preserve"</span>             <span class="token comment"># 防止代码换行破坏公式</span>
-  <span class="token key atrule">extensions</span><span class="token punctuation">:</span>
-    <span class="token punctuation">-</span> <span class="token string">"+tex_math_dollars"</span>           <span class="token comment"># 允许 $...$ 行内公式</span>
-    <span class="token punctuation">-</span> <span class="token string">"+raw_tex"</span>                    <span class="token comment"># 保留原始 LaTeX 代码</span>
-<span class="token key atrule">mathjax</span><span class="token punctuation">:</span>
-  <span class="token key atrule">tags</span><span class="token punctuation">:</span> none <span class="token comment"># or 'ams' or 'all'</span>
-  <span class="token key atrule">single_dollars</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># enable single dollar signs as in-line math delimiters</span>
-  <span class="token key atrule">cjk_width</span><span class="token punctuation">:</span> <span class="token number">0.9</span> <span class="token comment"># relative CJK char width</span>
-  <span class="token key atrule">normal_width</span><span class="token punctuation">:</span> <span class="token number">0.6</span> <span class="token comment"># relative normal (monospace) width</span>
-  <span class="token key atrule">append_css</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># add CSS to pages rendered by MathJax</span>
-  <span class="token key atrule">every_page</span><span class="token punctuation">:</span> <span class="token boolean important">false</span> <span class="token comment"># if true, every page will be rendered by MathJax regardless the `mathjax` setting in Front-matter</span>
-  <span class="token key atrule">packages</span><span class="token punctuation">:</span> <span class="token comment"># extra packages to load</span>
-  <span class="token key atrule">extension_options</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token comment"># you can put your extension options here</span>
-    <span class="token comment"># see http://docs.mathjax.org/en/latest/options/input/tex.html#tex-extension-options for more detail</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-latex" data-language="latex"><code class="language-latex"><span class="token equation string">$$
-<span class="token equation-command regex">\begin</span>{align}
-    <span class="token equation-command regex">\min</span>        &amp; <span class="token equation-command regex">\quad</span> <span class="token equation-command regex">\sum</span> c_i x_i <span class="token equation-command regex">\\</span>
-    <span class="token equation-command regex">\text</span>{s.t.} &amp; <span class="token equation-command regex">\quad</span> <span class="token equation-command regex">\sum</span> a_{ij}x_j <span class="token equation-command regex">\leq</span> b_i, &amp;&amp; i = 1,<span class="token equation-command regex">\dots</span>,k <span class="token equation-command regex">\\</span>
-                &amp; <span class="token equation-command regex">\quad</span> x_j <span class="token equation-command regex">\geq</span> 0,              &amp;&amp; j = 1,<span class="token equation-command regex">\dots</span>,n
-<span class="token equation-command regex">\end</span>{align}
-$$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><span class="math display"><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -4.462ex;" xmlns="http://www.w3.org/2000/svg" width="35.775ex" height="10.055ex" role="img" focusable="false" viewBox="0 -2472.1 15812.3 4444.2"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mtable"><g data-mml-node="mtr" transform="translate(0,1522.1)"><g data-mml-node="mtd"><g data-mml-node="mo"><path data-c="6D" d="M41 46H55Q94 46 102 60V68Q102 77 102 91T102 122T103 161T103 203Q103 234 103 269T102 328V351Q99 370 88 376T43 385H25V408Q25 431 27 431L37 432Q47 433 65 434T102 436Q119 437 138 438T167 441T178 442H181V402Q181 364 182 364T187 369T199 384T218 402T247 421T285 437Q305 442 336 442Q351 442 364 440T387 434T406 426T421 417T432 406T441 395T448 384T452 374T455 366L457 361L460 365Q463 369 466 373T475 384T488 397T503 410T523 422T546 432T572 439T603 442Q729 442 740 329Q741 322 741 190V104Q741 66 743 59T754 49Q775 46 803 46H819V0H811L788 1Q764 2 737 2T699 3Q596 3 587 0H579V46H595Q656 46 656 62Q657 64 657 200Q656 335 655 343Q649 371 635 385T611 402T585 404Q540 404 506 370Q479 343 472 315T464 232V168V108Q464 78 465 68T468 55T477 49Q498 46 526 46H542V0H534L510 1Q487 2 460 2T422 3Q319 3 310 0H302V46H318Q379 46 379 62Q380 64 380 200Q379 335 378 343Q372 371 358 385T334 402T308 404Q263 404 229 370Q202 343 195 315T187 232V168V108Q187 78 188 68T191 55T200 49Q221 46 249 46H265V0H257L234 1Q210 2 183 2T145 3Q42 3 33 0H25V46H41Z"></path><path data-c="69" d="M69 609Q69 637 87 653T131 669Q154 667 171 652T188 609Q188 579 171 564T129 549Q104 549 87 564T69 609ZM247 0Q232 3 143 3Q132 3 106 3T56 1L34 0H26V46H42Q70 46 91 49Q100 53 102 60T104 102V205V293Q104 345 102 359T88 378Q74 385 41 385H30V408Q30 431 32 431L42 432Q52 433 70 434T106 436Q123 437 142 438T171 441T182 442H185V62Q190 52 197 50T232 46H255V0H247Z" transform="translate(833,0)"></path><path data-c="6E" d="M41 46H55Q94 46 102 60V68Q102 77 102 91T102 122T103 161T103 203Q103 234 103 269T102 328V351Q99 370 88 376T43 385H25V408Q25 431 27 431L37 432Q47 433 65 434T102 436Q119 437 138 438T167 441T178 442H181V402Q181 364 182 364T187 369T199 384T218 402T247 421T285 437Q305 442 336 442Q450 438 463 329Q464 322 464 190V104Q464 66 466 59T477 49Q498 46 526 46H542V0H534L510 1Q487 2 460 2T422 3Q319 3 310 0H302V46H318Q379 46 379 62Q380 64 380 200Q379 335 378 343Q372 371 358 385T334 402T308 404Q263 404 229 370Q202 343 195 315T187 232V168V108Q187 78 188 68T191 55T200 49Q221 46 249 46H265V0H257L234 1Q210 2 183 2T145 3Q42 3 33 0H25V46H41Z" transform="translate(1111,0)"></path></g></g><g data-mml-node="mtd" transform="translate(1667,0)"><g data-mml-node="mstyle"><g data-mml-node="mspace"></g></g><g data-mml-node="mo" transform="translate(1000,0)"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="msub" transform="translate(2610.7,0)"><g data-mml-node="mi"><path data-c="1D450" d="M34 159Q34 268 120 355T306 442Q362 442 394 418T427 355Q427 326 408 306T360 285Q341 285 330 295T319 325T330 359T352 380T366 386H367Q367 388 361 392T340 400T306 404Q276 404 249 390Q228 381 206 359Q162 315 142 235T121 119Q121 73 147 50Q169 26 205 26H209Q321 26 394 111Q403 121 406 121Q410 121 419 112T429 98T420 83T391 55T346 25T282 0T202 -11Q127 -11 81 37T34 159Z"></path></g><g data-mml-node="mi" transform="translate(466,-150) scale(0.707)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g><g data-mml-node="msub" transform="translate(3370.6,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="mi" transform="translate(605,-150) scale(0.707)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g></g></g><g data-mml-node="mtr" transform="translate(0,-177.9)"><g data-mml-node="mtd" transform="translate(328,0)"><g data-mml-node="mtext"><path data-c="73" d="M295 316Q295 356 268 385T190 414Q154 414 128 401Q98 382 98 349Q97 344 98 336T114 312T157 287Q175 282 201 278T245 269T277 256Q294 248 310 236T342 195T359 133Q359 71 321 31T198 -10H190Q138 -10 94 26L86 19L77 10Q71 4 65 -1L54 -11H46H42Q39 -11 33 -5V74V132Q33 153 35 157T45 162H54Q66 162 70 158T75 146T82 119T101 77Q136 26 198 26Q295 26 295 104Q295 133 277 151Q257 175 194 187T111 210Q75 227 54 256T33 318Q33 357 50 384T93 424T143 442T187 447H198Q238 447 268 432L283 424L292 431Q302 440 314 448H322H326Q329 448 335 442V310L329 304H301Q295 310 295 316Z"></path><path data-c="2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z" transform="translate(394,0)"></path><path data-c="74" d="M27 422Q80 426 109 478T141 600V615H181V431H316V385H181V241Q182 116 182 100T189 68Q203 29 238 29Q282 29 292 100Q293 108 293 146V181H333V146V134Q333 57 291 17Q264 -10 221 -10Q187 -10 162 2T124 33T105 68T98 100Q97 107 97 248V385H18V422H27Z" transform="translate(672,0)"></path><path data-c="2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z" transform="translate(1061,0)"></path></g></g><g data-mml-node="mtd" transform="translate(1667,0)"><g data-mml-node="mstyle"><g data-mml-node="mspace"></g></g><g data-mml-node="mo" transform="translate(1000,0)"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="msub" transform="translate(2610.7,0)"><g data-mml-node="mi"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(345,0)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g></g><g data-mml-node="msub" transform="translate(3757.9,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="mi" transform="translate(605,-150) scale(0.707)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g><g data-mml-node="mo" transform="translate(4982.1,0)"><path data-c="2264" d="M674 636Q682 636 688 630T694 615T687 601Q686 600 417 472L151 346L399 228Q687 92 691 87Q694 81 694 76Q694 58 676 56H670L382 192Q92 329 90 331Q83 336 83 348Q84 359 96 365Q104 369 382 500T665 634Q669 636 674 636ZM84 -118Q84 -108 99 -98H678Q694 -104 694 -118Q694 -130 679 -138H98Q84 -131 84 -118Z"></path></g><g data-mml-node="msub" transform="translate(6037.8,0)"><g data-mml-node="mi"><path data-c="1D44F" d="M73 647Q73 657 77 670T89 683Q90 683 161 688T234 694Q246 694 246 685T212 542Q204 508 195 472T180 418L176 399Q176 396 182 402Q231 442 283 442Q345 442 383 396T422 280Q422 169 343 79T173 -11Q123 -11 82 27T40 150V159Q40 180 48 217T97 414Q147 611 147 623T109 637Q104 637 101 637H96Q86 637 83 637T76 640T73 647ZM336 325V331Q336 405 275 405Q258 405 240 397T207 376T181 352T163 330L157 322L136 236Q114 150 114 114Q114 66 138 42Q154 26 178 26Q211 26 245 58Q270 81 285 114T318 219Q336 291 336 325Z"></path></g><g data-mml-node="mi" transform="translate(462,-150) scale(0.707)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g><g data-mml-node="mo" transform="translate(6793.8,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g></g><g data-mml-node="mtd" transform="translate(10738.8,0)"></g><g data-mml-node="mtd" transform="translate(10738.8,0)"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(622.8,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mn" transform="translate(1678.6,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(2178.6,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mo" transform="translate(2623.2,0)"><path data-c="2026" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60ZM525 60Q525 84 542 102T585 120Q609 120 627 104T646 61Q646 36 629 18T586 0T543 17T525 60ZM972 60Q972 84 989 102T1032 120Q1056 120 1074 104T1093 61Q1093 36 1076 18T1033 0T990 17T972 60Z"></path></g><g data-mml-node="mo" transform="translate(3961.9,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mi" transform="translate(4406.6,0)"><path data-c="1D458" d="M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z"></path></g></g></g><g data-mml-node="mtr" transform="translate(0,-1677.9)"><g data-mml-node="mtd" transform="translate(1667,0)"></g><g data-mml-node="mtd" transform="translate(1667,0)"><g data-mml-node="mstyle"><g data-mml-node="mspace"></g></g><g data-mml-node="msub" transform="translate(1000,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="mi" transform="translate(605,-150) scale(0.707)"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g></g><g data-mml-node="mo" transform="translate(2224.1,0)"><path data-c="2265" d="M83 616Q83 624 89 630T99 636Q107 636 253 568T543 431T687 361Q694 356 694 346T687 331Q685 329 395 192L107 56H101Q83 58 83 76Q83 77 83 79Q82 86 98 95Q117 105 248 167Q326 204 378 228L626 346L360 472Q291 505 200 548Q112 589 98 597T83 616ZM84 -118Q84 -108 99 -98H678Q694 -104 694 -118Q694 -130 679 -138H98Q84 -131 84 -118Z"></path></g><g data-mml-node="mn" transform="translate(3279.9,0)"><path data-c="30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></g><g data-mml-node="mo" transform="translate(3779.9,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g></g><g data-mml-node="mtd" transform="translate(10738.8,0)"></g><g data-mml-node="mtd" transform="translate(10738.8,0)"><g data-mml-node="mi"><path data-c="1D457" d="M297 596Q297 627 318 644T361 661Q378 661 389 651T403 623Q403 595 384 576T340 557Q322 557 310 567T297 596ZM288 376Q288 405 262 405Q240 405 220 393T185 362T161 325T144 293L137 279Q135 278 121 278H107Q101 284 101 286T105 299Q126 348 164 391T252 441Q253 441 260 441T272 442Q296 441 316 432Q341 418 354 401T367 348V332L318 133Q267 -67 264 -75Q246 -125 194 -164T75 -204Q25 -204 7 -183T-12 -137Q-12 -110 7 -91T53 -71Q70 -71 82 -81T95 -112Q95 -148 63 -167Q69 -168 77 -168Q111 -168 139 -140T182 -74L193 -32Q204 11 219 72T251 197T278 308T289 365Q289 372 288 376Z"></path></g><g data-mml-node="mo" transform="translate(689.8,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mn" transform="translate(1745.6,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(2245.6,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mo" transform="translate(2690.2,0)"><path data-c="2026" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60ZM525 60Q525 84 542 102T585 120Q609 120 627 104T646 61Q646 36 629 18T586 0T543 17T525 60ZM972 60Q972 84 989 102T1032 120Q1056 120 1074 104T1093 61Q1093 36 1076 18T1033 0T990 17T972 60Z"></path></g><g data-mml-node="mo" transform="translate(4028.9,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mi" transform="translate(4473.6,0)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g></g></g></g></g></g></svg></mjx-container></span></p>
-<h1 id="category和tag的区别">category和tag的区别</h1>
-<p>知乎用户鲁大荒对Categories和Tags的理解我感觉挺有道理：“Catagory是共性因素，Tag是个性因素；对使用者而言，前者是被动引导，后者是主动引导；前者有内部层级关系，后者没有内部层级关系；二者也有共性，可以互为转换，但catagory的量不宜过大，否则就失去了索引的意义和效果。”所以之后我的博客在categories上就计划分成五类：</p>
-<ul>
-<li>计算机技术：主要写和编程相关的技术。</li>
-<li>数学建模与运筹学：主要写和建模技巧、算法相关的东西，机器学习可以看成运筹学的分支，相关算法的学习也放这个类下边。</li>
-<li>论文阅读：精读笔记和每周。小结一周阅读的文献时不要翻资料，强迫自己回忆。</li>
-<li>生活：记录生活的精彩。</li>
-<li>其它：一些规划、想法之类的东西。</li>
-</ul>
-<p>而tags就根据每篇文章的内容取一个或多个，让tags在文章所属的特定category下进一步凸显自身的特性。</p>
-<h1 id="hexo中的路径问题">Hexo中的路径问题</h1>
-<p>首先得讲一下路径分隔符<code>/</code>和<code>\</code>的区别。它俩都可以作为路径分隔符，但是在linux，macos和web和各种编程语言如python中不支持使用<code>\</code>作为路径分隔符，<del><font color="blue">python里面其实也可以用r取消转义…</font></del>所以平时写路径就最好用<code>/</code>作为分隔符，特别是在用hexo写博客的时候，如果不用<code>/</code>作为路径分隔符，你把博客deploy之后是看不到里面的图片的。</p>
-<p>另一个需要注意的点就是public文件夹和source文件夹的结构不同，比如咱们正在写位于_posts文件夹下的subime这篇文章，然后咱想插入一张图片，一般来说咱会使用相对路径写成<code>./images/sublime.xxx.png</code>。但当你预览时会发现根本找不到这张图片！！！为什么？就是因为public文件夹和source文件夹结构不同。<font color="red">在写图片地址的时候必须得告诉浏览器怎么在public文件夹中找到对应的图片</font>，所以正确的写法可以是。</p>
-<pre class="line-numbers language-markup" data-language="markup"><div class="caption"><span>从根路径开始找</span></div><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>center</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>
-    Fig1. 创建项目 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>center</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-markup" data-language="markup"><div class="caption"><span>还是用相对路径</span></div><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>center</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../../../../images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>
-    Fig1. 创建项目 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>center</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-相对路径表示
-</p>
-<ul>
-<li>
-<code>.</code>表示当前文件所处的目录
-</li>
-<li>
-<code>..</code>表示当前文件所处目录的上一级目录
-</li>
-<li>
-<code>/</code>表示的是根目录
-</li>
-</ul>
-<p>
-例如当前目录下有一个xxx.png，那么路径可以直接写成’xxx.png’,也可以写成’./xxx.png’
-</p>
-</div>
-<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>text source文件夹结构</span></div><code class="language-plain">D:.
-├─abouts
-├─archives
-├─categories
-├─datasets
-├─images
-│  ├─Deap源码学习
-│  ├─Hexo相关基础和配置
-│  ├─sublime
-│  ├─子回路消除约束
-│  ├─数据集
-│  ├─海大的四季
-│  ├─科研指南
-│  └─顶部图
-├─tags
-├─_data
-├─_drafts
-└─_posts<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>text public文件夹结构</span></div><code class="language-plain">D:.
-├─2025
-│  └─05
-│      ├─05
-│      │  └─海大的四季
-│      ├─11
-│      │  ├─Hexo相关基础和配置
-│      │  └─Sublime
-│      └─17
-│          ├─Deap源码学习
-│          ├─子回路消除约束
-│          └─科研指南
-├─abouts
-├─archives
-│  └─2025
-│      └─05
-├─categories
-│  ├─数学建模与运筹学
-│  ├─生活
-│  ├─计算机技术
-│  └─论文阅读
-├─css
-├─datasets
-├─images
-│  ├─Deap源码学习
-│  ├─sublime
-│  ├─子回路消除约束
-│  ├─数据集
-│  ├─海大的四季
-│  ├─科研指南
-│  └─顶部图
-├─img
-├─js
-│  └─search
-└─tags
-    ├─Deap
-    ├─Hexo
-    ├─Sublime
-    ├─TSP
-    ├─VRP
-    ├─大连海事大学
-    ├─快捷键
-    ├─景象照
-    ├─研究生生涯规划
-    ├─科研方法论
-    └─遗传算法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="hexo部署报错">Hexo部署报错</h1>
-<p><del><font color="red">解决方法是进入先.deploy_git文件夹,执行<code>git config --global core.autocrlf false</code>命令，然后在depoly就不会报错了。用这个方法还是会时不时报错</font></del>，于是又考虑将depoly中repo的设置从https协议转换成ssh协议——目前暂时没出过报错。</p>
-<h1 id="性能优化">性能优化</h1>
-<p>我的博客是部署在github上的，国内访问的速度非常慢。经过检查，页面加载时间主要是耗在了图片加载上，经过一番折腾最终使用gitHub提供的原始文件直链服务解决了这个问题。基本原理就是通过raw.githubusercontent.com的国内镜像raw.gitmirror.com绕过 gitHub页面渲染，直接返回文件的原始数据。这样做能提速的原理是gitHub在全球部署了内容分发网络（CDN），raw.gitmirror.com的请求会被路由到离用户最近的边缘节点，减少物理距离带来的延迟。</p>
-<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span>  # 一般写法
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://hub.gitmirror.com/https://raw.githubusercontent.com//YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span> # 使用直链服务的国内镜像的写法
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://gh.llkk.cc/https://raw.githubusercontent.com//YuanshengShe/YuanshengShe.github.io/main/images/sublime/2.png<span class="token punctuation">"</span></span> <span class="token attr-name">weight</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>50%<span class="token punctuation">'</span></span><span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<blockquote>
-<p>除了使用直链服务加速，还可以直接通过对图片进行压缩来提速，例如将图片转换为webp格式或将默认的jsdelivr的CDN切换成<a href="https://jsd-proxy.ygxz.in/index.html">国内镜像</a>或<a href="https://www.staticfile.net/">其它CDN服务</a>。</p>
-</blockquote>
-<h1 id="在hexo中使用自定义字体">在Hexo中使用自定义字体</h1>
-<p>在themes/butterfly/source/下创建fonts文件夹，将想用的字体HarmonyOS_Sans_SC_Regular.ttf和JetBrainsMono-Regular.ttf放进fonts文件夹。在themes/butterfly/source/css/下创建font.css。</p>
-<pre class="line-numbers language-css" data-language="css"><div class="caption"><span>font.css</span></div><code class="language-css"><span class="token atrule"><span class="token rule">@font-face</span></span><span class="token punctuation">{</span>
-    <span class="token property">font-family</span><span class="token punctuation">:</span> <span class="token string">'JetBrains Mono'</span><span class="token punctuation">;</span>
-    <span class="token property">font-display</span><span class="token punctuation">:</span> swap<span class="token punctuation">;</span>
-    <span class="token property">src</span><span class="token punctuation">:</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span><span class="token string url">'../fonts/JetBrainsMono-Regular.ttf'</span><span class="token punctuation">)</span></span> <span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"truetype"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token atrule"><span class="token rule">@font-face</span></span><span class="token punctuation">{</span>
-    <span class="token property">font-family</span><span class="token punctuation">:</span> <span class="token string">'HarmonyOS Sans SC'</span><span class="token punctuation">;</span>
-    <span class="token property">font-display</span><span class="token punctuation">:</span> swap<span class="token punctuation">;</span>
-    <span class="token property">src</span><span class="token punctuation">:</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span><span class="token string url">'../fonts/HarmonyOS_Sans_SC_Regular.ttf'</span><span class="token punctuation">)</span></span> <span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"truetype"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector">body</span> <span class="token punctuation">{</span>
-    <span class="token property">font-family</span><span class="token punctuation">:</span> <span class="token string">'JetBrains Mono'</span><span class="token punctuation">,</span><span class="token string">'HarmonyOS Sans SC'</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>最后将自己的css注入。
-<pre class="line-numbers language-yaml" data-language="yaml"><div class="caption"><span>在_config.butterfly.yml的inject下添加</span></div><code class="language-yaml">&lt;link rel="stylesheet" href="/css/font.css"<span class="token punctuation">&gt;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<h1 id="给博客下方添加动漫人物">给博客下方添加动漫人物</h1>
-<p>下载js库hexo-helper-live2d，和对应<a href="https://www.cnblogs.com/Friends-A/p/11054968.html#live2dwidgetmodelchitose_12">卡通模型</a>。
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> <span class="token function">install</span> <span class="token parameter variable">--save</span> hexo-helper-live2d
-<span class="token function">npm</span> <span class="token function">install</span> live2d-widget-model-shizuku<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-在<font color="red">配置文件,注意不是主题配置文件，而是hexo的配置文件</font>中添加以下代码，设置use为所下载的模型。
-<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">live2d</span><span class="token punctuation">:</span>
-  <span class="token key atrule">enable</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
-  <span class="token key atrule">scriptFrom</span><span class="token punctuation">:</span> local
-  <span class="token key atrule">pluginRootPath</span><span class="token punctuation">:</span> live2dw/
-  <span class="token key atrule">pluginJsPath</span><span class="token punctuation">:</span> lib/
-  <span class="token key atrule">pluginModelPath</span><span class="token punctuation">:</span> assets/
-  <span class="token key atrule">tagMode</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
-  <span class="token key atrule">debug</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
-  <span class="token key atrule">model</span><span class="token punctuation">:</span>
-    <span class="token key atrule">use</span><span class="token punctuation">:</span> live2d<span class="token punctuation">-</span>widget<span class="token punctuation">-</span>model<span class="token punctuation">-</span>shizuku
-  <span class="token key atrule">display</span><span class="token punctuation">:</span>
-    <span class="token key atrule">position</span><span class="token punctuation">:</span> right
-    <span class="token key atrule">width</span><span class="token punctuation">:</span> <span class="token number">150</span>
-    <span class="token key atrule">height</span><span class="token punctuation">:</span> <span class="token number">300</span>
-  <span class="token key atrule">mobile</span><span class="token punctuation">:</span>
-    <span class="token key atrule">show</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
-  <span class="token key atrule">react</span><span class="token punctuation">:</span>
-    <span class="token key atrule">opacity</span><span class="token punctuation">:</span> <span class="token number">0.7</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
-<h1 id="hexo该加载动画">Hexo该加载动画</h1>
-<p>参考<a href="https://www.pokemon.vip/index.php/archives/446/index.html">给博客添加加载动画</a>这篇文章，就是改一下pug和styl文件。</p>
-<h1 id="磨砂渐变效果">磨砂渐变效果</h1>
-<p>新建一个css，然后输入以下内容，再把这个css注入到butterfly主题中。</p>
-<pre class="line-numbers language-css" data-language="css"><div class="caption"><span>磨砂渐变效果</span></div><code class="language-css"><span class="token comment">/* ===== 通用毛玻璃基础样式 ===== */</span>
-<span class="token selector">.card-widget</span> <span class="token punctuation">{</span>
-  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>
-    -45deg<span class="token punctuation">,</span> 
-    #a8d8ff33<span class="token punctuation">,</span>  <span class="token comment">/* 淡天蓝（约 20% 不透明） */</span>
-    #77b5ff33<span class="token punctuation">,</span>  <span class="token comment">/* 明亮蓝（约 20% 不透明） */</span>
-    #6a8dff33<span class="token punctuation">,</span>  <span class="token comment">/* 紫调蓝（约 20% 不透明） */</span>
-    #a3b8ff33   <span class="token comment">/* 柔紫蓝（约 20% 不透明） */</span>
-  <span class="token punctuation">)</span> <span class="token important">!important</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token comment">/* ===== 动画定义 ===== */</span>
-<span class="token atrule"><span class="token rule">@keyframes</span> Gradient</span> <span class="token punctuation">{</span>
-  <span class="token selector">0%</span> <span class="token punctuation">{</span> <span class="token property">background-position</span><span class="token punctuation">:</span> 0% 50%<span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token selector">50%</span> <span class="token punctuation">{</span> <span class="token property">background-position</span><span class="token punctuation">:</span> 100% 50%<span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token selector">100%</span> <span class="token punctuation">{</span> <span class="token property">background-position</span><span class="token punctuation">:</span> 0% 50%<span class="token punctuation">;</span> <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span class="token comment">/*主页文章列表页面卡片*/</span>
-<span class="token selector">#recent-posts &gt; .recent-post-items .recent-post-item</span> <span class="token punctuation">{</span>
-  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>
-    -45deg<span class="token punctuation">,</span>
-    #a8d8ff33<span class="token punctuation">,</span>  <span class="token comment">/* 淡天蓝（约 20% 不透明） */</span>
-    #77b5ff33<span class="token punctuation">,</span>  <span class="token comment">/* 明亮蓝（约 20% 不透明） */</span>
-    #6a8dff33<span class="token punctuation">,</span>  <span class="token comment">/* 紫调蓝（约 20% 不透明） */</span>
-    #a3b8ff33   <span class="token comment">/* 柔紫蓝（约 20% 不透明） */</span>
-  <span class="token punctuation">)</span> <span class="token important">!important</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token comment">/*导航栏*/</span>
-<span class="token selector">.nav-fixed &gt; #nav</span> <span class="token punctuation">{</span>
-  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>
-    -45deg<span class="token punctuation">,</span>
-    #a8d8ff33<span class="token punctuation">,</span>  <span class="token comment">/* 淡天蓝（约 20% 不透明） */</span>
-    #77b5ff33<span class="token punctuation">,</span>  <span class="token comment">/* 明亮蓝（约 20% 不透明） */</span>
-    #6a8dff33<span class="token punctuation">,</span>  <span class="token comment">/* 紫调蓝（约 20% 不透明） */</span>
-    #a3b8ff33   <span class="token comment">/* 柔紫蓝（约 20% 不透明） */</span>
-  <span class="token punctuation">)</span> <span class="token important">!important</span><span class="token punctuation">;</span>
-  <span class="token property">backdrop-filter</span><span class="token punctuation">:</span> <span class="token function">blur</span><span class="token punctuation">(</span>10px<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token comment">/*文章页面*/</span>
-<span class="token selector">.layout&gt;#post</span> <span class="token punctuation">{</span>
-  <span class="token property">background</span><span class="token punctuation">:</span><span class="token function">linear-gradient</span><span class="token punctuation">(</span>
-    -45deg<span class="token punctuation">,</span>
-    #a8d8ff33<span class="token punctuation">,</span>  <span class="token comment">/* 淡天蓝（约 20% 不透明） */</span>
-    #77b5ff33<span class="token punctuation">,</span>  <span class="token comment">/* 明亮蓝（约 20% 不透明） */</span>
-    #6a8dff33<span class="token punctuation">,</span>  <span class="token comment">/* 紫调蓝（约 20% 不透明） */</span>
-    #a3b8ff33   <span class="token comment">/* 柔紫蓝（约 20% 不透明） */</span>
-<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="文章链接中文编码问题">文章链接中文编码问题</h1>
-<p>如果标题中含有中文文章链接会非常非常长，可以使用 abbrlink 插件实现链接地址转数字，使用流程如下。</p>
-<pre class="line-numbers language-dash" data-language="dash"><code class="language-dash">npm install hexo-abbrlink --save<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<pre class="line-numbers language-yaml" data-language="yaml"><div class="caption"><span>修改_config.yml对应属性</span></div><code class="language-yaml"><span class="token key atrule">permalink</span><span class="token punctuation">:</span> posts/<span class="token punctuation">:</span>abbrlink.html
-<span class="token comment"># abbrlink config</span>
-<span class="token key atrule">abbrlink</span><span class="token punctuation">:</span>
-  <span class="token key atrule">alg</span><span class="token punctuation">:</span> crc32      <span class="token comment"># Algorithm used to calc abbrlink. Support crc16(default) and crc32</span>
-  <span class="token key atrule">rep</span><span class="token punctuation">:</span> hex        <span class="token comment"># Representation of abbrlink in URLs. Support dec(default) and hex</span>
-  <span class="token key atrule">drafts</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>   <span class="token comment"># Whether to generate abbrlink for drafts. (false in default)</span>
-  <span class="token key atrule">force</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>    <span class="token comment"># Enable force mode. In this mode, the plugin will ignore the cache, and calc the abbrlink for every post even it already had an abbrlink. (false in default)</span>
-  <span class="token key atrule">writeback</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token comment"># Whether to write changes to front-matters back to the actual markdown files. (true in default)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="参考资料">参考资料</h1>
-<ol type="1">
-<li><a href="https://blog.csdn.net/CQG1988/article/details/101652805">利用直链服务加速图像</a></li>
-<li><a href="https://blog.zhheo.com/p/128998ac.html">Hexo部署报错处理思路</a></li>
-<li><a href="https://blog.zhheo.com/p/790087d9.html">切换CDN服务</a></li>
-<li><a href="https://niezicheng.github.io/blog-hexo/posts/b86e2546/">添加卡通人物</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Mysql数据库管理系统</title>
     <url>/posts/b2fcf946/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="dbmsdbsql简介">DBMS,DB,SQL简介</h1>
@@ -1767,6 +1767,97 @@ c <span class="token operator">=</span> a<span class="token operator">+</span>b 
       </tags>
   </entry>
   <entry>
+    <title>Tkinter框架</title>
+    <url>/posts/10440878/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>怎么用tkinter设计一个GUI，思路就是——首先创建一个根窗口对象（这个一定是最顶层的容器），然后创建容器组件和其它组件（可以嵌套在容器组件里面，容器组件里面还可以嵌套容器组件），给根窗口or组件绑定对应的事件和事件处理函数，而对于各个组件之间的位置关系和布局则通过组件的grid方法来完成。</p>
+<blockquote>
+<p>少记忆，抓重点，是学一个新框架最快的方式。所以本文就忽略繁琐的参数了，知道框架大致怎么用，剩下的查文档就行了… <del><font color="green">主要原因还是不擅长记忆，哈哈</font></del></p>
+</blockquote>
+<h1 id="grid方法实现widget布局组件布局管理">grid方法实现Widget布局（组件布局管理）</h1>
+<p>grid方法以类似excel表格的方式实现组件的布局，这个方法核心的参数包括：</p>
+<ul>
+<li>row,column：设置当前组件所处的“excel表格”，<font color="blue">整个表格的大小是<code>[max(row)+1] x [max(column)+1]</code>。</font></li>
+<li>rowspan,columnspan：类似于excel表格中的合并单元格，rowspan决定列方向上合并多少个单元格，columnspan决定行方向上合并多少个单元格。</li>
+<li>padx,pady：设置控件边界与控件边界和控件边界与窗口边界之间像素距离。</li>
+<li>sticky：设置控件之间的对齐方式，可选参数包括N、S、W、E，组合使用时可能会有拉伸效果。注意时以同行或同列的组件为基准进行最大程度的对齐。</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+Tk类的rowconfigure和columnconfigure方法
+</p>
+<p>
+这两个方法可以用来控制用户缩放根窗口大小时对应的行和列的缩放比例
+</p>
+</div>
+<h1 id="tkinter的四种内置数据类型">tkinter的四种内置数据类型</h1>
+<p>我们可以通过config方法再程序运行过程中修改组件的参数，但当某些控件具有相同的参数时，一个组件一个组件的去调用config修改就太繁琐了。一种解决方法是将参数设置为变量，通过修改变量的值就可以实现批量的修改。<del><font color="red">我们只能使用tkinter的内置数据类型，而不能直接使用python中的数据类型</font></del></p>
+<ul>
+<li>IntVar：整数类型</li>
+<li>StringVar：字符串类型</li>
+<li>DoubleVar：浮点数类型</li>
+<li>BooleanVar：bool类型</li>
+<li>get和set方法：获取和设置tkinter中变量对象的值</li>
+<li>trace方法：对变量进行追踪，如果发生修改（w模式）或读取（r模式）就会调用callback函数，注意callback函数必须包含name,index,mode这三个位置参数，这些参数会在callback被调用时自动传递给它。</li>
+</ul>
+<h1 id="tkinter中的容器类型组件">tkinter中的容器类型组件</h1>
+<p>当设计的GUI比较复杂的时候，最好使用容器组件来管理其它的组件。容器组件和用TK创建的根窗口很类似，它是一种可以容纳组件的组件。再tkinter容器组件有4种</p>
+<ul>
+<li>Frame</li>
+<li>LabelFrame：和Frame的唯一区别就是这个容器组件的左上脚是带标签的</li>
+<li>Toplevel：和Frame的唯一区别就是这个容器组件是脱离根窗口的，回产生一个独立窗口，有自己的窗口标题，关闭这个窗口不会影响根窗口，但是如果根窗口被关闭那么这个容器组件对应的窗口也会被关闭</li>
+<li>Notebook：这个是ttk子模块下的一个容器组件，它的特点是通过选项卡来组织其它组件，当选择不同的选项时可以看到不同的子组件内容</li>
+</ul>
+<h1 id="将事件和函数绑定">将事件和函数绑定</h1>
+<p>在tkinter中事件和事件处理函数绑定有两种方式：（1）使用command参数（2）使用bind方法。同时tkinter支持一个组件对应多个事件进而绑定多个事件处理函数，同时也支持使用bind方法的add参数实现一个事件绑定多个事件处理函数。</p>
+<ul>
+<li>组件状态改变事件和函数的绑定：通过组件的command参数来实现</li>
+<li>鼠标事件和函数的绑定、键盘事件和函数的绑定都可以通过控件的bind方法来实现</li>
+</ul>
+<h1 id="如何将matplotlib嵌入到tkinter当中">如何将matplotlib嵌入到tkinter当中</h1>
+<p>将 Matplotlib 图像嵌入到 Tkinter 中，需要使用 FigureCanvasTkAgg 这个适配器类。这个类常用的方法如下</p>
+<ul>
+<li>draw方法：重新将figure对象上的图像渲染到tk中。</li>
+<li>get_tk_widget()：FigureCanvasTkAgg 本身不是继承自 Tkinter 的 Widget 类，而是一个封装了 Matplotlib 绘图功能的对象，要想使用tkinter的布局管理器必须得是Widget对象，FigureCanvasTkAgg类使用这个方法返回内部创建的真实 Tkinter Canvas 组件，使其能被 Tkinter 的布局系统识别和处理。</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+推荐操作流程
+</p>
+<ol>
+<li>
+创建一个figure对象，传递给FigureCanvasTkAgg，然后获取内部的Widget完成布局
+</li>
+<li>
+与用matplolib绘图一致，在figure上绘图
+</li>
+<li>
+调用draw方法重新渲染figure上的图形到gui中
+</li>
+</ol>
+</div>
+<h1 id="怎么组织一个tkinter项目的结构">怎么组织一个tkinter项目的结构</h1>
+<p>MVC架构是一种用于构建用户界面的软件设计模式，最早在1970年代由Trygve Reenskaug提出。该模式将系统划分为三个主要部分：模型（Model）、视图（View）和控制器（Controller）。这种分离的方式旨在提高代码的模块化程度，促进代码的重用和维护。各个部分的实现要求如下：</p>
+<ol type="1">
+<li>Model（模型）：管理数据和业务逻辑（如数据库操作、计算规则）</li>
+<li>View（视图）：负责UI展示（如窗口、按钮、文本框）</li>
+<li>Controller（控制器）：处理用户输入，协调Model和View的交互</li>
+</ol>
+<p>该框架的数据流为——用户在视图上操作<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.181ex" role="img" focusable="false" viewBox="0 -511 1000 522"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"></path></g></g></g></svg></mjx-container></span>视图调用控制器方法修改数据模型&amp;&amp;数据模型发生变化通知视图完成对应变化。</p>
+<blockquote>
+<p>一个好例子：https://www.runoob.com/design-pattern/mvc-pattern.html</p>
+</blockquote>
+<h1 id="tkinter中引入表格控件">tkinter中引入表格控件</h1>
+<p>目前用的是pandastable这个第三方库，使用非常简单，对数据的管理也非常方便，直接修改Table对象的model属性的df属性为新的dataframe，然后redraw方法重新绘制一下表格就ok了。</p>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>GUI</tag>
+        <tag>Tkinter</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Sublime</title>
     <url>/posts/ec31ac22/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="snippet效率神器">Snippet效率神器</h1>
@@ -2111,97 +2202,6 @@ Fig2. sublime tmpl的模板文件
       <tags>
         <tag>Sublime</tag>
         <tag>快捷键</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Tkinter框架</title>
-    <url>/posts/10440878/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>怎么用tkinter设计一个GUI，思路就是——首先创建一个根窗口对象（这个一定是最顶层的容器），然后创建容器组件和其它组件（可以嵌套在容器组件里面，容器组件里面还可以嵌套容器组件），给根窗口or组件绑定对应的事件和事件处理函数，而对于各个组件之间的位置关系和布局则通过组件的grid方法来完成。</p>
-<blockquote>
-<p>少记忆，抓重点，是学一个新框架最快的方式。所以本文就忽略繁琐的参数了，知道框架大致怎么用，剩下的查文档就行了… <del><font color="green">主要原因还是不擅长记忆，哈哈</font></del></p>
-</blockquote>
-<h1 id="grid方法实现widget布局组件布局管理">grid方法实现Widget布局（组件布局管理）</h1>
-<p>grid方法以类似excel表格的方式实现组件的布局，这个方法核心的参数包括：</p>
-<ul>
-<li>row,column：设置当前组件所处的“excel表格”，<font color="blue">整个表格的大小是<code>[max(row)+1] x [max(column)+1]</code>。</font></li>
-<li>rowspan,columnspan：类似于excel表格中的合并单元格，rowspan决定列方向上合并多少个单元格，columnspan决定行方向上合并多少个单元格。</li>
-<li>padx,pady：设置控件边界与控件边界和控件边界与窗口边界之间像素距离。</li>
-<li>sticky：设置控件之间的对齐方式，可选参数包括N、S、W、E，组合使用时可能会有拉伸效果。注意时以同行或同列的组件为基准进行最大程度的对齐。</li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">
-Tk类的rowconfigure和columnconfigure方法
-</p>
-<p>
-这两个方法可以用来控制用户缩放根窗口大小时对应的行和列的缩放比例
-</p>
-</div>
-<h1 id="tkinter的四种内置数据类型">tkinter的四种内置数据类型</h1>
-<p>我们可以通过config方法再程序运行过程中修改组件的参数，但当某些控件具有相同的参数时，一个组件一个组件的去调用config修改就太繁琐了。一种解决方法是将参数设置为变量，通过修改变量的值就可以实现批量的修改。<del><font color="red">我们只能使用tkinter的内置数据类型，而不能直接使用python中的数据类型</font></del></p>
-<ul>
-<li>IntVar：整数类型</li>
-<li>StringVar：字符串类型</li>
-<li>DoubleVar：浮点数类型</li>
-<li>BooleanVar：bool类型</li>
-<li>get和set方法：获取和设置tkinter中变量对象的值</li>
-<li>trace方法：对变量进行追踪，如果发生修改（w模式）或读取（r模式）就会调用callback函数，注意callback函数必须包含name,index,mode这三个位置参数，这些参数会在callback被调用时自动传递给它。</li>
-</ul>
-<h1 id="tkinter中的容器类型组件">tkinter中的容器类型组件</h1>
-<p>当设计的GUI比较复杂的时候，最好使用容器组件来管理其它的组件。容器组件和用TK创建的根窗口很类似，它是一种可以容纳组件的组件。再tkinter容器组件有4种</p>
-<ul>
-<li>Frame</li>
-<li>LabelFrame：和Frame的唯一区别就是这个容器组件的左上脚是带标签的</li>
-<li>Toplevel：和Frame的唯一区别就是这个容器组件是脱离根窗口的，回产生一个独立窗口，有自己的窗口标题，关闭这个窗口不会影响根窗口，但是如果根窗口被关闭那么这个容器组件对应的窗口也会被关闭</li>
-<li>Notebook：这个是ttk子模块下的一个容器组件，它的特点是通过选项卡来组织其它组件，当选择不同的选项时可以看到不同的子组件内容</li>
-</ul>
-<h1 id="将事件和函数绑定">将事件和函数绑定</h1>
-<p>在tkinter中事件和事件处理函数绑定有两种方式：（1）使用command参数（2）使用bind方法。同时tkinter支持一个组件对应多个事件进而绑定多个事件处理函数，同时也支持使用bind方法的add参数实现一个事件绑定多个事件处理函数。</p>
-<ul>
-<li>组件状态改变事件和函数的绑定：通过组件的command参数来实现</li>
-<li>鼠标事件和函数的绑定、键盘事件和函数的绑定都可以通过控件的bind方法来实现</li>
-</ul>
-<h1 id="如何将matplotlib嵌入到tkinter当中">如何将matplotlib嵌入到tkinter当中</h1>
-<p>将 Matplotlib 图像嵌入到 Tkinter 中，需要使用 FigureCanvasTkAgg 这个适配器类。这个类常用的方法如下</p>
-<ul>
-<li>draw方法：重新将figure对象上的图像渲染到tk中。</li>
-<li>get_tk_widget()：FigureCanvasTkAgg 本身不是继承自 Tkinter 的 Widget 类，而是一个封装了 Matplotlib 绘图功能的对象，要想使用tkinter的布局管理器必须得是Widget对象，FigureCanvasTkAgg类使用这个方法返回内部创建的真实 Tkinter Canvas 组件，使其能被 Tkinter 的布局系统识别和处理。</li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">
-推荐操作流程
-</p>
-<ol>
-<li>
-创建一个figure对象，传递给FigureCanvasTkAgg，然后获取内部的Widget完成布局
-</li>
-<li>
-与用matplolib绘图一致，在figure上绘图
-</li>
-<li>
-调用draw方法重新渲染figure上的图形到gui中
-</li>
-</ol>
-</div>
-<h1 id="怎么组织一个tkinter项目的结构">怎么组织一个tkinter项目的结构</h1>
-<p>MVC架构是一种用于构建用户界面的软件设计模式，最早在1970年代由Trygve Reenskaug提出。该模式将系统划分为三个主要部分：模型（Model）、视图（View）和控制器（Controller）。这种分离的方式旨在提高代码的模块化程度，促进代码的重用和维护。各个部分的实现要求如下：</p>
-<ol type="1">
-<li>Model（模型）：管理数据和业务逻辑（如数据库操作、计算规则）</li>
-<li>View（视图）：负责UI展示（如窗口、按钮、文本框）</li>
-<li>Controller（控制器）：处理用户输入，协调Model和View的交互</li>
-</ol>
-<p>该框架的数据流为——用户在视图上操作<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.181ex" role="img" focusable="false" viewBox="0 -511 1000 522"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"></path></g></g></g></svg></mjx-container></span>视图调用控制器方法修改数据模型&amp;&amp;数据模型发生变化通知视图完成对应变化。</p>
-<blockquote>
-<p>一个好例子：https://www.runoob.com/design-pattern/mvc-pattern.html</p>
-</blockquote>
-<h1 id="tkinter中引入表格控件">tkinter中引入表格控件</h1>
-<p>目前用的是pandastable这个第三方库，使用非常简单，对数据的管理也非常方便，直接修改Table对象的model属性的df属性为新的dataframe，然后redraw方法重新绘制一下表格就ok了。</p>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>GUI</tag>
-        <tag>Tkinter</tag>
       </tags>
   </entry>
   <entry>
