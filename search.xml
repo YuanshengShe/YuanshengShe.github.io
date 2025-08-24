@@ -1337,205 +1337,6 @@ $$</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span><
       </tags>
   </entry>
   <entry>
-    <title>Numeric-Python 笔记</title>
-    <url>/posts/c59ff681/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>numpy（numeric python）可以说是python最最基础的第三方库了，许多其它的库如scipy、pandas、sklearn都是搭建在它基础上的，这个库简单讲就是做数组（矩阵）运算用的，由于底层是用C语言和fortran实现的，所以性能非常强悍…写这篇文章也是视图回顾numpy的相关操作，并整理处numpy中一些最核心的知识点以便未来可以速查。</p>
-<h1 id="ndarray类型的属性">ndarray类型的属性</h1>
-<p>ndarray类是numpy中最核心的类型，简单讲他就是n纬数组，但是和python内置的列表嵌套结构不同，ndarray存储的元素要求数据类型都是一致的，并且数组大小也是固定的。常用的ndarray对象的属性如下：</p>
-<ul>
-<li>T：对ndarray对象做转置操作得到的数组。</li>
-<li>dtype：ndarry对象中存储的元素类型，python是弱语言，按理讲不需要声明数据类型，但是numpy底层是基于c和fortran实现的，所以需要声明。</li>
-<li>flat：ndarray对对应的一维度数组的迭代器。</li>
-<li>itemsize：ndarray中每个元素所占用的字节数。</li>
-<li>size：ndarray中的元素数量。</li>
-<li>nbytes：nbytes=size<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: 0.02ex;" xmlns="http://www.w3.org/2000/svg" width="1.76ex" height="1.09ex" role="img" focusable="false" viewBox="0 -491 778 482"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="D7" d="M630 29Q630 9 609 9Q604 9 587 25T493 118L389 222L284 117Q178 13 175 11Q171 9 168 9Q160 9 154 15T147 29Q147 36 161 51T255 146L359 250L255 354Q174 435 161 449T147 471Q147 480 153 485T168 490Q173 490 175 489Q178 487 284 383L389 278L493 382Q570 459 587 475T609 491Q630 491 630 471Q630 464 620 453T522 355L418 250L522 145Q606 61 618 48T630 29Z"></path></g></g></g></svg></mjx-container></span>itemsize。</li>
-<li>ndim：ndarray对象的维数。</li>
-<li>shape：ndarray对象的形状。</li>
-<li>imag：ndarray对象的虚部。</li>
-<li>real：ndarray对象的实部。</li>
-</ul>
-<h1 id="ndarray对象在运算过程中的广播机制">ndarray对象在运算过程中的广播机制</h1>
-<p>广播机制是为我们节省代码量的强力工具，但如果不理解广播机制何时触发或者是如何进行广播，那么这个机制反而会成为我们使用numpy的阻碍，所以理解广播机制非常重要，简单讲，广播机制就是基于如下四条原则：</p>
-<ol type="1">
-<li>如果两个数组的ndim不同，则在ndim较小的数组的shape前加上一个1。</li>
-<li>（触发时机）当且仅当两个数组对应维度的shape相等或其中一者为1，广播机制才会被触发。</li>
-<li>（触发效果）输出数组的各个维度的shape取对应的最大值。</li>
-<li>（触发效果）对于shape为1的维，会在这个维上进行复制直到与最大值对齐。</li>
-</ol>
-<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>广播机制的例子</span></div><code class="language-python">a <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-b <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-c <span class="token operator">=</span> a<span class="token operator">+</span>b <span class="token comment"># output(ndarray([[2,4],[4,6]]))</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>a的ndim是1，b的ndim是2，所根据原则1，首先讲a的shape前加上1，a.shape变为(1,2)。根据原则2检查a，b是否可以广播，a.shape=(1,2),b.shape=(2,2)所以可以进行广播。由原则3直到输出数组的shape应该是(max{1,2},max(2,2))=(2,2)。根据原则4知道a会在第一个维度上进行复制对齐，从而a被广播为ndarray([[1,2],[1,2]])。</p>
-<h1 id="numpy中各种函数涉及的axis到底是什么">numpy中各种函数涉及的axis到底是什么</h1>
-<p>在numpy中很多函数都有axis（坐标轴）这个参数，axis参数它实际上就是shape的索引。对于一个shape为（2，3）的数组，它在axis=0这个坐标轴就有2个元素，在axis=1这个坐标轴就有3个元素，反过来<font color="blue">可以知道有两个元素的方向是axis=0的方向，有3个元素的方向是axis=1的方向</font>。对于包含axis参数的函数，这个函数的运算就是按照<font color="red">指定坐标轴方向对维度进行相应削减或扩充。</font></p>
-<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>含axis参数的函数的例子</span></div><code class="language-python">a <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># a.shape=(2,3)</span>
-<span class="token keyword">print</span><span class="token punctuation">(</span>np<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>axis<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># [5,7,9]</span>
-<span class="token keyword">print</span><span class="token punctuation">(</span>np<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>axis<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># [6,15]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<div class="admonition info">
-<p class="admonition-title">
-当shape中各维对应shape相同，就没法通过上法判断axis了，怎么办？
-</p>
-<p>
-随便举一个ndim相同但是各维对应shape不同的数组，然后再根据这个数组判断各个axis的指向。
-</p>
-</div>
-<h1 id="numpy中的视图和副本">numpy中的视图和副本</h1>
-<p>视图可以理解为ndarray对象的浅拷贝，而副本可以理解为ndarray对象的深拷贝。可以使用numpy的share_memory函数判断两个数组是视图关系还是副本关系。把副本错误当成视图问题不大，但是把视图错误当成副本危害很大，所以推荐在需要对数组做修改时检查它是不是某个数组的副本。</p>
-<p>!!! 常见的返回视图和副本的操作
-1. 返回视图：切片、转置、reshape方法、ravel方法、view方法。
-2. 返回副本：花式索引、copy方法、对元素强制类型转换astype方法、flatten方法、数组运算结果、数组拼接concatenate。</p>
-<h1 id="numpy中与数组操作相关的重要函数和方法">numpy中与数组操作相关的重要函数和方法</h1>
-<ul>
-<li>转换数组的shape：reshape中的参数shape中如果有-1，则对应维元素数量将会自动匹配。reshape和resize的区别在于——（1）前者是视图，后者是副本（2）如果元素数量不匹配reshape无法完成转换，会报错，而resize会进行强制转换，删除元素或复制元素。
-<ul>
-<li>np.reshape</li>
-<li>ndarray.reshape</li>
-<li>np.resize</li>
-</ul></li>
-<li>把数组追加到另一个数组中：它的行为类似与list的extend方法，最关键的是axis参数，如果不指定axis参数，会先将输入的两个数组都做扁平化处理，如果指定了axis参数则会在axis对应方向上对维度进行扩充，注意这时输入的两个数组的ndim必须是一样的，不然会报错。
-<ul>
-<li>np.append</li>
-</ul></li>
-<li>数组真假值的判断函数：最关键的还是axis参数，如果不指定axis参数则对整个数组进行运算，如果指定axis参数则在axis对应方向上对维度进行缩减。
-<ul>
-<li>np.all</li>
-<li>ndarray.all</li>
-<li>np.any</li>
-<li>ndarray.any</li>
-</ul></li>
-<li>指定条件下元素索引的获取or三元运算：只给np.where提供逻辑数组时，返回的就是逻辑数组结果为True的元素对应位置的索引，如果提供x、y参数（会通过广播机制和提供的逻辑数组具有相同的shape），则可以实现python中三元运算的效果，将逻辑数组中为True的元素切换为x中对应元素，将为False的元素切换为y中对应的元素。
-<ul>
-<li>np.where</li>
-</ul></li>
-<li>获取数组中非零元素的索引：等价于np.where(数组!=0)
-<ul>
-<li>np.nonzero</li>
-<li>ndarray.nonzero</li>
-</ul></li>
-<li>寻找数组中的最大/最小元素：最关键的是axis参数，如果不指定axis参数，默认是找整个数组中的最大/最小元素，如果指定了axis就按照axis的方向对维度进行缩减。
-<ul>
-<li>np.amax</li>
-<li>ndarrray.max</li>
-<li>np.amin</li>
-<li>ndarray.min</li>
-</ul></li>
-<li>寻找数组中最大/最小元素的索引：<font color="blue">这个操作实际上可以用np.amax/np.amin和np.where函数组合使用来实现。</font>下面提供的这几个函数和方法最关键的参数还是axis，和append一样，如果不指定axis，会先对数组做扁平化操作。如果指定了axis则对对应方向的维度进行缩减。
-<ul>
-<li>np.argmax</li>
-<li>ndarray.argmax</li>
-<li>np.argmin</li>
-<li>ndarray.argmin</li>
-</ul></li>
-<li>转置操作：np.transpose函数和ndarray.transpose方法都有axes参数，用于指定如何转置，默认是将轴的顺序颠倒。例如指定axes=(1,0,2)就是说将axis=0和axis=1的轴进行颠倒。而ndarray对象的T方法则无法使用axes参数，得到的就是将坐标轴顺序颠倒后的新视图。例如a.shape=(2,3,4)，那么a.T.shape=(4,3,2)。
-<ul>
-<li>np.transpose</li>
-<li>ndarray.transpose</li>
-<li>ndarray.T：这是一个属性，感觉像是pytho类里面用property修饰器修饰的一个方法？<font color="red">可惜numpy的源码是用C语言写的，我没看懂…</font></li>
-</ul></li>
-<li>排序操作：核心参数时axis，默认是-1，表示沿着最后一个axis指定的方向对数组进行排序操作，也可以设置为None，这个时候会对数组先做扁平化处理，然后再排序。与np.sort函数返回的副本不同，ndarray.sort方法是直接对ndarray对象进行就地操作，没有返回值。
-<ul>
-<li>np.sort</li>
-<li>np.argsort：这个函数拿到的是排序用的索引。</li>
-<li>ndarray.sort</li>
-</ul></li>
-<li>数组拼接操作：这个函数的关键参数是tup，它是待拼接数组构成的元组，里面的每一个ndarray必须拥有相同的ndim，并且除了再指定方向上允许元素数量不同，其它axis指定的方向上元素数量必须相同。
-<ul>
-<li>np.vstack：沿着axis=0指定的方向进行拼接操作。</li>
-<li>np.hstack：沿着axis=1指定的方向上进行拼接操作。</li>
-</ul></li>
-<li>生成单位矩阵/对角线上全是1的矩阵：
-<ul>
-<li>np.identity：只有一个参数n，用于指定单位矩阵的阶数。</li>
-<li>np.eye：参数M指定行数，N指定列数，当<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.486ex;" xmlns="http://www.w3.org/2000/svg" width="7.404ex" height="2.106ex" role="img" focusable="false" viewBox="0 -716 3272.6 931"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D440" d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g><g data-mml-node="mo" transform="translate(1328.8,0)"><path data-c="2260" d="M166 -215T159 -215T147 -212T141 -204T139 -197Q139 -190 144 -183L306 133H70Q56 140 56 153Q56 168 72 173H327L406 327H72Q56 332 56 347Q56 360 70 367H426Q597 702 602 707Q605 716 618 716Q625 716 630 712T636 703T638 696Q638 692 471 367H707Q722 359 722 347Q722 336 708 328L451 327L371 173H708Q722 163 722 153Q722 140 707 133H351Q175 -210 170 -212Q166 -215 159 -215Z"></path></g><g data-mml-node="mi" transform="translate(2384.6,0)"><path data-c="1D441" d="M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z"></path></g></g></g></svg></mjx-container></span>时，主对角线就是<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="11.63ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 5140.7 1000"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D45A" d="M21 287Q22 293 24 303T36 341T56 388T88 425T132 442T175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q303 442 384 442Q401 442 415 440T441 433T460 423T475 411T485 398T493 385T497 373T500 364T502 357L510 367Q573 442 659 442Q713 442 746 415T780 336Q780 285 742 178T704 50Q705 36 709 31T724 26Q752 26 776 56T815 138Q818 149 821 151T837 153Q857 153 857 145Q857 144 853 130Q845 101 831 73T785 17T716 -10Q669 -10 648 17T627 73Q627 92 663 193T700 345Q700 404 656 404H651Q565 404 506 303L499 291L466 157Q433 26 428 16Q415 -11 385 -11Q372 -11 364 -4T353 8T350 18Q350 29 384 161L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 181Q151 335 151 342Q154 357 154 369Q154 405 129 405Q107 405 92 377T69 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(878,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(1407,0)"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="mo" transform="translate(1979,0)"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g><g data-mml-node="mi" transform="translate(2368,0)"><path data-c="1D440" d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g><g data-mml-node="mo" transform="translate(3419,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mi" transform="translate(3863.7,0)"><path data-c="1D441" d="M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z"></path></g><g data-mml-node="mo" transform="translate(4751.7,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g></g></g></svg></mjx-container></span>阶单位矩阵的对角线，参数k用于指定哪个对角线上全是1，默认时0，表示主对角线上全是1，如果为正值表示向上偏移k的对角线上全是1，如果时负值表示向下偏移k的对角线上全是1。</li>
-</ul></li>
-<li>生成全0矩阵：
-<ul>
-<li>np.zeros</li>
-</ul></li>
-<li>生成全1矩阵：
-<ul>
-<li>np.ones</li>
-</ul></li>
-<li>生成待初始化的矩阵：
-<ul>
-<li>np.empty：这个矩阵的创建速度是最快的。</li>
-</ul></li>
-<li>生成等差数组：
-<ul>
-<li>np.arange：和range的行为一致，不过更为强大，它的step（步长/公差）可以不是整数。</li>
-<li>np.linspace：公差由起点、终点和元素数量决定的等差数组。当endpoint=true时，公差=<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.912ex;" xmlns="http://www.w3.org/2000/svg" width="8.622ex" height="2.993ex" role="img" focusable="false" viewBox="0 -919.8 3810.8 1322.8"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mrow" transform="translate(220,477.2) scale(0.707)"><g data-mml-node="mi"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(469,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mi" transform="translate(830,0)"><path data-c="1D45C" d="M201 -11Q126 -11 80 38T34 156Q34 221 64 279T146 380Q222 441 301 441Q333 441 341 440Q354 437 367 433T402 417T438 387T464 338T476 268Q476 161 390 75T201 -11ZM121 120Q121 70 147 48T206 26Q250 26 289 58T351 142Q360 163 374 216T388 308Q388 352 370 375Q346 405 306 405Q243 405 195 347Q158 303 140 230T121 120Z"></path></g><g data-mml-node="mi" transform="translate(1315,0)"><path data-c="1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path></g><g data-mml-node="mo" transform="translate(1818,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mi" transform="translate(2596,0)"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(3065,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mi" transform="translate(3426,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(3955,0)"><path data-c="1D45F" d="M21 287Q22 290 23 295T28 317T38 348T53 381T73 411T99 433T132 442Q161 442 183 430T214 408T225 388Q227 382 228 382T236 389Q284 441 347 441H350Q398 441 422 400Q430 381 430 363Q430 333 417 315T391 292T366 288Q346 288 334 299T322 328Q322 376 378 392Q356 405 342 405Q286 405 239 331Q229 315 224 298T190 165Q156 25 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 114 189T154 366Q154 405 128 405Q107 405 92 377T68 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(4406,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g><g data-mml-node="mrow" transform="translate(728.8,-345) scale(0.707)"><g data-mml-node="mi"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(600,0)"><path data-c="1D462" d="M21 287Q21 295 30 318T55 370T99 420T158 442Q204 442 227 417T250 358Q250 340 216 246T182 105Q182 62 196 45T238 27T291 44T328 78L339 95Q341 99 377 247Q407 367 413 387T427 416Q444 431 463 431Q480 431 488 421T496 402L420 84Q419 79 419 68Q419 43 426 35T447 26Q469 29 482 57T512 145Q514 153 532 153Q551 153 551 144Q550 139 549 130T540 98T523 55T498 17T462 -8Q454 -10 438 -10Q372 -10 347 46Q345 45 336 36T318 21T296 6T267 -6T233 -11Q189 -11 155 7Q103 38 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(1172,0)"><path data-c="1D45A" d="M21 287Q22 293 24 303T36 341T56 388T88 425T132 442T175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q303 442 384 442Q401 442 415 440T441 433T460 423T475 411T485 398T493 385T497 373T500 364T502 357L510 367Q573 442 659 442Q713 442 746 415T780 336Q780 285 742 178T704 50Q705 36 709 31T724 26Q752 26 776 56T815 138Q818 149 821 151T837 153Q857 153 857 145Q857 144 853 130Q845 101 831 73T785 17T716 -10Q669 -10 648 17T627 73Q627 92 663 193T700 345Q700 404 656 404H651Q565 404 506 303L499 291L466 157Q433 26 428 16Q415 -11 385 -11Q372 -11 364 -4T353 8T350 18Q350 29 384 161L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 181Q151 335 151 342Q154 357 154 369Q154 405 129 405Q107 405 92 377T69 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(2050,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mn" transform="translate(2828,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g></g><rect width="3570.8" height="60" x="120" y="220"></rect></g></g></g></svg></mjx-container></span>，否则公差=<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.798ex;" xmlns="http://www.w3.org/2000/svg" width="8.622ex" height="2.879ex" role="img" focusable="false" viewBox="0 -919.8 3810.8 1272.6"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mrow" transform="translate(220,477.2) scale(0.707)"><g data-mml-node="mi"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(469,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mi" transform="translate(830,0)"><path data-c="1D45C" d="M201 -11Q126 -11 80 38T34 156Q34 221 64 279T146 380Q222 441 301 441Q333 441 341 440Q354 437 367 433T402 417T438 387T464 338T476 268Q476 161 390 75T201 -11ZM121 120Q121 70 147 48T206 26Q250 26 289 58T351 142Q360 163 374 216T388 308Q388 352 370 375Q346 405 306 405Q243 405 195 347Q158 303 140 230T121 120Z"></path></g><g data-mml-node="mi" transform="translate(1315,0)"><path data-c="1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path></g><g data-mml-node="mo" transform="translate(1818,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mi" transform="translate(2596,0)"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(3065,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mi" transform="translate(3426,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(3955,0)"><path data-c="1D45F" d="M21 287Q22 290 23 295T28 317T38 348T53 381T73 411T99 433T132 442Q161 442 183 430T214 408T225 388Q227 382 228 382T236 389Q284 441 347 441H350Q398 441 422 400Q430 381 430 363Q430 333 417 315T391 292T366 288Q346 288 334 299T322 328Q322 376 378 392Q356 405 342 405Q286 405 239 331Q229 315 224 298T190 165Q156 25 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 114 189T154 366Q154 405 128 405Q107 405 92 377T68 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(4406,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g><g data-mml-node="mrow" transform="translate(1180.6,-345) scale(0.707)"><g data-mml-node="mi"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(600,0)"><path data-c="1D462" d="M21 287Q21 295 30 318T55 370T99 420T158 442Q204 442 227 417T250 358Q250 340 216 246T182 105Q182 62 196 45T238 27T291 44T328 78L339 95Q341 99 377 247Q407 367 413 387T427 416Q444 431 463 431Q480 431 488 421T496 402L420 84Q419 79 419 68Q419 43 426 35T447 26Q469 29 482 57T512 145Q514 153 532 153Q551 153 551 144Q550 139 549 130T540 98T523 55T498 17T462 -8Q454 -10 438 -10Q372 -10 347 46Q345 45 336 36T318 21T296 6T267 -6T233 -11Q189 -11 155 7Q103 38 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(1172,0)"><path data-c="1D45A" d="M21 287Q22 293 24 303T36 341T56 388T88 425T132 442T175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q303 442 384 442Q401 442 415 440T441 433T460 423T475 411T485 398T493 385T497 373T500 364T502 357L510 367Q573 442 659 442Q713 442 746 415T780 336Q780 285 742 178T704 50Q705 36 709 31T724 26Q752 26 776 56T815 138Q818 149 821 151T837 153Q857 153 857 145Q857 144 853 130Q845 101 831 73T785 17T716 -10Q669 -10 648 17T627 73Q627 92 663 193T700 345Q700 404 656 404H651Q565 404 506 303L499 291L466 157Q433 26 428 16Q415 -11 385 -11Q372 -11 364 -4T353 8T350 18Q350 29 384 161L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 181Q151 335 151 342Q154 357 154 369Q154 405 129 405Q107 405 92 377T69 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g></g><rect width="3570.8" height="60" x="120" y="220"></rect></g></g></g></svg></mjx-container></span>。</li>
-</ul></li>
-<li>生成随机数组：这类数组的生成用的是numpy的random子模块。
-<ul>
-<li>设置随机数种子
-<ul>
-<li>np.random.seed：计算机产生的随机数是伪随机数，再测试程序的时候设置一个固定的种子很有帮助。</li>
-</ul></li>
-<li>均匀分布随机数
-<ul>
-<li>np.random.rand：用[0,1)区间均匀分布的随机数填充并返回指定形状的数组。</li>
-<li>np.random.randint：用区间[low,high)中离散均匀分布的随机整数填充并返回指定形状的数组。</li>
-</ul></li>
-</ul></li>
-<li>从数组中随机抽取元素
-<ul>
-<li>np.random.choice：关键参数——（1）p可以用来设置数组中每个元素被选中的概率，默认等概率（2）replace用于设置是否是有放回抽样，如果是，这个函数实际上就是遗传算法里面的轮盘赌。（3）size用于设置抽取到的元素构成的数组的最终输出时的形状。</li>
-</ul></li>
-<li>随机打乱数组
-<ul>
-<li>np.random.shuffle：注意这个函数主要操作的是一维数组，如果输入多维数组，则将第一个axis指定方向的顺序打乱。</li>
-</ul></li>
-<li>数组扁平化操作：flatten方法和ravel方法的区别在于前者是元素组的副本，后者是原数组的副本。
-<ul>
-<li>np.ndarray.flatten</li>
-<li>np.ndarray.ravel</li>
-</ul></li>
-<li>数组平铺操作：最关键的是reps参数，用于指定数组如何平铺，如果输入一个整数，就是在数组最后一个axis指定方向平铺对应次数。如果是元组，就依次在对应axis指定方向平铺对应次数。
-<ul>
-<li>np.tile</li>
-</ul></li>
-<li>数组读写操作：需要注意的是——（1）np.load,np.save,np.savez使用了python的pickle模块的反序列化和序列化实现数组对象的读取与写入，所以存在一定的安全风险，对于不可靠的npy，npz文件不要用这个函数读取；（2）loadtxt和savetxt相对而言安全性更好，而且可以跨编程语言操作这些数组，但是这连个函数不支持保存或读取三维及以上的数组。
-<ul>
-<li>np.load：从npy后缀或npz后缀的文件中读取ndarray数组</li>
-<li>np.save：将一个数组保存到npy后缀的文件中，这个文件类型只有python能读取。</li>
-<li>np.savez：将多个数组分别保存到多个npy文件中，然后将这些npy文件压缩到一个npz后缀的文件中。</li>
-<li>np.loadtxt：将ndarray从文本文件中加载出来。</li>
-<li>np.savetxt：将ndarray保存得到文本文件中。</li>
-</ul></li>
-</ul>
-<h1 id="numpy中提供的重要数学函数">numpy中提供的重要数学函数</h1>
-<ul>
-<li>求数组的差分、累计和
-<ul>
-<li>np.diff：最关键的参数是axis，默认在最后一个axis指定方向做差分。</li>
-<li>np.cumsum：最关键的参数是axis，默认先将数组展平后再做累计和（它是差分的逆运算，但是差分后的数组并不能由这个函数还原，因为不知道初始值）。</li>
-</ul></li>
-<li>向量内积和矩阵乘法：
-<ul>
-<li>np.dot：这个函数最关键的就是两个参数a，b。当a和b都是0维是做的是标量乘法；当a，b都是一维数组时算的就是两个向量的内积；当a，b都是多维数组时，算的时矩阵乘法；当a是多维数组而b是一维数组时，此时b相当于列向量，做矩阵乘法；当a是一维数组而b是多维数组时，此时a相当于行向量，做矩阵乘法。<font color="blue">使用这个函数的时候一定要注意输入数组的ndim和输出结果的ndim，否则会有意料之外的错误。</font></li>
-</ul></li>
-<li>生成网格点坐标对应的矩阵X,Y,…
-<ul>
-<li>np.meshgrid：这个函数的输入时一维数组，返回结果时一个ndarray元组，放的时坐标在各个维度对应的矩阵。</li>
-</ul></li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">
-关于后续
-</p>
-<p>
-目前numpy里面我觉得最核心的知识点和函数就是这些，其它的都不怎么用，等用到了再回来补充吧！
-</p>
-</div>
-]]></content>
-      <categories>
-        <category>计算机技术</category>
-      </categories>
-      <tags>
-        <tag>numpy</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Mysql数据库管理系统</title>
     <url>/posts/b2fcf946/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="dbmsdbsql简介">DBMS,DB,SQL简介</h1>
@@ -1764,6 +1565,205 @@ select `name` from `employee` where `emp_id` = (select `manage_id` from `branch`
       </categories>
       <tags>
         <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Numeric-Python 笔记</title>
+    <url>/posts/c59ff681/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>numpy（numeric python）可以说是python最最基础的第三方库了，许多其它的库如scipy、pandas、sklearn都是搭建在它基础上的，这个库简单讲就是做数组（矩阵）运算用的，由于底层是用C语言和fortran实现的，所以性能非常强悍…写这篇文章也是视图回顾numpy的相关操作，并整理处numpy中一些最核心的知识点以便未来可以速查。</p>
+<h1 id="ndarray类型的属性">ndarray类型的属性</h1>
+<p>ndarray类是numpy中最核心的类型，简单讲他就是n纬数组，但是和python内置的列表嵌套结构不同，ndarray存储的元素要求数据类型都是一致的，并且数组大小也是固定的。常用的ndarray对象的属性如下：</p>
+<ul>
+<li>T：对ndarray对象做转置操作得到的数组。</li>
+<li>dtype：ndarry对象中存储的元素类型，python是弱语言，按理讲不需要声明数据类型，但是numpy底层是基于c和fortran实现的，所以需要声明。</li>
+<li>flat：ndarray对对应的一维度数组的迭代器。</li>
+<li>itemsize：ndarray中每个元素所占用的字节数。</li>
+<li>size：ndarray中的元素数量。</li>
+<li>nbytes：nbytes=size<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: 0.02ex;" xmlns="http://www.w3.org/2000/svg" width="1.76ex" height="1.09ex" role="img" focusable="false" viewBox="0 -491 778 482"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="D7" d="M630 29Q630 9 609 9Q604 9 587 25T493 118L389 222L284 117Q178 13 175 11Q171 9 168 9Q160 9 154 15T147 29Q147 36 161 51T255 146L359 250L255 354Q174 435 161 449T147 471Q147 480 153 485T168 490Q173 490 175 489Q178 487 284 383L389 278L493 382Q570 459 587 475T609 491Q630 491 630 471Q630 464 620 453T522 355L418 250L522 145Q606 61 618 48T630 29Z"></path></g></g></g></svg></mjx-container></span>itemsize。</li>
+<li>ndim：ndarray对象的维数。</li>
+<li>shape：ndarray对象的形状。</li>
+<li>imag：ndarray对象的虚部。</li>
+<li>real：ndarray对象的实部。</li>
+</ul>
+<h1 id="ndarray对象在运算过程中的广播机制">ndarray对象在运算过程中的广播机制</h1>
+<p>广播机制是为我们节省代码量的强力工具，但如果不理解广播机制何时触发或者是如何进行广播，那么这个机制反而会成为我们使用numpy的阻碍，所以理解广播机制非常重要，简单讲，广播机制就是基于如下四条原则：</p>
+<ol type="1">
+<li>如果两个数组的ndim不同，则在ndim较小的数组的shape前加上一个1。</li>
+<li>（触发时机）当且仅当两个数组对应维度的shape相等或其中一者为1，广播机制才会被触发。</li>
+<li>（触发效果）输出数组的各个维度的shape取对应的最大值。</li>
+<li>（触发效果）对于shape为1的维，会在这个维上进行复制直到与最大值对齐。</li>
+</ol>
+<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>广播机制的例子</span></div><code class="language-python">a <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+b <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+c <span class="token operator">=</span> a<span class="token operator">+</span>b <span class="token comment"># output(ndarray([[2,4],[4,6]]))</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>a的ndim是1，b的ndim是2，所根据原则1，首先讲a的shape前加上1，a.shape变为(1,2)。根据原则2检查a，b是否可以广播，a.shape=(1,2),b.shape=(2,2)所以可以进行广播。由原则3直到输出数组的shape应该是(max{1,2},max(2,2))=(2,2)。根据原则4知道a会在第一个维度上进行复制对齐，从而a被广播为ndarray([[1,2],[1,2]])。</p>
+<h1 id="numpy中各种函数涉及的axis到底是什么">numpy中各种函数涉及的axis到底是什么</h1>
+<p>在numpy中很多函数都有axis（坐标轴）这个参数，axis参数它实际上就是shape的索引。对于一个shape为（2，3）的数组，它在axis=0这个坐标轴就有2个元素，在axis=1这个坐标轴就有3个元素，反过来<font color="blue">可以知道有两个元素的方向是axis=0的方向，有3个元素的方向是axis=1的方向</font>。对于包含axis参数的函数，这个函数的运算就是按照<font color="red">指定坐标轴方向对维度进行相应削减或扩充。</font></p>
+<pre class="line-numbers language-python" data-language="python"><div class="caption"><span>含axis参数的函数的例子</span></div><code class="language-python">a <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># a.shape=(2,3)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>np<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>axis<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># [5,7,9]</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>np<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>axis<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># [6,15]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<div class="admonition info">
+<p class="admonition-title">
+当shape中各维对应shape相同，就没法通过上法判断axis了，怎么办？
+</p>
+<p>
+随便举一个ndim相同但是各维对应shape不同的数组，然后再根据这个数组判断各个axis的指向。
+</p>
+</div>
+<h1 id="numpy中的视图和副本">numpy中的视图和副本</h1>
+<p>视图可以理解为ndarray对象的浅拷贝，而副本可以理解为ndarray对象的深拷贝。可以使用numpy的share_memory函数判断两个数组是视图关系还是副本关系。把副本错误当成视图问题不大，但是把视图错误当成副本危害很大，所以推荐在需要对数组做修改时检查它是不是某个数组的副本。</p>
+<p>!!! 常见的返回视图和副本的操作
+1. 返回视图：切片、转置、reshape方法、ravel方法、view方法。
+2. 返回副本：花式索引、copy方法、对元素强制类型转换astype方法、flatten方法、数组运算结果、数组拼接concatenate。</p>
+<h1 id="numpy中与数组操作相关的重要函数和方法">numpy中与数组操作相关的重要函数和方法</h1>
+<ul>
+<li>转换数组的shape：reshape中的参数shape中如果有-1，则对应维元素数量将会自动匹配。reshape和resize的区别在于——（1）前者是视图，后者是副本（2）如果元素数量不匹配reshape无法完成转换，会报错，而resize会进行强制转换，删除元素或复制元素。
+<ul>
+<li>np.reshape</li>
+<li>ndarray.reshape</li>
+<li>np.resize</li>
+</ul></li>
+<li>把数组追加到另一个数组中：它的行为类似与list的extend方法，最关键的是axis参数，如果不指定axis参数，会先将输入的两个数组都做扁平化处理，如果指定了axis参数则会在axis对应方向上对维度进行扩充，注意这时输入的两个数组的ndim必须是一样的，不然会报错。
+<ul>
+<li>np.append</li>
+</ul></li>
+<li>数组真假值的判断函数：最关键的还是axis参数，如果不指定axis参数则对整个数组进行运算，如果指定axis参数则在axis对应方向上对维度进行缩减。
+<ul>
+<li>np.all</li>
+<li>ndarray.all</li>
+<li>np.any</li>
+<li>ndarray.any</li>
+</ul></li>
+<li>指定条件下元素索引的获取or三元运算：只给np.where提供逻辑数组时，返回的就是逻辑数组结果为True的元素对应位置的索引，如果提供x、y参数（会通过广播机制和提供的逻辑数组具有相同的shape），则可以实现python中三元运算的效果，将逻辑数组中为True的元素切换为x中对应元素，将为False的元素切换为y中对应的元素。
+<ul>
+<li>np.where</li>
+</ul></li>
+<li>获取数组中非零元素的索引：等价于np.where(数组!=0)
+<ul>
+<li>np.nonzero</li>
+<li>ndarray.nonzero</li>
+</ul></li>
+<li>寻找数组中的最大/最小元素：最关键的是axis参数，如果不指定axis参数，默认是找整个数组中的最大/最小元素，如果指定了axis就按照axis的方向对维度进行缩减。
+<ul>
+<li>np.amax</li>
+<li>ndarrray.max</li>
+<li>np.amin</li>
+<li>ndarray.min</li>
+</ul></li>
+<li>寻找数组中最大/最小元素的索引：<font color="blue">这个操作实际上可以用np.amax/np.amin和np.where函数组合使用来实现。</font>下面提供的这几个函数和方法最关键的参数还是axis，和append一样，如果不指定axis，会先对数组做扁平化操作。如果指定了axis则对对应方向的维度进行缩减。
+<ul>
+<li>np.argmax</li>
+<li>ndarray.argmax</li>
+<li>np.argmin</li>
+<li>ndarray.argmin</li>
+</ul></li>
+<li>转置操作：np.transpose函数和ndarray.transpose方法都有axes参数，用于指定如何转置，默认是将轴的顺序颠倒。例如指定axes=(1,0,2)就是说将axis=0和axis=1的轴进行颠倒。而ndarray对象的T方法则无法使用axes参数，得到的就是将坐标轴顺序颠倒后的新视图。例如a.shape=(2,3,4)，那么a.T.shape=(4,3,2)。
+<ul>
+<li>np.transpose</li>
+<li>ndarray.transpose</li>
+<li>ndarray.T：这是一个属性，感觉像是pytho类里面用property修饰器修饰的一个方法？<font color="red">可惜numpy的源码是用C语言写的，我没看懂…</font></li>
+</ul></li>
+<li>排序操作：核心参数时axis，默认是-1，表示沿着最后一个axis指定的方向对数组进行排序操作，也可以设置为None，这个时候会对数组先做扁平化处理，然后再排序。与np.sort函数返回的副本不同，ndarray.sort方法是直接对ndarray对象进行就地操作，没有返回值。
+<ul>
+<li>np.sort</li>
+<li>np.argsort：这个函数拿到的是排序用的索引。</li>
+<li>ndarray.sort</li>
+</ul></li>
+<li>数组拼接操作：这个函数的关键参数是tup，它是待拼接数组构成的元组，里面的每一个ndarray必须拥有相同的ndim，并且除了再指定方向上允许元素数量不同，其它axis指定的方向上元素数量必须相同。
+<ul>
+<li>np.vstack：沿着axis=0指定的方向进行拼接操作。</li>
+<li>np.hstack：沿着axis=1指定的方向上进行拼接操作。</li>
+</ul></li>
+<li>生成单位矩阵/对角线上全是1的矩阵：
+<ul>
+<li>np.identity：只有一个参数n，用于指定单位矩阵的阶数。</li>
+<li>np.eye：参数M指定行数，N指定列数，当<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.486ex;" xmlns="http://www.w3.org/2000/svg" width="7.404ex" height="2.106ex" role="img" focusable="false" viewBox="0 -716 3272.6 931"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D440" d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g><g data-mml-node="mo" transform="translate(1328.8,0)"><path data-c="2260" d="M166 -215T159 -215T147 -212T141 -204T139 -197Q139 -190 144 -183L306 133H70Q56 140 56 153Q56 168 72 173H327L406 327H72Q56 332 56 347Q56 360 70 367H426Q597 702 602 707Q605 716 618 716Q625 716 630 712T636 703T638 696Q638 692 471 367H707Q722 359 722 347Q722 336 708 328L451 327L371 173H708Q722 163 722 153Q722 140 707 133H351Q175 -210 170 -212Q166 -215 159 -215Z"></path></g><g data-mml-node="mi" transform="translate(2384.6,0)"><path data-c="1D441" d="M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z"></path></g></g></g></svg></mjx-container></span>时，主对角线就是<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="11.63ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 5140.7 1000"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D45A" d="M21 287Q22 293 24 303T36 341T56 388T88 425T132 442T175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q303 442 384 442Q401 442 415 440T441 433T460 423T475 411T485 398T493 385T497 373T500 364T502 357L510 367Q573 442 659 442Q713 442 746 415T780 336Q780 285 742 178T704 50Q705 36 709 31T724 26Q752 26 776 56T815 138Q818 149 821 151T837 153Q857 153 857 145Q857 144 853 130Q845 101 831 73T785 17T716 -10Q669 -10 648 17T627 73Q627 92 663 193T700 345Q700 404 656 404H651Q565 404 506 303L499 291L466 157Q433 26 428 16Q415 -11 385 -11Q372 -11 364 -4T353 8T350 18Q350 29 384 161L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 181Q151 335 151 342Q154 357 154 369Q154 405 129 405Q107 405 92 377T69 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(878,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(1407,0)"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path></g><g data-mml-node="mo" transform="translate(1979,0)"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g><g data-mml-node="mi" transform="translate(2368,0)"><path data-c="1D440" d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g><g data-mml-node="mo" transform="translate(3419,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="mi" transform="translate(3863.7,0)"><path data-c="1D441" d="M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z"></path></g><g data-mml-node="mo" transform="translate(4751.7,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g></g></g></svg></mjx-container></span>阶单位矩阵的对角线，参数k用于指定哪个对角线上全是1，默认时0，表示主对角线上全是1，如果为正值表示向上偏移k的对角线上全是1，如果时负值表示向下偏移k的对角线上全是1。</li>
+</ul></li>
+<li>生成全0矩阵：
+<ul>
+<li>np.zeros</li>
+</ul></li>
+<li>生成全1矩阵：
+<ul>
+<li>np.ones</li>
+</ul></li>
+<li>生成待初始化的矩阵：
+<ul>
+<li>np.empty：这个矩阵的创建速度是最快的。</li>
+</ul></li>
+<li>生成等差数组：
+<ul>
+<li>np.arange：和range的行为一致，不过更为强大，它的step（步长/公差）可以不是整数。</li>
+<li>np.linspace：公差由起点、终点和元素数量决定的等差数组。当endpoint=true时，公差=<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.912ex;" xmlns="http://www.w3.org/2000/svg" width="8.622ex" height="2.993ex" role="img" focusable="false" viewBox="0 -919.8 3810.8 1322.8"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mrow" transform="translate(220,477.2) scale(0.707)"><g data-mml-node="mi"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(469,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mi" transform="translate(830,0)"><path data-c="1D45C" d="M201 -11Q126 -11 80 38T34 156Q34 221 64 279T146 380Q222 441 301 441Q333 441 341 440Q354 437 367 433T402 417T438 387T464 338T476 268Q476 161 390 75T201 -11ZM121 120Q121 70 147 48T206 26Q250 26 289 58T351 142Q360 163 374 216T388 308Q388 352 370 375Q346 405 306 405Q243 405 195 347Q158 303 140 230T121 120Z"></path></g><g data-mml-node="mi" transform="translate(1315,0)"><path data-c="1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path></g><g data-mml-node="mo" transform="translate(1818,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mi" transform="translate(2596,0)"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(3065,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mi" transform="translate(3426,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(3955,0)"><path data-c="1D45F" d="M21 287Q22 290 23 295T28 317T38 348T53 381T73 411T99 433T132 442Q161 442 183 430T214 408T225 388Q227 382 228 382T236 389Q284 441 347 441H350Q398 441 422 400Q430 381 430 363Q430 333 417 315T391 292T366 288Q346 288 334 299T322 328Q322 376 378 392Q356 405 342 405Q286 405 239 331Q229 315 224 298T190 165Q156 25 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 114 189T154 366Q154 405 128 405Q107 405 92 377T68 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(4406,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g><g data-mml-node="mrow" transform="translate(728.8,-345) scale(0.707)"><g data-mml-node="mi"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(600,0)"><path data-c="1D462" d="M21 287Q21 295 30 318T55 370T99 420T158 442Q204 442 227 417T250 358Q250 340 216 246T182 105Q182 62 196 45T238 27T291 44T328 78L339 95Q341 99 377 247Q407 367 413 387T427 416Q444 431 463 431Q480 431 488 421T496 402L420 84Q419 79 419 68Q419 43 426 35T447 26Q469 29 482 57T512 145Q514 153 532 153Q551 153 551 144Q550 139 549 130T540 98T523 55T498 17T462 -8Q454 -10 438 -10Q372 -10 347 46Q345 45 336 36T318 21T296 6T267 -6T233 -11Q189 -11 155 7Q103 38 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(1172,0)"><path data-c="1D45A" d="M21 287Q22 293 24 303T36 341T56 388T88 425T132 442T175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q303 442 384 442Q401 442 415 440T441 433T460 423T475 411T485 398T493 385T497 373T500 364T502 357L510 367Q573 442 659 442Q713 442 746 415T780 336Q780 285 742 178T704 50Q705 36 709 31T724 26Q752 26 776 56T815 138Q818 149 821 151T837 153Q857 153 857 145Q857 144 853 130Q845 101 831 73T785 17T716 -10Q669 -10 648 17T627 73Q627 92 663 193T700 345Q700 404 656 404H651Q565 404 506 303L499 291L466 157Q433 26 428 16Q415 -11 385 -11Q372 -11 364 -4T353 8T350 18Q350 29 384 161L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 181Q151 335 151 342Q154 357 154 369Q154 405 129 405Q107 405 92 377T69 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(2050,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mn" transform="translate(2828,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g></g><rect width="3570.8" height="60" x="120" y="220"></rect></g></g></g></svg></mjx-container></span>，否则公差=<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.798ex;" xmlns="http://www.w3.org/2000/svg" width="8.622ex" height="2.879ex" role="img" focusable="false" viewBox="0 -919.8 3810.8 1272.6"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mrow" transform="translate(220,477.2) scale(0.707)"><g data-mml-node="mi"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(469,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mi" transform="translate(830,0)"><path data-c="1D45C" d="M201 -11Q126 -11 80 38T34 156Q34 221 64 279T146 380Q222 441 301 441Q333 441 341 440Q354 437 367 433T402 417T438 387T464 338T476 268Q476 161 390 75T201 -11ZM121 120Q121 70 147 48T206 26Q250 26 289 58T351 142Q360 163 374 216T388 308Q388 352 370 375Q346 405 306 405Q243 405 195 347Q158 303 140 230T121 120Z"></path></g><g data-mml-node="mi" transform="translate(1315,0)"><path data-c="1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path></g><g data-mml-node="mo" transform="translate(1818,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mi" transform="translate(2596,0)"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(3065,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mi" transform="translate(3426,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(3955,0)"><path data-c="1D45F" d="M21 287Q22 290 23 295T28 317T38 348T53 381T73 411T99 433T132 442Q161 442 183 430T214 408T225 388Q227 382 228 382T236 389Q284 441 347 441H350Q398 441 422 400Q430 381 430 363Q430 333 417 315T391 292T366 288Q346 288 334 299T322 328Q322 376 378 392Q356 405 342 405Q286 405 239 331Q229 315 224 298T190 165Q156 25 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 114 189T154 366Q154 405 128 405Q107 405 92 377T68 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(4406,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g><g data-mml-node="mrow" transform="translate(1180.6,-345) scale(0.707)"><g data-mml-node="mi"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(600,0)"><path data-c="1D462" d="M21 287Q21 295 30 318T55 370T99 420T158 442Q204 442 227 417T250 358Q250 340 216 246T182 105Q182 62 196 45T238 27T291 44T328 78L339 95Q341 99 377 247Q407 367 413 387T427 416Q444 431 463 431Q480 431 488 421T496 402L420 84Q419 79 419 68Q419 43 426 35T447 26Q469 29 482 57T512 145Q514 153 532 153Q551 153 551 144Q550 139 549 130T540 98T523 55T498 17T462 -8Q454 -10 438 -10Q372 -10 347 46Q345 45 336 36T318 21T296 6T267 -6T233 -11Q189 -11 155 7Q103 38 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(1172,0)"><path data-c="1D45A" d="M21 287Q22 293 24 303T36 341T56 388T88 425T132 442T175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q303 442 384 442Q401 442 415 440T441 433T460 423T475 411T485 398T493 385T497 373T500 364T502 357L510 367Q573 442 659 442Q713 442 746 415T780 336Q780 285 742 178T704 50Q705 36 709 31T724 26Q752 26 776 56T815 138Q818 149 821 151T837 153Q857 153 857 145Q857 144 853 130Q845 101 831 73T785 17T716 -10Q669 -10 648 17T627 73Q627 92 663 193T700 345Q700 404 656 404H651Q565 404 506 303L499 291L466 157Q433 26 428 16Q415 -11 385 -11Q372 -11 364 -4T353 8T350 18Q350 29 384 161L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 181Q151 335 151 342Q154 357 154 369Q154 405 129 405Q107 405 92 377T69 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g></g><rect width="3570.8" height="60" x="120" y="220"></rect></g></g></g></svg></mjx-container></span>。</li>
+</ul></li>
+<li>生成随机数组：这类数组的生成用的是numpy的random子模块。
+<ul>
+<li>设置随机数种子
+<ul>
+<li>np.random.seed：计算机产生的随机数是伪随机数，再测试程序的时候设置一个固定的种子很有帮助。</li>
+</ul></li>
+<li>均匀分布随机数
+<ul>
+<li>np.random.rand：用[0,1)区间均匀分布的随机数填充并返回指定形状的数组。</li>
+<li>np.random.randint：用区间[low,high)中离散均匀分布的随机整数填充并返回指定形状的数组。</li>
+</ul></li>
+</ul></li>
+<li>从数组中随机抽取元素
+<ul>
+<li>np.random.choice：关键参数——（1）p可以用来设置数组中每个元素被选中的概率，默认等概率（2）replace用于设置是否是有放回抽样，如果是，这个函数实际上就是遗传算法里面的轮盘赌。（3）size用于设置抽取到的元素构成的数组的最终输出时的形状。</li>
+</ul></li>
+<li>随机打乱数组
+<ul>
+<li>np.random.shuffle：注意这个函数主要操作的是一维数组，如果输入多维数组，则将第一个axis指定方向的顺序打乱。</li>
+</ul></li>
+<li>数组扁平化操作：flatten方法和ravel方法的区别在于前者是元素组的副本，后者是原数组的副本。
+<ul>
+<li>np.ndarray.flatten</li>
+<li>np.ndarray.ravel</li>
+</ul></li>
+<li>数组平铺操作：最关键的是reps参数，用于指定数组如何平铺，如果输入一个整数，就是在数组最后一个axis指定方向平铺对应次数。如果是元组，就依次在对应axis指定方向平铺对应次数。
+<ul>
+<li>np.tile</li>
+</ul></li>
+<li>数组读写操作：需要注意的是——（1）np.load,np.save,np.savez使用了python的pickle模块的反序列化和序列化实现数组对象的读取与写入，所以存在一定的安全风险，对于不可靠的npy，npz文件不要用这个函数读取；（2）loadtxt和savetxt相对而言安全性更好，而且可以跨编程语言操作这些数组，但是这连个函数不支持保存或读取三维及以上的数组。
+<ul>
+<li>np.load：从npy后缀或npz后缀的文件中读取ndarray数组</li>
+<li>np.save：将一个数组保存到npy后缀的文件中，这个文件类型只有python能读取。</li>
+<li>np.savez：将多个数组分别保存到多个npy文件中，然后将这些npy文件压缩到一个npz后缀的文件中。</li>
+<li>np.loadtxt：将ndarray从文本文件中加载出来。</li>
+<li>np.savetxt：将ndarray保存得到文本文件中。</li>
+</ul></li>
+</ul>
+<h1 id="numpy中提供的重要数学函数">numpy中提供的重要数学函数</h1>
+<ul>
+<li>求数组的差分、累计和
+<ul>
+<li>np.diff：最关键的参数是axis，默认在最后一个axis指定方向做差分。</li>
+<li>np.cumsum：最关键的参数是axis，默认先将数组展平后再做累计和（它是差分的逆运算，但是差分后的数组并不能由这个函数还原，因为不知道初始值）。</li>
+</ul></li>
+<li>向量内积和矩阵乘法：
+<ul>
+<li>np.dot：这个函数最关键的就是两个参数a，b。当a和b都是0维是做的是标量乘法；当a，b都是一维数组时算的就是两个向量的内积；当a，b都是多维数组时，算的时矩阵乘法；当a是多维数组而b是一维数组时，此时b相当于列向量，做矩阵乘法；当a是一维数组而b是多维数组时，此时a相当于行向量，做矩阵乘法。<font color="blue">使用这个函数的时候一定要注意输入数组的ndim和输出结果的ndim，否则会有意料之外的错误。</font></li>
+</ul></li>
+<li>生成网格点坐标对应的矩阵X,Y,…
+<ul>
+<li>np.meshgrid：这个函数的输入时一维数组，返回结果时一个ndarray元组，放的时坐标在各个维度对应的矩阵。</li>
+</ul></li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+关于后续
+</p>
+<p>
+目前numpy里面我觉得最核心的知识点和函数就是这些，其它的都不怎么用，等用到了再回来补充吧！
+</p>
+</div>
+]]></content>
+      <categories>
+        <category>计算机技术</category>
+      </categories>
+      <tags>
+        <tag>numpy</tag>
       </tags>
   </entry>
   <entry>
@@ -3008,21 +3008,6 @@ Mathematical operators are prefixed with a backslash as <span class="token equat
       </tags>
   </entry>
   <entry>
-    <title>川西行</title>
-    <url>/posts/37a60c36/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><div class="gallery-container" data-type="data" data-button="" data-limit="10" data-first="10">
-    <div class="gallery-items">[{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/1.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/2.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/3.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/4.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/5.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/6.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/7.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/8.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/9.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/10.webp","alt":"","title":""}]</div>
-  </div>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
-      <tags>
-        <tag>川西</tag>
-        <tag>景象照</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>子回路消除约束</title>
     <url>/posts/862732fe/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="什么是子回路">什么是子回路</h1>
@@ -3102,6 +3087,21 @@ Mathematical operators are prefixed with a backslash as <span class="token equat
       <tags>
         <tag>TSP</tag>
         <tag>VRP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>川西行</title>
+    <url>/posts/37a60c36/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><div class="gallery-container" data-type="data" data-button="" data-limit="10" data-first="10">
+    <div class="gallery-items">[{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/1.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/2.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/3.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/4.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/5.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/6.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/7.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/8.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/9.webp","alt":"","title":""},{"url":"https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/川西行/10.webp","alt":"","title":""}]</div>
+  </div>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>川西</tag>
+        <tag>景象照</tag>
       </tags>
   </entry>
   <entry>
@@ -3933,226 +3933,6 @@ kkt条件有什么应用？
       </tags>
   </entry>
   <entry>
-    <title>科研指南</title>
-    <url>/posts/d580e0b1/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="如何做好文献阅读及笔记整理">如何做好文献阅读及笔记整理</h1>
-<p>阅读文献有什么用？必须得先想清楚这个问题读文献才能有动力。简单讲读文献有四个方面的好处：（1）帮助我们快速了解课题背景；（2）帮助我们把握课题研究方向；（3）从中学习课题设计思路；（4）提升自己的逻辑写作能力。</p>
-<table>
-<tr>
-<td>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/1.png" weight="50%" height="50%">
-Fig1. 读文献的好处
-</center>
-</td>
-<td>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/2.png" weight="50%" height="50%">
-Fig2. 不同目的下文献的推荐阅读内容
-</center>
-</td>
-</tr>
-</table>
-<div class="admonition info">
-<p class="admonition-title">
-推荐工具
-</p>
-<ol>
-<li>
-Stork文献鸟： 定期通过邮箱获取指定领域的文献。
-</li>
-<li>
-Connected Papers：输入文章名，获取与之相关论文的知识图谱。其中，论文越新颜色越深，引用度越高圆圈越
-大，论文之间的联系越强连线越黑。还可以通过Prior Works找到领域的开门作，通过Derivative Works找到该
-领域的研究综述，了解领域的新进展。
-</li>
-</ol>
-</div>
-<p>那在阅读完文献之后应该怎么做文献阅读笔记呢？<del><font color="red">如果不做笔记，读完就忘了…</font></del>首先得明确做文献笔记是给自己看的，不是给别人看的，不应该机械的勾画和抄写文献的内容，应该注入自己的理解（<font color="green">强迫自己总结</font>）。</p>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/3.png" weight="50%" height="50%">
-Fig3. 论文阅读笔记模板
-</center>
-<p><font color="cyan">以下经验摘录自《科研新手该如何读文献》，作者王威。</font></p>
-<p><strong>1、为什么读文献（paper）？</strong><br>
-这个问题很容易回答。因为学术研究，不是从你这里开始的，自然需要查阅前人的研究成果，从而一方面积累知识，一方面解决手头的问题。在这里，我引用你肖师兄毕业前留下的一段话：“关于看文献，这其实是一个老生常谈的问题。但是在我刚进组之初时，并不很注重对于文献的阅读，导致走了很多弯路。后来才逐渐认识到文献调研在科研中的重要性，甚至我认为可能是科研中最重要的部分。为什么阅读文献对于我们如此重要，之前在网上看到University of Zaragoza的Professor Masia的一句话印象很深，她说：“Our job is to push the frontier of what is already known, so we need to be aware of where this frontier is.” 从大的意义上来说，做科研工作需要知道最前沿的知识，<font color="red">当下研究领域在使用的思想和方法，这样我们才能知道目前的差距和挑战在哪里，才能不断创新，做出有价值有意义的工作</font>。而且只有通过阅读文献，我们才能找到我们的工作在当下科研界中所处的位置，这样我们才能明白我们的工作的意义在哪。从实际的角度来说，阅读文献也许会让我们找到在研究过程中所面临问题的解决方法，可能一个困扰我们几个月的技术难题，别人早就已经解决并且报道，而我们还在苦心琢磨。又或者当我们研究迟迟无法突破，<font color="red">在文献中寻找灵感也是一种办法</font>。”</p>
-<p><strong>2、每天学习和工作很忙，应该花多少时间读文献？</strong><br>
-按照我的经验，平均每天一小时是比较合理的。这里指的是科研常态化的看文献，而不是在课题的某些阶段，需要大批量文献调研的时候（那个时候可能要远大于一小时）。我不太赞同那种“只有在实验室做实验才叫科研”的论点；同时，也不赞成从早到晚读文献，而忽略了动手去尝试。这和孔子说的“学而不思则罔，思而不学则殆”，有异曲同工之妙。在我们这个实验学科，常态化，也是比较健康的学习方式，应该是大部分时间做实验，剩下的时间思考、读书、读文献、总结、写作。</p>
-<p><strong>3、读什么文献？</strong><br>
-按和你课题的相关性由强到弱排序，我暂且将论文归为以下七种：</p>
-<p>第一种，妥妥的就是你研究的课题。举个例子，如果你的课题是《如何避免红烧肉粘在不粘锅内的研究》，然后你看到了一篇讲如何避免红烧肉粘在不粘锅内的文章……我不知道这是幸运，还是不幸。但很显然，这篇文章你要从头到尾精读几遍，几乎要做到每个字都知道人家在说什么，弦外之音是什么，里面的公式、数据、图表、结论要记得门清。在此之上，你还要举一反三，知道他们工作不足是什么，和你工作的相似之处和不同之处是什么。从而回答这个终极问题：工作被人先发了，自己还能不能毕业？</p>
-<p>第二种，跟你的课题密切相关。例如，你的课题还是《如何避免红烧肉粘在不粘锅内的研究》，找到的paper做的是回锅肉在不粘锅内的烹饪，或者红烧肉在电饭锅内的烹饪之类的。总之，主题直接相关，肉也很类似。那做法跟第一种一样，你基本上要把这篇paper读透了。阅读过程中，要时刻思考：本文对你的课题的启发是什么？指导是什么？试验方法或是某个理论，是否也可以用在你的课题？还是结论对你有帮助？</p>
-<p>第三种，跟你的课题相关，但是有比较明显的区别。例如，你搜到的paper做的是“红烧肉的腌制机理探讨”。虽然你做的并不是这个课题，但既然要理解红烧肉在不粘锅内的粘附，显然需要知道肉的质地、盐浓度、水分等问题；而这篇paper一定会讨论这个问题，因此会给你启发。反过来，你要是不懂红烧肉烹饪的基本要素，自然也不会理解它粘不粘锅。这篇文章不需要每字每句都读透，基本上摘要和结论以及所有的图看懂了就行，但是你需要存下来（最好是能够整理汇总在一个ppt里），因为你的毕业论文或者小论文的文献综述部分很可能会引用到。</p>
-<p>第四种，就是泛泛的跟你课题的某个关键词相关的论文。比如，所有关于不粘锅的论文，所有关于红烧肉的论文，等等。这些论文，构成了你课题的背景知识。但是它们非常零散，需要在长期科研的过程中积累，或是通过师兄师姐的推荐，或是导师教授的指点，亦或是自己发现寻找到。这些文献可以粗读，然后分门别类汇总到ppt（你的毕业论文或者小论文的文献综述部分也有可能会用到）。</p>
-<p>第五种，是所有关于肉的烹制论文。这些论文组成了课题组研究领域的大背景知识，发表频率是平均每天会在网上发表1篇左右。如果你预计自己会在今后比较长的时间内从事这一领域（例如3年以上），那需要利用一些追踪文献的方法（如订阅期刊的rss，或者订阅谷歌学术的邮件提醒），让自己源源不断的获得最新发表的这种论文；并在看到的第一时间，花3-5分钟粗读一下题目、摘要和主要的图。随后，根据对文章的兴趣程度和对你的重要程度，按照权重分类保存，并在某个时间统一阅读那些你标记权重比较高的这些论文。例如，我在阅读新论文时，会把所有的论文保存到一个“肉肉”文件夹，但是只有大约10%的会标记“需要读”（mac电脑有这个文件做标签的功能，windows的话请自己想办法），并在闲暇的时候打开仔细读一下。</p>
-<p>第六种，是各个领域的综述。这些review, perspective, account等性质的论文内容庞杂，出现在各类期刊，平时也未必专门去搜集；看到了的话，可以简单看一下标题，是不是自己感兴趣的领域。比如你做肉之余，对素食也很感兴趣，那可以留心一下这个领域的新的综述。而你平时看论文的时候，或者做实验的时候，发现自己某个知识点比较缺乏，或者这个知识点最近很火，那就可以稍微去搜几个相关的高引用的综述（或者发在顶刊上的新综述），来充充电，说不定就是你下一个研究点（比如石墨烯在红烧肉中的应用）。但要注意，综述尽量不看太老的，特别是热门领域，5年就翻天覆地。</p>
-<p>最后一种就是各类随机的文献。“浩如烟海”可能都无法形容现在文献的出产量。为了防止自己坐井观天，还是需要常常扩展自己的眼界。我建议选择3-5个顶刊，订阅他们的邮件提醒，出新刊的时候第一时间浏览一下最新的文章标题，感兴趣的话看一下摘要和图，刷新一下自己对于学术圈前沿方向的认识。我在韩国访问时的一位杨师兄，每天都会很精神抖擞地去看CNS（cell、Nature和Science，三大顶刊）的新paper，并且跟我说，你平时看什么期刊，就会发什么期刊。他最终发了Nature正刊，青千回国。我惊为天人，并因此深有感触。</p>
-<p>我建议你采纳一个好的文件归类或者添加标签的方法。例如如果是mac电脑的话可以用系统自带的标签功能，把每一篇文献添加上关键字，或者按照以上七档来标记星标（一颗星到七颗星）。</p>
-<p><strong>4、如何读文献？</strong><br>
-根据以上文献的分类，读文献的方法大概有三档：精度；泛读；瞟一眼。</p>
-<p>先简单总结一下阅读文献的过程：我们通过关键字搜索找到了很多文献，把它们在浏览器上打开。第一步，是最粗糙的“瞟一眼”级泛读：看标题、关键词和摘要，从而大致确认该论文和自己课题的相关性。对于相关度不高的文章（泛泛的说，对应上面分类中的5-7类），可以在此止步：简单记录后关闭，甚至不需要下载下来（可以把论文题目、doi号等关键信息粘贴到一个总结的ppt里面，需要的时候能回去搜到就行）。</p>
-<p>对于相关度较高的文章（分类中1-4类），推荐采用以下的阅读策略：</p>
-<p>读一篇文章，不管是怎么个读法，都是从标题开始。一个好的标题，应该能够很快抓住读者，读者也很快能意识到这篇文章的细分领域、核心成果，和文章性质（实验、模拟、理论？化学、材料、物理？）。</p>
-<p>摘要是读所有文献的重中之重。一个典型的摘要，基本上是四个层次。第1-2句，点明研究的背景，通常是xxx很重要，但是xxx还不足。第3句，是核心句，一句话说明本文的亮点，或者说是核心成果，并呼应上面不足。接下来的几句，是展开来介绍本文的详细的成果——发现了什么、证明了什么、测试了什么等等。最后的1-2句是总结升华，往往会说明以上的结果对于小领域、大领域有什么科学和工程上的意义。</p>
-<p>举个栗子：</p>
-<p>（第一句）红烧肉是群众喜闻乐见的一种美食，口味醇厚，回味无穷。（第二句）但是烹饪红烧肉中常常遇到粘锅的现象，对此人们的理解还比较浅薄，也没有完美的解决办法。（第三句）本文中，我们研究了不同烹饪条件、锅的种类对于红烧肉粘锅的影响，并寻找出了不沾的解决办法。（第四句）我们发现…… （最后一句）本文的研究结果，不仅对于完美的红烧肉烹饪有重要的指导意义，也对于食物的处理和不粘锅的研发有很强的启示。</p>
-<p>摘要大多是这个套路。对熟悉相关领域的读者，他们可以直奔主题，大概看摘要中的几句话，就清楚这篇文章的意义和档次了。高手也会非常擅长让读者尽快找到这个主题。当然，武林门派众多，自然有很多种摘要不是这个套路，但是据我观察，尤其是材料、化学领域，八成不会错。而物理类的文章，有的时候没有那么多门道，上来第一句就说我们发现了XYZ，而不给你讲一大堆XYZ多么有意义，也是常见的。</p>
-<p>摘要的套路，对自己写作的时候也非常关键，需要尽可能的遵守。或许这样做听上去有些八股，但摘要的作用是让读者尽快的掌握文章主旨，因此牺牲一些文学性和灵活性常常是必要的。高手自然可以兼顾两者。</p>
-<p>从摘要往下，就体现出来了精度和泛读的区别。先说泛读，基本上把intro每一段的第一句话看一下，然后看一下intro最后一段，再然后把几个图扫一遍，最后把conclusion看一遍。这样就在摘要的基础上，得到了更丰富、更直观的信息。特别是图，是补充摘要的最得力的手段。正所谓“一画胜千言”，一张好的图，往往抵得过你看半天的一大段话。特别是论文中的“图1”，在材化类的很多期刊中，第一张图都是一个体系示意图。而材化类的文章往往套路性很强，合成xx材料，然后展示xx性能。基本上看懂了示意图，论文的创新之处就掌握的七七八八了。</p>
-<p>精读，顾名思义，非常精细地读。基本上对应着上面一节讲到的第一、二类的文献，也就是和自己目前的课题密切相关的。对我们领域的课题来说，这种文献非常少，大概在你的学生生涯中能碰到一二十篇就已经很不容易了。（如果你发现许多文章都跟你密切相关，这侧面印证了你的课题非常热门，是好事儿；另一方面，也可能表明你的课题已经没啥可做的了，这就悲剧了。）</p>
-<p>精读过程中，首先也要读摘要，然后从文章第一句开始，全文读下去。在intro那里，可以忽略一些对于你已经掌握的背景知识的介绍，比如什么是红烧肉，红烧肉怎么好吃之类的（材化类的文章第一段往往是这些）。<font color="blue">如果你有心，可以稍微关注一下他们列参考文献的时候，都喜欢用哪几篇，如果没读过可以去看看</font>。</p>
-<p>Intro不能都忽略，通常第二段开始就进入了核心：为什么要研究当前的这个问题？学术界存在哪些争议？有哪些悬而未决的问题，或者哪个应用被这个问题卡住了脖子？这个地方往往能体现出作者的功力和层次，也决定了这个工作的意义和价值。高屋建瓴的作者，往往能看到很宏大的命题。他们能在很多在你看来匪夷所思、风马牛的地方把问题联系起来，而又让你觉得醍醐灌顶。在我们这种学科交叉的领域，特别是你的课题和实际应用联系不紧密的时候，这是一种特别有用的能力。因为如果一个问题对许多领域都有意义和启发，那关注的人也会多，你的工作才有意义。（另一种说法，就是很多大佬很会“讲故事”。）</p>
-<p>因此，读intro的时候，要特别关注作者是怎么引出他的工作的：逻辑是否通顺；是否层层递进，把这个问题越写越具体；是否让读者觉得这是个真问题，而不是他为了写这个paper而凭空编造出来的假命题。（当然，这种假命题也不少，甚至顶刊也存在。从某种意义上来说，这世上本没有路，走的人多了……鲁迅说得好啊。）</p>
-<p>Intro看完了，你应该能够明白这个工作的出发点，想解决的问题是什么，以及他们的主要发现和意义在哪里。<font color="pink">换句话说，intro看完了，这个文章基本就懂了大半。剩下的一小半，更多的是一些技术和细节问题，以及作者如何用实打实的结果支撑他们intro中画下的大饼。</font></p>
-<p>在泛读中忽略的技术和细节问题，在精读中就变成了关键！既然这篇文章跟你的课题如此相关，那么具体的细节，比如他们红烧肉是哪个部位的，锅什么牌子，盐放了多少，照片能不能看清，这些看起来很琐碎的问题，也都变得至关重要！而且这些往往能够给你很大的启发（这个图原来能这样量化！），或者解答你实验中某个困扰许久的问题（原来他们的样品是这么做的！），甚至让你沾沾自喜（我的数据比他们的好看太多了！）。所以切莫忽略文章的每一个细节。</p>
-<p>一篇好的文章，都是在讲一个故事,仿佛有一个画面在你面前徐徐展开。随着阅读的深入，这个工作的很多细节也逐渐丰满了起来。你或许能感觉到坐到了作者对面，他在用一张张ppt给你讲他们的故事，给你解释他们发现的现象，向你娓娓道来背后的原因。</p>
-<p>精彩的文章，在你的问题刚刚冒出来的时候，作者会恰到好处的用一个设计优美的对照实验让你酣畅淋漓。而在你刚刚被挑起了兴趣时候，就用高潮迭起的剧情让你欲罢不能。最后的结论清晰有力，又不失分寸和风度；能够睥睨天下般让你拍案叫绝，又能够虚怀若谷地坦承文中的不足和下一步需要改进的方向。这样的文章并不很常见，但是每一次看到，都让人心旷神怡，感慨这才是论文的最高水平。</p>
-<p><strong>5、文献读完之后</strong><br>
-Paper读完了，面对着几页pdf上面的黄色高亮，和旁边或多或少的一些单词中文翻译，如同踢了一场精彩的足球比赛，有高潮迭起，也有悲欢离合。终场哨音吹响，你回到更衣室，这时不是庆祝，也不是休息，厉害的教练和运动员知道需要<font color="green">及时复盘，总结经验</font>。因此，我建议你，眯起眼睛，掩卷沉思，回想一下这个文章，自己学到了什么？如果让你给实验室的同学用30秒钟讲完，你会说出一个什么故事？然后再从头过一遍你做下的笔记，摘录到你的文献阅读本里面。写下你的心得体会。这样才是一次完整的精读。</p>
-<p>我再次强调，你的学术生涯，精读的文献非常有限（也不应该每篇文章都精读）。每一篇，都像是一次晚宴或者音乐会，你盛装出席，为之欢呼落泪，也因此成为了你学术生命中的一次难得阅历。切莫读过就忘记了，要珍藏起来，常常回想，并且建立起和自己学习工作的牢不可破的纽带，这样才不会枉费你花费的大量无价的时间和心血。</p>
-<p>作为一名作者，若能够有一位读者精读了我的文章，甚至还给予很高评价，那简直是无与伦比的体验。假如你有机会遇到了你精读过文章的作者，不妨和她/他仔细聊聊这篇文章，告诉她/他你的收获和体会，让对方知道，她/他的努力受到了别人的关注和认可。学海无涯，破浪前行的我们，能够遇到一同泛舟的同道，是何等的幸运。</p>
-<p>王威，x年x月x日</p>
-<h1 id="基于obsidian和zotero搭建文献阅读和笔记环境">基于Obsidian和Zotero搭建文献阅读和笔记环境</h1>
-<p>Zotero是一个文献管理工具，它的工作原理和hexo对博客的管理很像，对应的概念叫做条目，通过给条目赋予category和tag属性实现文献的管理。一个条目可以包含很多附件，如对应的pdf文件和笔记。Zotero的工作流简单来说就是用浏览器插件Zotero connector抓取文献条目（必须在文献详情页抓取，不要在打开的pdf阅读页抓取，不然抓不到文献的元数据，有时候只能抓到文献元数据但抓不到pdf，可以在zotero中手动添加），抓完之后用zotero阅读并标注pdf，导出zotero文献数据库，使用citations插件生成对应md模板，用obsidan写文献笔记。</p>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/6.webp" weight="50%" height="50%">
-Fig4. 文献详情页
-</center>
-<div class="admonition info">
-<p class="admonition-title">
-所需下载的插件及其功能汇总
-</p>
-<ul>
-<li>
-茉莉花（zotero）： 支持中文文献元数据的解析。
-</li>
-<li>
-better biblatex（zotero）： 将zotero所维护的数据按指定格式导出，这里选择better Biblatex格式并始终保持该文件的更新，及文库发生任何改变该导出文件都会发生相应的更新。
-</li>
-<li>
-zotfile（zotero）：使用zotero内置pdf阅读器做标记可以直接转换为笔记，但如果用其它阅读器做标记又想生成笔记就得使用zotfile插件做提取。<font color="red">zotfile现在不更新了，不支持zotero7…</font>
-</li>
-<li>
-citations（obsidian）：解析通过better biblatex导出的数据，生成指定模板下的markdown文件。
-</li>
-<li>
-dataview（obsidian）：这个插件很强大，它可以看成是一个excel表格，数据的来源是你markdown文件中的frontmatter，主要是用来排序和筛选特定文献。
-</li>
-</ul>
-</div>
-<p>此外，Zotero还可以和Word联动，快速插入引用和参考文献。<font color="blue">在一个word文档中首次插入引用会让你选择引文格式，例如中文文献一般就用GB格式，如果不小心选错了doucument performance按键重新选择！</font></p>
-<table>
-<tr>
-<td>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/8.png" width="50%" height="50%">
-Fig5. 选择引文格式
-</center>
-</td>
-<td>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/9.png">
-Fig6. 快速添加引文和参考文献
-</center>
-</td>
-</tr>
-</table>
-<h1 id="和咱专业相关的期刊">和咱专业相关的期刊</h1>
-<ul>
-<li>Transportation Research A~E：A关注交通政策、规划、经济和管理问题；B侧重交通建模、优化和理论方法；<br>
-C聚焦智能交通系统（ITS）、大数据、自动驾驶等新兴技术； D研究交通与环境、可持续发展的交叉领域；E物流、供应链管理和运输经济方向。<br>
-</li>
-<li>Transportation Science (TS)：INFORMS（Institute for Operations Research and the Management Sciences）旗下顶级期刊，关注运筹学、优化和交通系统分析。<br>
-</li>
-<li>Operations Research (OR)：INFORMS旗下旗舰期刊，涵盖优化、随机模型、算法设计、博弈论等核心方向。<br>
-</li>
-<li>European Journal of Operational Research (EJOR)：EJOR（European Journal of Operational Research）是运筹学（OR）和管理科学（MS）领域的国际顶级期刊，由欧洲运筹学协会（EURO）主办，Elsevier出版。它涵盖了运筹学理论、方法及其在商业、工程、政府等领域的应用，是学术界和工业界广泛认可的高影响力期刊。<br>
-</li>
-<li>Informs Journal on Computing (IJOC or JOC)：由INFORMS（运筹学与管理科学研究所）出版。它聚焦于算法设计、计算优化、机器学习与运筹学的结合，是理论计算与工程应用并重的高水平期刊。<br>
-</li>
-<li>IEEE Transactions on Intelligent Transportation Systems (T-ITS)：聚焦智能交通技术的应用与创新。</li>
-<li>Computers &amp; Operations Research (COR)：运筹学（OR）与计算科学交叉应用领域的国际权威期刊，由 Elsevier 出版，专注于算法开发、优化建模、决策支持系统及工业应用。</li>
-<li>Computers &amp; Industrial Engineering (CIE)：工业工程（IE）与计算机应用交叉领域 的重要国际期刊，由 Elsevier 出版，专注于 智能制造、生产系统优化、供应链管理、数据驱动决策 等方向。<br>
-</li>
-<li>交通运输工程学报</li>
-<li>交通运输系统工程与信息</li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">
-EI、SCI和影响因子是什么东西
-</p>
-<p>
-EI（Engineering Index）和SCI（Science Citation Index）可以理解成两个数据库，在被这两个数据库搜录的期刊上发的文章就叫EI、SCI论文。影响因子（IF）是根据期刊发文量和被引用数计算出来的，一个期刊IF越大就越顶。
-</p>
-</div>
-<div class="admonition info">
-<p class="admonition-title">
-开源期刊和闭源期刊的区别
-</p>
-<p>
-开源期刊（OA，Open Access）和闭源期刊（非OA，Non Open Access）在访问方式、费用、审稿速度、文章质量等方面存在显著差异。开源期刊是指将学术信息放在互联网上供所有人免费访问，不需要考虑版权或注册的限制。作者需要支付版面费，但读者可以免费获取全文。闭源期刊是指作者发表文章不用支付版面费，读者通过购买出版物或支付订阅费获取资源信息。如果急需发表、可报销版面费、希望文章广泛传播和引用频次高，开源期刊是较好的选择。如果时间充裕，且重视学术领域评价，闭源期刊更为适合。一般来说闭源期刊的含金量高一些，尽量法闭源期刊，实在发不出来可以权衡利弊发开源。
-</p>
-</div>
-<h1 id="关于海运">关于海运</h1>
-<p>海运研究内容可以分成三个层面——战略、战术和运营层面，各自研究的问题如下。</p>
-<ul>
-<li>战略规划（<font color="red">长期</font>）
-<ul>
-<li>船舶大小</li>
-<li>船队规模和组成</li>
-<li>班轮航线网络设计</li>
-<li>合同货物价值评估</li>
-</ul></li>
-<li>战术规划（<font color="green">中期</font>）
-<ul>
-<li>不定期船和工业船航线规划和调度(routing and scheduling)</li>
-<li>驳船调度</li>
-<li>班轮运输中的船队部署问题（将班轮部署到既定航线上,deployment）</li>
-<li>海运供应链（调度和库存的结合MIR，Maritime Inventory Routing）</li>
-<li>海军舰艇的调度</li>
-<li>近洋运输中船员排班、船舶维修保养、燃油补给决策</li>
-</ul></li>
-<li>运营规划（<font color="blue">短期</font>）
-<ul>
-<li>运营调度（单航次）</li>
-<li>环境航线规划（萌芽阶段，环境信息的及时获取比较困难）</li>
-<li>航速选择</li>
-<li>货物装载（研究重心主要是集装箱船的配积载计划，<font color="pink">“The container stowage planning problem is very complex and we are far from finding optimal solutions, or even agreeing on the components of the objective function.”</font>）</li>
-<li>是否接纳运营中出现的可选货物</li>
-</ul></li>
-</ul>
-<blockquote>
-<p>虽然规划层面所需做的决策不同，但目标总是最小化成本或最大化收益。此外，关于scheduling这个词，christiansen那篇综述说的是——“The term scheduling is used when the temporal aspect is brought into routing, i.e. when the time of the various events on a ship’s route is included.”</p>
-</blockquote>
-<center>
-<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/11.png" weight="50%" height="50%">
-Fig7. 研究趋势
-</center>
-<h1 id="参考资料">参考资料</h1>
-<ol type="1">
-<li><a href="https://www.bilibili.com/video/BV17W4y167SM">如何做好文献阅读及笔记整理</a></li>
-<li><a href="https://help.ivysci.com/guide/#chapter-ke-yan-shu-ju-shou">研飞科研指南</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/639325772">Obsidian+Zotero打造最强科研工具链</a></li>
-<li><a href="https://www.bilibili.com/video/BV1xM4y137q9">Zotero，OB不能没有它(PART1)</a></li>
-<li><a href="https://www.bilibili.com/video/BV1E64y187er">Zotero，OB不能没有它(PART2)</a></li>
-<li><a href="https://www.bilibili.com/video/BV1m341127aU">Zotero，OB不能没有它(PART3)</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/162939630">Zotero管理文献的机制——分类和标签</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/159828951">Zotero添加条目的三种方式</a></li>
-<li><a href="https://gitee.com/zotero-chinese/zotero-chinese/issues/I56D62">Zotero使用 CNKI 时抓取条目报错解决方法</a></li>
-<li><a href="https://clashforwindows.org/">外文文献搜索——Clash科学上网篇</a></li>
-<li><a href="https://www.bilibili.com/video/BV1HZ4y1b7MJ">ppt绘制论文技术路线图</a></li>
-<li><a href="https://blog.csdn.net/Aoman_Hao/article/details/117740132">科研新手该如何读文献？| 开启科研之路（王威教授）</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>其它</category>
-      </categories>
-      <tags>
-        <tag>科研方法论</tag>
-        <tag>研究生生涯规划</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>最短路算法学习笔记</title>
     <url>/posts/24d5a30d/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><div class="admonition info">
@@ -4554,6 +4334,226 @@ Fig2. A*的搜索过程
       <tags>
         <tag>景象照</tag>
         <tag>大连海事大学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>科研指南</title>
+    <url>/posts/d580e0b1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="如何做好文献阅读及笔记整理">如何做好文献阅读及笔记整理</h1>
+<p>阅读文献有什么用？必须得先想清楚这个问题读文献才能有动力。简单讲读文献有四个方面的好处：（1）帮助我们快速了解课题背景；（2）帮助我们把握课题研究方向；（3）从中学习课题设计思路；（4）提升自己的逻辑写作能力。</p>
+<table>
+<tr>
+<td>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/1.png" weight="50%" height="50%">
+Fig1. 读文献的好处
+</center>
+</td>
+<td>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/2.png" weight="50%" height="50%">
+Fig2. 不同目的下文献的推荐阅读内容
+</center>
+</td>
+</tr>
+</table>
+<div class="admonition info">
+<p class="admonition-title">
+推荐工具
+</p>
+<ol>
+<li>
+Stork文献鸟： 定期通过邮箱获取指定领域的文献。
+</li>
+<li>
+Connected Papers：输入文章名，获取与之相关论文的知识图谱。其中，论文越新颜色越深，引用度越高圆圈越
+大，论文之间的联系越强连线越黑。还可以通过Prior Works找到领域的开门作，通过Derivative Works找到该
+领域的研究综述，了解领域的新进展。
+</li>
+</ol>
+</div>
+<p>那在阅读完文献之后应该怎么做文献阅读笔记呢？<del><font color="red">如果不做笔记，读完就忘了…</font></del>首先得明确做文献笔记是给自己看的，不是给别人看的，不应该机械的勾画和抄写文献的内容，应该注入自己的理解（<font color="green">强迫自己总结</font>）。</p>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/3.png" weight="50%" height="50%">
+Fig3. 论文阅读笔记模板
+</center>
+<p><font color="cyan">以下经验摘录自《科研新手该如何读文献》，作者王威。</font></p>
+<p><strong>1、为什么读文献（paper）？</strong><br>
+这个问题很容易回答。因为学术研究，不是从你这里开始的，自然需要查阅前人的研究成果，从而一方面积累知识，一方面解决手头的问题。在这里，我引用你肖师兄毕业前留下的一段话：“关于看文献，这其实是一个老生常谈的问题。但是在我刚进组之初时，并不很注重对于文献的阅读，导致走了很多弯路。后来才逐渐认识到文献调研在科研中的重要性，甚至我认为可能是科研中最重要的部分。为什么阅读文献对于我们如此重要，之前在网上看到University of Zaragoza的Professor Masia的一句话印象很深，她说：“Our job is to push the frontier of what is already known, so we need to be aware of where this frontier is.” 从大的意义上来说，做科研工作需要知道最前沿的知识，<font color="red">当下研究领域在使用的思想和方法，这样我们才能知道目前的差距和挑战在哪里，才能不断创新，做出有价值有意义的工作</font>。而且只有通过阅读文献，我们才能找到我们的工作在当下科研界中所处的位置，这样我们才能明白我们的工作的意义在哪。从实际的角度来说，阅读文献也许会让我们找到在研究过程中所面临问题的解决方法，可能一个困扰我们几个月的技术难题，别人早就已经解决并且报道，而我们还在苦心琢磨。又或者当我们研究迟迟无法突破，<font color="red">在文献中寻找灵感也是一种办法</font>。”</p>
+<p><strong>2、每天学习和工作很忙，应该花多少时间读文献？</strong><br>
+按照我的经验，平均每天一小时是比较合理的。这里指的是科研常态化的看文献，而不是在课题的某些阶段，需要大批量文献调研的时候（那个时候可能要远大于一小时）。我不太赞同那种“只有在实验室做实验才叫科研”的论点；同时，也不赞成从早到晚读文献，而忽略了动手去尝试。这和孔子说的“学而不思则罔，思而不学则殆”，有异曲同工之妙。在我们这个实验学科，常态化，也是比较健康的学习方式，应该是大部分时间做实验，剩下的时间思考、读书、读文献、总结、写作。</p>
+<p><strong>3、读什么文献？</strong><br>
+按和你课题的相关性由强到弱排序，我暂且将论文归为以下七种：</p>
+<p>第一种，妥妥的就是你研究的课题。举个例子，如果你的课题是《如何避免红烧肉粘在不粘锅内的研究》，然后你看到了一篇讲如何避免红烧肉粘在不粘锅内的文章……我不知道这是幸运，还是不幸。但很显然，这篇文章你要从头到尾精读几遍，几乎要做到每个字都知道人家在说什么，弦外之音是什么，里面的公式、数据、图表、结论要记得门清。在此之上，你还要举一反三，知道他们工作不足是什么，和你工作的相似之处和不同之处是什么。从而回答这个终极问题：工作被人先发了，自己还能不能毕业？</p>
+<p>第二种，跟你的课题密切相关。例如，你的课题还是《如何避免红烧肉粘在不粘锅内的研究》，找到的paper做的是回锅肉在不粘锅内的烹饪，或者红烧肉在电饭锅内的烹饪之类的。总之，主题直接相关，肉也很类似。那做法跟第一种一样，你基本上要把这篇paper读透了。阅读过程中，要时刻思考：本文对你的课题的启发是什么？指导是什么？试验方法或是某个理论，是否也可以用在你的课题？还是结论对你有帮助？</p>
+<p>第三种，跟你的课题相关，但是有比较明显的区别。例如，你搜到的paper做的是“红烧肉的腌制机理探讨”。虽然你做的并不是这个课题，但既然要理解红烧肉在不粘锅内的粘附，显然需要知道肉的质地、盐浓度、水分等问题；而这篇paper一定会讨论这个问题，因此会给你启发。反过来，你要是不懂红烧肉烹饪的基本要素，自然也不会理解它粘不粘锅。这篇文章不需要每字每句都读透，基本上摘要和结论以及所有的图看懂了就行，但是你需要存下来（最好是能够整理汇总在一个ppt里），因为你的毕业论文或者小论文的文献综述部分很可能会引用到。</p>
+<p>第四种，就是泛泛的跟你课题的某个关键词相关的论文。比如，所有关于不粘锅的论文，所有关于红烧肉的论文，等等。这些论文，构成了你课题的背景知识。但是它们非常零散，需要在长期科研的过程中积累，或是通过师兄师姐的推荐，或是导师教授的指点，亦或是自己发现寻找到。这些文献可以粗读，然后分门别类汇总到ppt（你的毕业论文或者小论文的文献综述部分也有可能会用到）。</p>
+<p>第五种，是所有关于肉的烹制论文。这些论文组成了课题组研究领域的大背景知识，发表频率是平均每天会在网上发表1篇左右。如果你预计自己会在今后比较长的时间内从事这一领域（例如3年以上），那需要利用一些追踪文献的方法（如订阅期刊的rss，或者订阅谷歌学术的邮件提醒），让自己源源不断的获得最新发表的这种论文；并在看到的第一时间，花3-5分钟粗读一下题目、摘要和主要的图。随后，根据对文章的兴趣程度和对你的重要程度，按照权重分类保存，并在某个时间统一阅读那些你标记权重比较高的这些论文。例如，我在阅读新论文时，会把所有的论文保存到一个“肉肉”文件夹，但是只有大约10%的会标记“需要读”（mac电脑有这个文件做标签的功能，windows的话请自己想办法），并在闲暇的时候打开仔细读一下。</p>
+<p>第六种，是各个领域的综述。这些review, perspective, account等性质的论文内容庞杂，出现在各类期刊，平时也未必专门去搜集；看到了的话，可以简单看一下标题，是不是自己感兴趣的领域。比如你做肉之余，对素食也很感兴趣，那可以留心一下这个领域的新的综述。而你平时看论文的时候，或者做实验的时候，发现自己某个知识点比较缺乏，或者这个知识点最近很火，那就可以稍微去搜几个相关的高引用的综述（或者发在顶刊上的新综述），来充充电，说不定就是你下一个研究点（比如石墨烯在红烧肉中的应用）。但要注意，综述尽量不看太老的，特别是热门领域，5年就翻天覆地。</p>
+<p>最后一种就是各类随机的文献。“浩如烟海”可能都无法形容现在文献的出产量。为了防止自己坐井观天，还是需要常常扩展自己的眼界。我建议选择3-5个顶刊，订阅他们的邮件提醒，出新刊的时候第一时间浏览一下最新的文章标题，感兴趣的话看一下摘要和图，刷新一下自己对于学术圈前沿方向的认识。我在韩国访问时的一位杨师兄，每天都会很精神抖擞地去看CNS（cell、Nature和Science，三大顶刊）的新paper，并且跟我说，你平时看什么期刊，就会发什么期刊。他最终发了Nature正刊，青千回国。我惊为天人，并因此深有感触。</p>
+<p>我建议你采纳一个好的文件归类或者添加标签的方法。例如如果是mac电脑的话可以用系统自带的标签功能，把每一篇文献添加上关键字，或者按照以上七档来标记星标（一颗星到七颗星）。</p>
+<p><strong>4、如何读文献？</strong><br>
+根据以上文献的分类，读文献的方法大概有三档：精度；泛读；瞟一眼。</p>
+<p>先简单总结一下阅读文献的过程：我们通过关键字搜索找到了很多文献，把它们在浏览器上打开。第一步，是最粗糙的“瞟一眼”级泛读：看标题、关键词和摘要，从而大致确认该论文和自己课题的相关性。对于相关度不高的文章（泛泛的说，对应上面分类中的5-7类），可以在此止步：简单记录后关闭，甚至不需要下载下来（可以把论文题目、doi号等关键信息粘贴到一个总结的ppt里面，需要的时候能回去搜到就行）。</p>
+<p>对于相关度较高的文章（分类中1-4类），推荐采用以下的阅读策略：</p>
+<p>读一篇文章，不管是怎么个读法，都是从标题开始。一个好的标题，应该能够很快抓住读者，读者也很快能意识到这篇文章的细分领域、核心成果，和文章性质（实验、模拟、理论？化学、材料、物理？）。</p>
+<p>摘要是读所有文献的重中之重。一个典型的摘要，基本上是四个层次。第1-2句，点明研究的背景，通常是xxx很重要，但是xxx还不足。第3句，是核心句，一句话说明本文的亮点，或者说是核心成果，并呼应上面不足。接下来的几句，是展开来介绍本文的详细的成果——发现了什么、证明了什么、测试了什么等等。最后的1-2句是总结升华，往往会说明以上的结果对于小领域、大领域有什么科学和工程上的意义。</p>
+<p>举个栗子：</p>
+<p>（第一句）红烧肉是群众喜闻乐见的一种美食，口味醇厚，回味无穷。（第二句）但是烹饪红烧肉中常常遇到粘锅的现象，对此人们的理解还比较浅薄，也没有完美的解决办法。（第三句）本文中，我们研究了不同烹饪条件、锅的种类对于红烧肉粘锅的影响，并寻找出了不沾的解决办法。（第四句）我们发现…… （最后一句）本文的研究结果，不仅对于完美的红烧肉烹饪有重要的指导意义，也对于食物的处理和不粘锅的研发有很强的启示。</p>
+<p>摘要大多是这个套路。对熟悉相关领域的读者，他们可以直奔主题，大概看摘要中的几句话，就清楚这篇文章的意义和档次了。高手也会非常擅长让读者尽快找到这个主题。当然，武林门派众多，自然有很多种摘要不是这个套路，但是据我观察，尤其是材料、化学领域，八成不会错。而物理类的文章，有的时候没有那么多门道，上来第一句就说我们发现了XYZ，而不给你讲一大堆XYZ多么有意义，也是常见的。</p>
+<p>摘要的套路，对自己写作的时候也非常关键，需要尽可能的遵守。或许这样做听上去有些八股，但摘要的作用是让读者尽快的掌握文章主旨，因此牺牲一些文学性和灵活性常常是必要的。高手自然可以兼顾两者。</p>
+<p>从摘要往下，就体现出来了精度和泛读的区别。先说泛读，基本上把intro每一段的第一句话看一下，然后看一下intro最后一段，再然后把几个图扫一遍，最后把conclusion看一遍。这样就在摘要的基础上，得到了更丰富、更直观的信息。特别是图，是补充摘要的最得力的手段。正所谓“一画胜千言”，一张好的图，往往抵得过你看半天的一大段话。特别是论文中的“图1”，在材化类的很多期刊中，第一张图都是一个体系示意图。而材化类的文章往往套路性很强，合成xx材料，然后展示xx性能。基本上看懂了示意图，论文的创新之处就掌握的七七八八了。</p>
+<p>精读，顾名思义，非常精细地读。基本上对应着上面一节讲到的第一、二类的文献，也就是和自己目前的课题密切相关的。对我们领域的课题来说，这种文献非常少，大概在你的学生生涯中能碰到一二十篇就已经很不容易了。（如果你发现许多文章都跟你密切相关，这侧面印证了你的课题非常热门，是好事儿；另一方面，也可能表明你的课题已经没啥可做的了，这就悲剧了。）</p>
+<p>精读过程中，首先也要读摘要，然后从文章第一句开始，全文读下去。在intro那里，可以忽略一些对于你已经掌握的背景知识的介绍，比如什么是红烧肉，红烧肉怎么好吃之类的（材化类的文章第一段往往是这些）。<font color="blue">如果你有心，可以稍微关注一下他们列参考文献的时候，都喜欢用哪几篇，如果没读过可以去看看</font>。</p>
+<p>Intro不能都忽略，通常第二段开始就进入了核心：为什么要研究当前的这个问题？学术界存在哪些争议？有哪些悬而未决的问题，或者哪个应用被这个问题卡住了脖子？这个地方往往能体现出作者的功力和层次，也决定了这个工作的意义和价值。高屋建瓴的作者，往往能看到很宏大的命题。他们能在很多在你看来匪夷所思、风马牛的地方把问题联系起来，而又让你觉得醍醐灌顶。在我们这种学科交叉的领域，特别是你的课题和实际应用联系不紧密的时候，这是一种特别有用的能力。因为如果一个问题对许多领域都有意义和启发，那关注的人也会多，你的工作才有意义。（另一种说法，就是很多大佬很会“讲故事”。）</p>
+<p>因此，读intro的时候，要特别关注作者是怎么引出他的工作的：逻辑是否通顺；是否层层递进，把这个问题越写越具体；是否让读者觉得这是个真问题，而不是他为了写这个paper而凭空编造出来的假命题。（当然，这种假命题也不少，甚至顶刊也存在。从某种意义上来说，这世上本没有路，走的人多了……鲁迅说得好啊。）</p>
+<p>Intro看完了，你应该能够明白这个工作的出发点，想解决的问题是什么，以及他们的主要发现和意义在哪里。<font color="pink">换句话说，intro看完了，这个文章基本就懂了大半。剩下的一小半，更多的是一些技术和细节问题，以及作者如何用实打实的结果支撑他们intro中画下的大饼。</font></p>
+<p>在泛读中忽略的技术和细节问题，在精读中就变成了关键！既然这篇文章跟你的课题如此相关，那么具体的细节，比如他们红烧肉是哪个部位的，锅什么牌子，盐放了多少，照片能不能看清，这些看起来很琐碎的问题，也都变得至关重要！而且这些往往能够给你很大的启发（这个图原来能这样量化！），或者解答你实验中某个困扰许久的问题（原来他们的样品是这么做的！），甚至让你沾沾自喜（我的数据比他们的好看太多了！）。所以切莫忽略文章的每一个细节。</p>
+<p>一篇好的文章，都是在讲一个故事,仿佛有一个画面在你面前徐徐展开。随着阅读的深入，这个工作的很多细节也逐渐丰满了起来。你或许能感觉到坐到了作者对面，他在用一张张ppt给你讲他们的故事，给你解释他们发现的现象，向你娓娓道来背后的原因。</p>
+<p>精彩的文章，在你的问题刚刚冒出来的时候，作者会恰到好处的用一个设计优美的对照实验让你酣畅淋漓。而在你刚刚被挑起了兴趣时候，就用高潮迭起的剧情让你欲罢不能。最后的结论清晰有力，又不失分寸和风度；能够睥睨天下般让你拍案叫绝，又能够虚怀若谷地坦承文中的不足和下一步需要改进的方向。这样的文章并不很常见，但是每一次看到，都让人心旷神怡，感慨这才是论文的最高水平。</p>
+<p><strong>5、文献读完之后</strong><br>
+Paper读完了，面对着几页pdf上面的黄色高亮，和旁边或多或少的一些单词中文翻译，如同踢了一场精彩的足球比赛，有高潮迭起，也有悲欢离合。终场哨音吹响，你回到更衣室，这时不是庆祝，也不是休息，厉害的教练和运动员知道需要<font color="green">及时复盘，总结经验</font>。因此，我建议你，眯起眼睛，掩卷沉思，回想一下这个文章，自己学到了什么？如果让你给实验室的同学用30秒钟讲完，你会说出一个什么故事？然后再从头过一遍你做下的笔记，摘录到你的文献阅读本里面。写下你的心得体会。这样才是一次完整的精读。</p>
+<p>我再次强调，你的学术生涯，精读的文献非常有限（也不应该每篇文章都精读）。每一篇，都像是一次晚宴或者音乐会，你盛装出席，为之欢呼落泪，也因此成为了你学术生命中的一次难得阅历。切莫读过就忘记了，要珍藏起来，常常回想，并且建立起和自己学习工作的牢不可破的纽带，这样才不会枉费你花费的大量无价的时间和心血。</p>
+<p>作为一名作者，若能够有一位读者精读了我的文章，甚至还给予很高评价，那简直是无与伦比的体验。假如你有机会遇到了你精读过文章的作者，不妨和她/他仔细聊聊这篇文章，告诉她/他你的收获和体会，让对方知道，她/他的努力受到了别人的关注和认可。学海无涯，破浪前行的我们，能够遇到一同泛舟的同道，是何等的幸运。</p>
+<p>王威，x年x月x日</p>
+<h1 id="基于obsidian和zotero搭建文献阅读和笔记环境">基于Obsidian和Zotero搭建文献阅读和笔记环境</h1>
+<p>Zotero是一个文献管理工具，它的工作原理和hexo对博客的管理很像，对应的概念叫做条目，通过给条目赋予category和tag属性实现文献的管理。一个条目可以包含很多附件，如对应的pdf文件和笔记。Zotero的工作流简单来说就是用浏览器插件Zotero connector抓取文献条目（必须在文献详情页抓取，不要在打开的pdf阅读页抓取，不然抓不到文献的元数据，有时候只能抓到文献元数据但抓不到pdf，可以在zotero中手动添加），抓完之后用zotero阅读并标注pdf，导出zotero文献数据库，使用citations插件生成对应md模板，用obsidan写文献笔记。</p>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/6.webp" weight="50%" height="50%">
+Fig4. 文献详情页
+</center>
+<div class="admonition info">
+<p class="admonition-title">
+所需下载的插件及其功能汇总
+</p>
+<ul>
+<li>
+茉莉花（zotero）： 支持中文文献元数据的解析。
+</li>
+<li>
+better biblatex（zotero）： 将zotero所维护的数据按指定格式导出，这里选择better Biblatex格式并始终保持该文件的更新，及文库发生任何改变该导出文件都会发生相应的更新。
+</li>
+<li>
+zotfile（zotero）：使用zotero内置pdf阅读器做标记可以直接转换为笔记，但如果用其它阅读器做标记又想生成笔记就得使用zotfile插件做提取。<font color="red">zotfile现在不更新了，不支持zotero7…</font>
+</li>
+<li>
+citations（obsidian）：解析通过better biblatex导出的数据，生成指定模板下的markdown文件。
+</li>
+<li>
+dataview（obsidian）：这个插件很强大，它可以看成是一个excel表格，数据的来源是你markdown文件中的frontmatter，主要是用来排序和筛选特定文献。
+</li>
+</ul>
+</div>
+<p>此外，Zotero还可以和Word联动，快速插入引用和参考文献。<font color="blue">在一个word文档中首次插入引用会让你选择引文格式，例如中文文献一般就用GB格式，如果不小心选错了doucument performance按键重新选择！</font></p>
+<table>
+<tr>
+<td>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/8.png" width="50%" height="50%">
+Fig5. 选择引文格式
+</center>
+</td>
+<td>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/9.png">
+Fig6. 快速添加引文和参考文献
+</center>
+</td>
+</tr>
+</table>
+<h1 id="和咱专业相关的期刊">和咱专业相关的期刊</h1>
+<ul>
+<li>Transportation Research A~E：A关注交通政策、规划、经济和管理问题；B侧重交通建模、优化和理论方法；<br>
+C聚焦智能交通系统（ITS）、大数据、自动驾驶等新兴技术； D研究交通与环境、可持续发展的交叉领域；E物流、供应链管理和运输经济方向。<br>
+</li>
+<li>Transportation Science (TS)：INFORMS（Institute for Operations Research and the Management Sciences）旗下顶级期刊，关注运筹学、优化和交通系统分析。<br>
+</li>
+<li>Operations Research (OR)：INFORMS旗下旗舰期刊，涵盖优化、随机模型、算法设计、博弈论等核心方向。<br>
+</li>
+<li>European Journal of Operational Research (EJOR)：EJOR（European Journal of Operational Research）是运筹学（OR）和管理科学（MS）领域的国际顶级期刊，由欧洲运筹学协会（EURO）主办，Elsevier出版。它涵盖了运筹学理论、方法及其在商业、工程、政府等领域的应用，是学术界和工业界广泛认可的高影响力期刊。<br>
+</li>
+<li>Informs Journal on Computing (IJOC or JOC)：由INFORMS（运筹学与管理科学研究所）出版。它聚焦于算法设计、计算优化、机器学习与运筹学的结合，是理论计算与工程应用并重的高水平期刊。<br>
+</li>
+<li>IEEE Transactions on Intelligent Transportation Systems (T-ITS)：聚焦智能交通技术的应用与创新。</li>
+<li>Computers &amp; Operations Research (COR)：运筹学（OR）与计算科学交叉应用领域的国际权威期刊，由 Elsevier 出版，专注于算法开发、优化建模、决策支持系统及工业应用。</li>
+<li>Computers &amp; Industrial Engineering (CIE)：工业工程（IE）与计算机应用交叉领域 的重要国际期刊，由 Elsevier 出版，专注于 智能制造、生产系统优化、供应链管理、数据驱动决策 等方向。<br>
+</li>
+<li>交通运输工程学报</li>
+<li>交通运输系统工程与信息</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">
+EI、SCI和影响因子是什么东西
+</p>
+<p>
+EI（Engineering Index）和SCI（Science Citation Index）可以理解成两个数据库，在被这两个数据库搜录的期刊上发的文章就叫EI、SCI论文。影响因子（IF）是根据期刊发文量和被引用数计算出来的，一个期刊IF越大就越顶。
+</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">
+开源期刊和闭源期刊的区别
+</p>
+<p>
+开源期刊（OA，Open Access）和闭源期刊（非OA，Non Open Access）在访问方式、费用、审稿速度、文章质量等方面存在显著差异。开源期刊是指将学术信息放在互联网上供所有人免费访问，不需要考虑版权或注册的限制。作者需要支付版面费，但读者可以免费获取全文。闭源期刊是指作者发表文章不用支付版面费，读者通过购买出版物或支付订阅费获取资源信息。如果急需发表、可报销版面费、希望文章广泛传播和引用频次高，开源期刊是较好的选择。如果时间充裕，且重视学术领域评价，闭源期刊更为适合。一般来说闭源期刊的含金量高一些，尽量法闭源期刊，实在发不出来可以权衡利弊发开源。
+</p>
+</div>
+<h1 id="关于海运">关于海运</h1>
+<p>海运研究内容可以分成三个层面——战略、战术和运营层面，各自研究的问题如下。</p>
+<ul>
+<li>战略规划（<font color="red">长期</font>）
+<ul>
+<li>船舶大小</li>
+<li>船队规模和组成</li>
+<li>班轮航线网络设计</li>
+<li>合同货物价值评估</li>
+</ul></li>
+<li>战术规划（<font color="green">中期</font>）
+<ul>
+<li>不定期船和工业船航线规划和调度(routing and scheduling)</li>
+<li>驳船调度</li>
+<li>班轮运输中的船队部署问题（将班轮部署到既定航线上,deployment）</li>
+<li>海运供应链（调度和库存的结合MIR，Maritime Inventory Routing）</li>
+<li>海军舰艇的调度</li>
+<li>近洋运输中船员排班、船舶维修保养、燃油补给决策</li>
+</ul></li>
+<li>运营规划（<font color="blue">短期</font>）
+<ul>
+<li>运营调度（单航次）</li>
+<li>环境航线规划（萌芽阶段，环境信息的及时获取比较困难）</li>
+<li>航速选择</li>
+<li>货物装载（研究重心主要是集装箱船的配积载计划，<font color="pink">“The container stowage planning problem is very complex and we are far from finding optimal solutions, or even agreeing on the components of the objective function.”</font>）</li>
+<li>是否接纳运营中出现的可选货物</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>虽然规划层面所需做的决策不同，但目标总是最小化成本或最大化收益。此外，关于scheduling这个词，christiansen那篇综述说的是——“The term scheduling is used when the temporal aspect is brought into routing, i.e. when the time of the various events on a ship’s route is included.”</p>
+</blockquote>
+<center>
+<img src="https://hub.gitmirror.com/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/科研指南/11.png" weight="50%" height="50%">
+Fig7. 研究趋势
+</center>
+<h1 id="参考资料">参考资料</h1>
+<ol type="1">
+<li><a href="https://www.bilibili.com/video/BV17W4y167SM">如何做好文献阅读及笔记整理</a></li>
+<li><a href="https://help.ivysci.com/guide/#chapter-ke-yan-shu-ju-shou">研飞科研指南</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/639325772">Obsidian+Zotero打造最强科研工具链</a></li>
+<li><a href="https://www.bilibili.com/video/BV1xM4y137q9">Zotero，OB不能没有它(PART1)</a></li>
+<li><a href="https://www.bilibili.com/video/BV1E64y187er">Zotero，OB不能没有它(PART2)</a></li>
+<li><a href="https://www.bilibili.com/video/BV1m341127aU">Zotero，OB不能没有它(PART3)</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/162939630">Zotero管理文献的机制——分类和标签</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/159828951">Zotero添加条目的三种方式</a></li>
+<li><a href="https://gitee.com/zotero-chinese/zotero-chinese/issues/I56D62">Zotero使用 CNKI 时抓取条目报错解决方法</a></li>
+<li><a href="https://clashforwindows.org/">外文文献搜索——Clash科学上网篇</a></li>
+<li><a href="https://www.bilibili.com/video/BV1HZ4y1b7MJ">ppt绘制论文技术路线图</a></li>
+<li><a href="https://blog.csdn.net/Aoman_Hao/article/details/117740132">科研新手该如何读文献？| 开启科研之路（王威教授）</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>其它</category>
+      </categories>
+      <tags>
+        <tag>科研方法论</tag>
+        <tag>研究生生涯规划</tag>
       </tags>
   </entry>
   <entry>
