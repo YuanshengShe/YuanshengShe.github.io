@@ -336,20 +336,6 @@
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/%E5%B7%9D%E8%A5%BF/</loc>
-    <lastmod>2025-08-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://yuanshengshe.github.io/tags/%E6%99%AF%E8%B1%A1%E7%85%A7/</loc>
-    <lastmod>2025-08-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://yuanshengshe.github.io/tags/TSP/</loc>
     <lastmod>2025-08-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -358,6 +344,20 @@
   
   <url>
     <loc>https://yuanshengshe.github.io/tags/VRP/</loc>
+    <lastmod>2025-08-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yuanshengshe.github.io/tags/%E5%B7%9D%E8%A5%BF/</loc>
+    <lastmod>2025-08-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yuanshengshe.github.io/tags/%E6%99%AF%E8%B1%A1%E7%85%A7/</loc>
     <lastmod>2025-08-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
