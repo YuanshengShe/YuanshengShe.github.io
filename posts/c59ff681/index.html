@@ -297,9 +297,19 @@ c <span class="token operator">=</span> a<span class="token operator">+</span>b 
 </div>
 <h1 id="numpy中的视图和副本">numpy中的视图和副本</h1>
 <p>视图可以理解为ndarray对象的浅拷贝，而副本可以理解为ndarray对象的深拷贝。可以使用numpy的share_memory函数判断两个数组是视图关系还是副本关系。把副本错误当成视图问题不大，但是把视图错误当成副本危害很大，所以推荐在需要对数组做修改时检查它是不是某个数组的副本。</p>
-<p>!!! 常见的返回视图和副本的操作
-1. 返回视图：切片、转置、reshape方法、ravel方法、view方法。
-2. 返回副本：花式索引、copy方法、对元素强制类型转换astype方法、flatten方法、数组运算结果、数组拼接concatenate。</p>
+<div class="admonition info">
+<p class="admonition-title">
+常见的返回视图和副本的操作
+</p>
+<ol>
+<li>
+返回视图：切片、转置、reshape方法、ravel方法、view方法。
+</li>
+<li>
+返回副本：花式索引、copy方法、对元素强制类型转换astype方法、flatten方法、数组运算结果、数组拼接concatenate。
+</li>
+</ol>
+</div>
 <h1 id="numpy中与数组操作相关的重要函数和方法">numpy中与数组操作相关的重要函数和方法</h1>
 <ul>
 <li>转换数组的shape：reshape中的参数shape中如果有-1，则对应维元素数量将会自动匹配。reshape和resize的区别在于——（1）前者是视图，后者是副本（2）如果元素数量不匹配reshape无法完成转换，会报错，而resize会进行强制转换，删除元素或复制元素。
