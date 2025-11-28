@@ -415,14 +415,14 @@
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/Hexo/</loc>
+    <loc>https://yuanshengshe.github.io/tags/Mysql/</loc>
     <lastmod>2025-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/Mysql/</loc>
+    <loc>https://yuanshengshe.github.io/tags/Hexo/</loc>
     <lastmod>2025-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -562,20 +562,6 @@
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/TSP/</loc>
-    <lastmod>2025-11-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://yuanshengshe.github.io/tags/VRP/</loc>
-    <lastmod>2025-11-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://yuanshengshe.github.io/tags/github/</loc>
     <lastmod>2025-11-28</lastmod>
     <changefreq>weekly</changefreq>
@@ -597,7 +583,14 @@
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/%E6%8A%A5%E9%94%80%E4%B8%9A%E5%8A%A1/</loc>
+    <loc>https://yuanshengshe.github.io/tags/TSP/</loc>
+    <lastmod>2025-11-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yuanshengshe.github.io/tags/VRP/</loc>
     <lastmod>2025-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -618,6 +611,13 @@
   </url>
   
   <url>
+    <loc>https://yuanshengshe.github.io/tags/%E6%8A%A5%E9%94%80%E4%B8%9A%E5%8A%A1/</loc>
+    <lastmod>2025-11-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://yuanshengshe.github.io/tags/%E8%AE%BA%E6%96%87%E6%8F%92%E5%9B%BE/</loc>
     <lastmod>2025-11-28</lastmod>
     <changefreq>weekly</changefreq>
@@ -632,7 +632,7 @@
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/%E6%9C%80%E7%9F%AD%E8%B7%AF%E7%AE%97%E6%B3%95/</loc>
+    <loc>https://yuanshengshe.github.io/tags/%E6%95%B4%E6%95%B0%E8%A7%84%E5%88%92/</loc>
     <lastmod>2025-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -646,7 +646,7 @@
   </url>
   
   <url>
-    <loc>https://yuanshengshe.github.io/tags/%E6%95%B4%E6%95%B0%E8%A7%84%E5%88%92/</loc>
+    <loc>https://yuanshengshe.github.io/tags/%E6%9C%80%E7%9F%AD%E8%B7%AF%E7%AE%97%E6%B3%95/</loc>
     <lastmod>2025-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

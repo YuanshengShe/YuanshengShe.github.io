@@ -255,7 +255,8 @@ mjx-container[display="true"] {
 mjx-container[display="true"] + br {
   display: none;
 }
-</style></head><body><div id="web_bg" style="background-image: url(https://proxy.pipers.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/顶部图/wallhaven-7j37v3_1920x1080.webp);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://proxy.pipers.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/avatar3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">36</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">60</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> Blogs</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> Archives</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/datasets/"><i class="fa-fw fas fa-list"></i><span> Datasets</span></a></div><div class="menus_item"><a class="site-page" href="/abouts/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><!-- 左侧博客信息区域--><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">syuansheng's blogs</span></a><a class="nav-page-title" href="/"><span class="site-name">Latex环境配置与模板</span></a></span><!-- 新增的导航菜单容器（居中布局关键）--><div id="nav-menus-container"><!-- 菜单主体部分--><div id="menus"><!-- 搜索按钮--><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><!-- 菜单项--><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> Blogs</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> Archives</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/datasets/"><i class="fa-fw fas fa-list"></i><span> Datasets</span></a></div><div class="menus_item"><a class="site-page" href="/abouts/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div></div></div><!-- 移动端汉堡菜单按钮（保持原位置）--><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Latex环境配置与模板</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-08-01T08:44:12.000Z" title="Created 2025-08-01 16:44:12">2025-08-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-28T08:28:52.810Z" title="Updated 2025-11-28 16:28:52">2025-11-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%8A%80%E6%9C%AF/">计算机技术</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>9mins</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><p>说明配置问题前得先提一下Tex,Latex,Texlive的关系——Texlive实际就是Tex的一种发行版，可以类比成编译器、而Latex可以简单理解成一种排版语言，用latex写好文章之后交给Texlive编译就可以得到对应的pdf，很多资料中提到的Texstudio实际上就只是一个专门写latex的编辑器<del>就像pycharm专门写python一样</del>。我的主力编辑器是sublime，本着降低学习成本的原则，就不装texstudio了，直接在sublime里面配好latex的环境。</p>
+</style></head><body><div id="web_bg" style="background-image: url(https://proxy.pipers.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/顶部图/wallhaven-7j37v3_1920x1080.webp);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://proxy.pipers.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/avatar3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">36</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">60</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> Blogs</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> Archives</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/datasets/"><i class="fa-fw fas fa-list"></i><span> Datasets</span></a></div><div class="menus_item"><a class="site-page" href="/abouts/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><!-- 左侧博客信息区域--><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">syuansheng's blogs</span></a><a class="nav-page-title" href="/"><span class="site-name">Latex环境配置与模板</span></a></span><!-- 新增的导航菜单容器（居中布局关键）--><div id="nav-menus-container"><!-- 菜单主体部分--><div id="menus"><!-- 搜索按钮--><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><!-- 菜单项--><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> Blogs</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> Archives</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/datasets/"><i class="fa-fw fas fa-list"></i><span> Datasets</span></a></div><div class="menus_item"><a class="site-page" href="/abouts/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div></div></div><!-- 移动端汉堡菜单按钮（保持原位置）--><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Latex环境配置与模板</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-08-01T08:44:12.000Z" title="Created 2025-08-01 16:44:12">2025-08-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-28T08:28:52.810Z" title="Updated 2025-11-28 16:28:52">2025-11-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%8A%80%E6%9C%AF/">计算机技术</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>9mins</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="环境配置">环境配置</h1>
+<p>说明配置问题前得先提一下Tex,Latex,Texlive的关系——Texlive实际就是Tex的一种发行版，可以类比成编译器、而Latex可以简单理解成一种排版语言，用latex写好文章之后交给Texlive编译就可以得到对应的pdf，很多资料中提到的Texstudio实际上就只是一个专门写latex的编辑器<del>就像pycharm专门写python一样</del>。我的主力编辑器是sublime，本着降低学习成本的原则，就不装texstudio了，直接在sublime里面配好latex的环境。</p>
 <p>要想在sublime中使用latex得下载：</p>
 <ul>
 <li>Texlive（编译器），现在转到用<a target="_blank" rel="noopener" href="https://blog.csdn.net/Yonggie/article/details/97965554">Miktex编译器</a>了，简洁很多</li>
@@ -292,42 +293,55 @@ mjx-container[display="true"] + br {
         {"key": "selector", "operator": "equal", "operand": "text.tex"}],
     "command": "latextools_toc_quickpanel"},<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>然后来添加正向索引（从tex文件索引到pdf对应位置）和反向索引（从pdf对应位置索引到tex文件对应位置）的功能：</p>
-<p>(1) 把sumatra添加到环境变量（<font color="red">切换为自己相应的位置</font>），让系统能找到它。<br><pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>添加环境变量</span></div><code class="language-plain">D:\Program Files\SumatraPDF<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><br>(2) 在cmd中输入如下命令<br><pre class="line-numbers language-dash" data-language="dash"><div class="caption"><span>配置反向搜索的命令</span></div><code class="language-dash">sumatrapdf.exe -inverse-search "\"C:\Program Files\Sublime Text\sublime_text.exe\" \"%f:%l\"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><br>(3) 最后在sumatra的设置-选项中将双击时执行的命令一栏设置为<br><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">"C:\Program Files\Sublime Text\sublime_text.exe" "%f:%l"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<ol type="1">
+<li>把sumatra添加到环境变量（<font color="red">切换为自己相应的位置</font>），让系统能找到它。
+<pre class="line-numbers language-plain" data-language="plain"><div class="caption"><span>添加环境变量</span></div><code class="language-plain">D:\Program Files\SumatraPDF<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li>在cmd中输入如下命令
+<pre class="line-numbers language-dash" data-language="dash"><div class="caption"><span>配置反向搜索的命令</span></div><code class="language-dash">sumatrapdf.exe -inverse-search "\"C:\Program Files\Sublime Text\sublime_text.exe\" \"%f:%l\"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li>最后在sumatra的设置-选项中将双击时执行的命令一栏设置为
+<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">"C:\Program Files\Sublime Text\sublime_text.exe" "%f:%l"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+</ol>
 <p>至此，就成功在sublime上搭建好latex的环境了！</p>
-<h1 id="latex排版入门"><a href="#latex排版入门" class="headerlink" title="latex排版入门"></a>latex排版入门</h1><h2 id="关于latex的包管理"><a href="#关于latex的包管理" class="headerlink" title="关于latex的包管理"></a>关于latex的包管理</h2><p>和python一样，基础的latex提供有限的功能，想要更多的功能必须使用第三方包，如果下载的式texlive，那么基本上大部分包都已经安装到电脑上了。如果需要对包进行管理，可以使用texlive提供的tlmgr（但这种方式老是报错），下面就介绍怎么手动安装自己需要的latex宏包（<span>\</span>documentcalss{}中写的文档模板也是一样的操作）。就我的电脑而言，所有的宏包都放在C:/texlive/2017/texmf-dist/tex/latex这个路径下边。要新增宏包，就在这个目录下新建一个<font color="green">同名</font>文件夹然后把对应的包文件（如后缀为sty，cls的文件）放到这个目录下，最后以管理员身份在命令行中输入texhash 命令刷新，就可以在tex文件中导入你新增的宏包了。</p>
+<h1 id="latex排版入门">latex排版入门</h1>
+<h2 id="关于latex的包管理">关于latex的包管理</h2>
+<p>和python一样，基础的latex提供有限的功能，想要更多的功能必须使用第三方包，如果下载的式texlive，那么基本上大部分包都已经安装到电脑上了。如果需要对包进行管理，可以使用texlive提供的tlmgr（但这种方式老是报错），下面就介绍怎么手动安装自己需要的latex宏包（\documentcalss{}中写的文档模板也是一样的操作）。就我的电脑而言，所有的宏包都放在C:/texlive/2017/texmf-dist/tex/latex这个路径下边。要新增宏包，就在这个目录下新建一个<font color="green">同名</font>文件夹然后把对应的包文件（如后缀为sty，cls的文件）放到这个目录下，最后以管理员身份在命令行中输入texhash 命令刷新，就可以在tex文件中导入你新增的宏包了。</p>
 <blockquote>
-<p>想要什么包都可以去 <a target="_blank" rel="noopener" href="https://ctan.org/pkg">https://ctan.org/pkg</a> 这个网站下载相应的sty文件。</p>
+<p>想要什么包都可以去 https://ctan.org/pkg 这个网站下载相应的sty文件。</p>
 </blockquote>
-<h2 id="关于latex的模板"><a href="#关于latex的模板" class="headerlink" title="关于latex的模板"></a>关于latex的模板</h2><p>latex强就强在可以非常快速的套别人做好的模板，例如<a target="_blank" rel="noopener" href="https://www.overleaf.com/latex/templates?">https://www.overleaf.com/latex/templates?</a> 这个网站基本上可以搜索到所有期刊提供写作模板，下载下来，放到C:/texlive/2017/texmf-dist/tex/latex这个路径下边，就可以开始愉快的套模板了。下面以trasportaion science提供的模板为例：<br>(1) 去上面提到的网站找模板，复制下来。    </p>
-<center>
-        <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/1.webp" weight="50%" height="50%">
-        Fig1. 去网站上找模板
-</center>
+<h2 id="关于latex的模板">关于latex的模板</h2>
+latex强就强在可以非常快速的套别人做好的模板，例如https://www.overleaf.com/latex/templates? 这个网站基本上可以搜索到所有期刊提供写作模板，下载下来，放到C:/texlive/2017/texmf-dist/tex/latex这个路径下边，就可以开始愉快的套模板了。下面以trasportaion science提供的模板为例：<br>
+(1) 去上面提到的网站找模板，复制下来。<br>
 
-<p>(2) 然后把复制内容写道tex文件里编译，这时会提醒你缺失了informs3.cls模板文件。因为上面的trasportaion science模板用了这个模板文件，所以我们必须下载它。上github找这个模板文件，然后放到C:/texlive/2017/texmf-dist/tex/latex这个路径下边（<font color="red">别忘了管理员模式下texhash下</font>），最后就大功告成了。       </p>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/1.webp" weight="50%" height="50%">
+Fig1. 去网站上找模板
+</center>
+<ol start="2" type="1">
+<li>然后把复制内容写道tex文件里编译，这时会提醒你缺失了informs3.cls模板文件。因为上面的trasportaion science模板用了这个模板文件，所以我们必须下载它。上github找这个模板文件，然后放到C:/texlive/2017/texmf-dist/tex/latex这个路径下边（<font color="red">别忘了管理员模式下texhash下</font>），最后就大功告成了。</li>
+</ol>
 <table>
-    <tr>
-        <td>
-            <center>
-                <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/3.webp">
-                Fig2. 编译看看缺了inform3.cls文件
-            </center>
-        </td>
-        <td>
-            <center>
-                <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/4.webp">
-                Fig3. 去网上找inform3.cls文件然后放到本地
-            </center>
-        </td>
-    </tr>
-</table>
-
+<tr>
+<td>
 <center>
-        <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/5.webp">
-        Fig4. 再次编译，成功运行
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/3.webp">
+Fig2. 编译看看缺了inform3.cls文件
 </center>
-
-<h2 id="关于latex语法"><a href="#关于latex语法" class="headerlink" title="关于latex语法"></a>关于latex语法</h2><p>这块儿目前还没有很迫切的需求去详细学习，计划在使用别人做好的模板的过程中遇到问题再补充，就先略过了。<br><pre class="line-numbers language-latex" data-language="latex"><div class="caption"><span>一个tex文件的例子</span></div><code class="language-latex"><span class="token comment">% document环境之前的部分都叫做序言</span>
+</td>
+<td>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/4.webp">
+Fig3. 去网上找inform3.cls文件然后放到本地
+</center>
+</td>
+</tr>
+</table>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/5.webp">
+Fig4. 再次编译，成功运行
+</center>
+<h2 id="关于latex语法">关于latex语法</h2>
+<p>这块儿目前还没有很迫切的需求去详细学习，计划在使用别人做好的模板的过程中遇到问题再补充，就先略过了。<br>
+<pre class="line-numbers language-latex" data-language="latex"><div class="caption"><span>一个tex文件的例子</span></div><code class="language-latex"><span class="token comment">% document环境之前的部分都叫做序言</span>
 <span class="token comment">% 定义了文档类（类型）以及诸如编写文档时使用的语言等细节，加载您想要使用的包</span>
 <span class="token function selector">\documentclass</span><span class="token punctuation">[</span>12pt, letterpaper<span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token keyword">article</span><span class="token punctuation">}</span> <span class="token comment">% 定义文章类型是article，并在[]中传递附加参数</span>
 <span class="token function selector">\title</span><span class="token punctuation">{</span>My first LaTeX document<span class="token punctuation">}</span> <span class="token comment">% 序言中的内容不会显示在编译好的pdf中，这里只是在设置题目、作者和日期信息，想在正文的什么位置显示就得在正文使用\maketitle命令</span>
@@ -419,22 +433,22 @@ Mathematical operators are prefixed with a backslash as <span class="token equat
 
 <span class="token function selector">\end</span><span class="token punctuation">{</span><span class="token keyword">document</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <table>
-    <tr>
-        <td>
-            <center>
-                <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/6.webp">
-            </center>
-        </td>
-        <td>
-            <center>
-                <img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/7.webp">
-            </center>
-        </td>
-    </tr>
+<tr>
+<td>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/6.webp">
+</center>
+</td>
+<td>
+<center>
+<img src="https://gh.llkk.cc/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/Latex环境配置与模板/7.webp">
+</center>
+</td>
+</tr>
 </table>
-
 <p>不得不说，latex排版确实是比word排版看着舒服。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<h1 id="参考">参考</h1>
+<ol type="1">
 <li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV117w5eyEXv?spm_id_from=333.788.videopod.episodes&amp;vd_source=f12513f7355187e8fe4d5eabc07767fa">全网最全最细的LaTeX排版教程</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes#Writing_your_first_piece_of_LaTeX">overleaf——30分钟入门latex排版</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/LeeYanan/Latex">latex基础语法教程(github)</a></li>
