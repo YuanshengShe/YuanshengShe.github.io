@@ -5,21 +5,21 @@
 <meta property="og:site_name" content="syuansheng&#39;s blogs">
 <meta property="og:description" content="Colossus是一个通用的列生成求解框架，还在开发中，暂未开源">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/%E6%B5%B7%E5%A4%A7%E7%9A%84%E5%9B%9B%E5%AD%A3/%E6%B5%B7%E5%A4%A71.jpg">
+<meta property="og:image" content="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/%E6%B5%B7%E5%A4%A7%E7%9A%84%E5%9B%9B%E5%AD%A3/%E6%B5%B7%E5%A4%A7%E5%9B%9B%E5%AD%A3%E5%B0%81%E9%9D%A2.jpg">
 <meta property="article:published_time" content="2026-08-22T06:50:24.588Z">
-<meta property="article:modified_time" content="2026-08-22T06:52:28.585Z">
+<meta property="article:modified_time" content="2026-08-22T07:36:22.316Z">
 <meta property="article:author" content="syuansheng">
 <meta property="article:tag" content="Clossus">
 <meta property="article:tag" content="列生成">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/%E6%B5%B7%E5%A4%A7%E7%9A%84%E5%9B%9B%E5%AD%A3/%E6%B5%B7%E5%A4%A71.jpg"><script type="application/ld+json">{
+<meta name="twitter:image" content="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/%E6%B5%B7%E5%A4%A7%E7%9A%84%E5%9B%9B%E5%AD%A3/%E6%B5%B7%E5%A4%A7%E5%9B%9B%E5%AD%A3%E5%B0%81%E9%9D%A2.jpg"><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "Colossus框架使用指南",
   "url": "https://yuanshengshe.github.io/posts/2adef9b1/",
-  "image": "https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg",
+  "image": "https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大四季封面.jpg",
   "datePublished": "2026-08-22T06:50:24.588Z",
-  "dateModified": "2026-08-22T06:52:28.585Z",
+  "dateModified": "2026-08-22T07:36:22.316Z",
   "author": [
     {
       "@type": "Person",
@@ -256,79 +256,300 @@ mjx-container[display="true"] {
 mjx-container[display="true"] + br {
   display: none;
 }
-</style></head><body><div id="web_bg" style="background-image: url(https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/顶部图/wallhaven-7j37v3_1920x1080.webp);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/avatar3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">79</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> Blogs</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> Archives</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/datasets/"><i class="fa-fw fas fa-list"></i><span> Datasets</span></a></div><div class="menus_item"><a class="site-page" href="/abouts/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><!-- 左侧博客信息区域--><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">syuansheng's blogs</span></a><a class="nav-page-title" href="/"><span class="site-name">Colossus框架使用指南</span></a></span><!-- 新增的导航菜单容器（居中布局关键）--><div id="nav-menus-container"><!-- 菜单主体部分--><div id="menus"><!-- 搜索按钮--><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><!-- 菜单项--><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> Blogs</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> Archives</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/datasets/"><i class="fa-fw fas fa-list"></i><span> Datasets</span></a></div><div class="menus_item"><a class="site-page" href="/abouts/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div></div></div><!-- 移动端汉堡菜单按钮（保持原位置）--><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Colossus框架使用指南</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-08-22T06:50:24.588Z" title="Created 2026-08-22 14:50:24">2026-08-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-08-22T06:52:28.585Z" title="Updated 2026-08-22 14:52:28">2026-08-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E4%B8%8E%E8%BF%90%E7%AD%B9%E5%AD%A6/">数学建模与运筹学</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">4.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>16mins</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="colossus-通用列生成求解框架">Colossus — 通用列生成求解框架</h1>
+</style></head><body><div id="web_bg" style="background-image: url(https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/顶部图/wallhaven-7j37v3_1920x1080.webp);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/avatar3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">79</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> Blogs</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> Archives</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/datasets/"><i class="fa-fw fas fa-list"></i><span> Datasets</span></a></div><div class="menus_item"><a class="site-page" href="/abouts/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><!-- 左侧博客信息区域--><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">syuansheng's blogs</span></a><a class="nav-page-title" href="/"><span class="site-name">Colossus框架使用指南</span></a></span><!-- 新增的导航菜单容器（居中布局关键）--><div id="nav-menus-container"><!-- 菜单主体部分--><div id="menus"><!-- 搜索按钮--><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><!-- 菜单项--><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> Blogs</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> Archives</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/datasets/"><i class="fa-fw fas fa-list"></i><span> Datasets</span></a></div><div class="menus_item"><a class="site-page" href="/abouts/"><i class="fa-fw fas fa-heart"></i><span> About Me</span></a></div></div></div><!-- 移动端汉堡菜单按钮（保持原位置）--><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Colossus框架使用指南</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-08-22T06:50:24.588Z" title="Created 2026-08-22 14:50:24">2026-08-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-08-22T07:36:22.316Z" title="Updated 2026-08-22 15:36:22">2026-08-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E4%B8%8E%E8%BF%90%E7%AD%B9%E5%AD%A6/">数学建模与运筹学</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">2.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>9mins</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="colossus-通用列生成求解框架">Colossus — 通用列生成求解框架</h1>
 <blockquote>
-<p>A generic column generation framework for solving large-scale (mixed) integer linear programming problems.</p>
-<p>作者：syuansheng（大连海事大学）</p>
+<p>作者：syuansheng（大连海事大学）｜ 一个基于 Gurobi 的轻量通用列生成（Column Generation）框架</p>
 </blockquote>
-<p>Colossus 是一个轻量、通用的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Column_generation">列生成（Column Generation）</a>求解框架。它将列生成算法的”骨架”与”问题相关的实现细节”彻底解耦：<strong>你只需要提供”怎么生成初始列、怎么建限制主问题、怎么求解定价子问题”这些与具体问题绑定的部分，剩下的列生成主循环、对偶提取、列池管理、迭代控制与结果输出全部由框架完成。</strong></p>
-<p>框架基于 <a target="_blank" rel="noopener" href="https://www.gurobi.com/">Gurobi</a> 求解器开发：主循环中限制主问题（Restricted Master Problem, RMP）由 Gurobi 求解；定价子问题（Pricing Subproblem）的求解算法则由用户自行设计，既可以是精确求解算法，也可以是启发式算法。</p>
 <hr>
-<h2 id="目录">目录</h2>
-<ul>
-<li><a href="#特性">特性</a></li>
-<li><a href="#目录结构">目录结构</a></li>
-<li><a href="#环境依赖与安装">环境依赖与安装</a></li>
-<li><a href="#快速开始运行切割下料示例">快速开始：运行切割下料示例</a></li>
-<li><a href="#使用指南三步法">使用指南：三步法</a>
-<ul>
-<li><a href="#第一步用-toolbox-实现问题相关接口">第一步：用 ToolBox 实现问题相关接口</a></li>
-<li><a href="#第二步配置-environment">第二步：配置 Environment</a></li>
-<li><a href="#第三步创建-engine-并运行">第三步：创建 Engine 并运行</a></li>
-</ul></li>
-<li><a href="#框架运行流程">框架运行流程</a></li>
-<li><a href="#结果解读">结果解读</a></li>
-<li><a href="#api-参考">API 参考</a></li>
-<li><a href="#高级主题">高级主题</a></li>
-<li><a href="#常见问题">常见问题</a></li>
-<li><a href="#开源与许可证">开源与许可证</a></li>
-</ul>
-<hr>
-<h2 id="特性">特性</h2>
-<ul>
-<li><strong>通用性强</strong>：只要你的问题能写成”限制主问题 + 定价子问题”的形式，就能用 Colossus 求解，例如切割下料问题（Cutting Stock）、车辆路径问题（VRP）、机组排班（Crew Scheduling）等大规模（混合）整数规划问题；</li>
-<li><strong>定价策略灵活</strong>：支持纯启发式定价、纯精确解定价、以及”启发式为主 + 精确解兜底”的混合定价策略，混合策略下框架会自动在两者之间切换；</li>
-<li><strong>内置列生成加速技巧</strong>：对偶平滑（dual smoothing，几何衰减系数）、mini-batch 提前终止、断点续算（本轮从上一轮停止的子问题继续求解）；</li>
-<li><strong>自动同步列池与模型</strong>：列池中新增/删除的列会自动同步到 Gurobi 限制主问题模型中，无需手工维护；</li>
-<li><strong>丰富的输出</strong>：控制台迭代表格、<code>.result</code> 结果文件、<code>.col</code> 列文件、<code>.lp</code> 模型文件、<code>.ils</code> 不可行性文件；</li>
-<li><strong>依赖极少</strong>：仅依赖 <code>gurobipy</code>、<code>numpy</code>、<code>wcwidth</code>。</li>
-</ul>
-<hr>
-<h2 id="目录结构">目录结构</h2>
-<pre class="line-numbers language-none"><code class="language-none">Colossus/
-├── __init__.py          # 包入口，导出 ToolBox / Environment / Column / ColumnPool / Engine
-├── engine.py            # Engine（列生成主循环）、Result（结果存储）
-├── utils.py             # ToolBox（工具接口容器）、Environment（运行配置）、Column（列）、ColumnPool（列池）
-└── examples/
-    └── CSP.py           # 示例：切割下料问题（含小/中/大/极限四档算例）<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<hr>
-<h2 id="环境依赖与安装">环境依赖与安装</h2>
-<ul>
-<li>Python 3.x（开发环境 3.12）；</li>
-<li><a target="_blank" rel="noopener" href="https://www.gurobi.com/downloads/">Gurobi</a> 求解器及 <code>gurobipy</code>（需要有效的 Gurobi 许可证，学生/学术用户可申请免费许可）；</li>
-<li><code>numpy</code>；</li>
-<li><code>wcwidth</code>（用于迭代表格中文字符宽度计算）；</li>
-<li>（可选）<code>matplotlib</code>：仅示例程序末尾的画图代码使用，与框架本身无关。</li>
-</ul>
-<p>安装依赖：</p>
+<h2 id="这是什么">1. 这是什么</h2>
+<p><strong>列生成</strong>是求解”变量数量巨大、但绝大多数用不上”的（混合）整数规划问题的经典方法。思路只有三步，反复循环：</p>
+<ol type="1">
+<li><strong>限制主问题（RMP）</strong>：用当前已有的列（变量）组成一个小 LP，求解，得到每条约束的<strong>对偶值</strong>；</li>
+<li><strong>定价子问题（Pricing SP）</strong>：根据对偶值，找一条”加入后能让目标值下降”的<strong>新列</strong>（改善列）；</li>
+<li>找到 → 加进 RMP，回到第 1 步；找不到 → 已经最优，结束。</li>
+</ol>
+<p>Colossus 把这个循环写死了。<strong>你只需要写”和你的问题绑定”的 3 个函数</strong>，剩下（迭代控制、对偶提取、列池与模型同步、终止判断、结果输出）全部由框架完成：</p>
+<table>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr>
+<th>你要写的</th>
+<th>框架替你做的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>generateInitialCols()</code>：造初始列</td>
+<td>求解 RMP，提取对偶值 <code>y</code></td>
+</tr>
+<tr>
+<td><code>buildRestrictedMP(columnpool)</code>：建 RMP 模型</td>
+<td>新列自动加入模型、删列自动同步</td>
+</tr>
+<tr>
+<td><code>updateAndSolveSP_Heuristic/Exact(y, fingerprint, omega_next_col)</code>：解定价子问题</td>
+<td>迭代控制、终止判断、输出表格和文件</td>
+</tr>
+</tbody>
+</table>
+<h2 id="安装">2. 安装</h2>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pip <span class="token function">install</span> gurobipy numpy wcwidth<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>本项目无需安装，将项目目录加入 Python 路径后即可导入：</p>
+<p>需要 Gurobi 求解器及许可证（学生/学术可免费申请）。把项目目录加入 <code>sys.path</code> 后即可使用：</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> Colossus <span class="token keyword">import</span> ToolBox<span class="token punctuation">,</span> Environment<span class="token punctuation">,</span> Column<span class="token punctuation">,</span> ColumnPool<span class="token punctuation">,</span> Engine<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<hr>
-<h2 id="快速开始运行切割下料示例">快速开始：运行切割下料示例</h2>
-<p>项目自带一个完整的切割下料问题（Cutting Stock Problem, CSP）示例，其中主问题是”最小化使用的原材料根数”，定价子问题是一个背包问题（用动态规划精确求解 + 贪婪启发式求解）。</p>
+<h2 id="上手跑通示例">3. 上手：跑通示例</h2>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">cd</span> Colossus/examples
 python CSP.py<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>运行后控制台会先打印 Engine 的配置信息，然后进入列生成迭代，输出类似如下的迭代表格：</p>
-<pre class="line-numbers language-none"><code class="language-none">&gt;&gt;列生成迭代过程：
-+-----+---------+---------+--------------+----------+------------+----------+------------+
+<p>示例是<strong>切割下料问题</strong>（Cutting Stock）：原材料长 <code>L=1000</code>，有 15 种需求（长度 <code>l</code>、数量 <code>d</code>），问最少用几根原料。运行后控制台输出迭代表格（每行一轮迭代，数值仅为示意）：</p>
+<pre class="line-numbers language-none"><code class="language-none">+-----+---------+---------+--------------+----------+------------+----------+------------+
 | Iter|  Time(s)|     Cols|       RMP Obj|  NoBetter|    RMP Time|  Method  |    SPs Time|
 +-----+---------+---------+--------------+----------+------------+----------+------------+
 |    1|     0.52|      100|      1,234.56|         0|        0.10|heuristic |        0.42|
 |    2|     0.44|      145|      1,230.00|         1|        0.08|heuristic |        0.35|
 |    3|     0.40|      168|      1,229.99|         2|        0.09|  exact   |        0.31|
-+-----+---------+---------+--------------+----------+------------+----------+------------+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>其中各列含义：</p>
++-----+---------+---------+--------------+----------+------------+----------+------------+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="照葫芦画瓢跟着-csp-写你的问题">4. 照葫芦画瓢：跟着 CSP 写你的问题</h2>
+<p>下面把 CSP 的代码拆开讲。<strong>你写自己的问题时，照这个模板把内容换成你的问题即可。</strong></p>
+<h3 id="先定义你的数据">4.1 先定义你的数据</h3>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">I <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">,</span><span class="token number">12</span><span class="token punctuation">,</span><span class="token number">13</span><span class="token punctuation">,</span><span class="token number">14</span><span class="token punctuation">,</span><span class="token number">15</span><span class="token punctuation">]</span>   <span class="token comment"># 15 种需求</span>
+l <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">80</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">:</span><span class="token number">95</span><span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> <span class="token number">15</span><span class="token punctuation">:</span><span class="token number">850</span><span class="token punctuation">}</span>               <span class="token comment"># 每种需求的长度</span>
+d <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">:</span><span class="token number">6</span><span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> <span class="token number">15</span><span class="token punctuation">:</span><span class="token number">3</span><span class="token punctuation">}</span>                   <span class="token comment"># 每种需求的数量</span>
+L <span class="token operator">=</span> <span class="token number">1000</span>                                    <span class="token comment"># 每根原材料的长度</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="generateinitialcols-造初始列">4.2 <code>generateInitialCols()</code> —— 造初始列</h3>
+<p><strong>干什么</strong>：给列生成一个”起步列池”。列池里至少要有一组能覆盖全部需求的可行列，否则 RMP 无解。这里为每种需求造一列”整根原料只切这一种料”的初始方案。</p>
+<p><strong>要返回</strong>：一个 <code>ColumnPool</code> 对象，里面每个 <code>Column</code> 必须填三个属性：</p>
+<table>
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr>
+<th>属性</th>
+<th>含义</th>
+<th>CSP 例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>omega</code></td>
+<td>列编号（int，必须唯一）</td>
+<td><code>1, 2, ..., 15</code>（每种需求一列，直接沿用需求编号）</td>
+</tr>
+<tr>
+<td><code>tau</code></td>
+<td>这列在目标函数里的系数</td>
+<td>每根原料成本都是 1，所以 <code>tau=1</code></td>
+</tr>
+<tr>
+<td><code>coefficients</code></td>
+<td>这列在各约束里的系数，<strong>顺序必须和后面建模型时加约束的顺序一致</strong></td>
+<td><code>[12,0,0,...]</code> 表示”切 12 件需求 1”</td>
+</tr>
+</tbody>
+</table>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">generateInitialCols</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    columnpool <span class="token operator">=</span> ColumnPool<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> idx <span class="token keyword">in</span> I<span class="token punctuation">:</span>                            <span class="token comment"># 每种需求造一列初始方案：整根原料只切这一种料</span>
+        column <span class="token operator">=</span> Column<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        column<span class="token punctuation">.</span>omega <span class="token operator">=</span> idx                   <span class="token comment"># 列编号（示例直接沿用需求编号，只要唯一即可）</span>
+        column<span class="token punctuation">.</span>tau <span class="token operator">=</span> <span class="token number">1</span>                       <span class="token comment"># 目标系数：一根原料</span>
+        column<span class="token punctuation">.</span>coefficients <span class="token operator">=</span> <span class="token punctuation">[</span>floor<span class="token punctuation">(</span>L <span class="token operator">/</span> l<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">if</span> i <span class="token operator">==</span> idx <span class="token keyword">else</span> <span class="token number">0</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">]</span>
+        columnpool<span class="token punctuation">.</span>addCol<span class="token punctuation">(</span>column<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> columnpool<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>说明：<code>examples/CSP.py</code> 中的正式实现为了覆盖”需求数量超过一根原料能切的数量”的情况，会为同一需求生成多列（小算例共 34 列），原理与本例相同。初始列不要设 <code>reduced_cost</code>（保持 <code>None</code>），它只属于定价子问题产出的列。</p>
+</blockquote>
+<h3 id="buildrestrictedmpcolumnpool-建限制主问题模型">4.3 <code>buildRestrictedMP(columnpool)</code> —— 建限制主问题模型</h3>
+<p><strong>干什么</strong>：把初始列装进一个 Gurobi LP 模型，返回 <code>Model</code> 对象。模型只包含初始列，以后的新列由框架自动加进去，你不用管。</p>
+<p><strong>两个必须遵守的规则</strong>：</p>
+<ol type="1">
+<li><strong>变量命名</strong>：每个列变量名必须是 <code>relaxed_variables_name[0] + '[' + str(omega) + ']'</code>，例如 <code>labda[1]</code>。框架靠这个格式在模型里查找/删除列。</li>
+<li><strong>约束写成 <code>&gt;=</code>（集覆盖）</strong>：不要用 <code>&lt;=</code>。这样对偶值更稳定，列生成不容易震荡。CSP 里每条约束是”需求 i 的总生产量 ≥ 需求量 d[i]”。</li>
+</ol>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">buildRestrictedMP</span><span class="token punctuation">(</span>columnpool<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    rmp_model <span class="token operator">=</span> Model<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    labda <span class="token operator">=</span> rmp_model<span class="token punctuation">.</span>addVars<span class="token punctuation">(</span>
+        <span class="token punctuation">[</span>omega <span class="token keyword">for</span> omega <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> columnpool<span class="token punctuation">.</span>col_num <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        vtype<span class="token operator">=</span>GRB<span class="token punctuation">.</span>CONTINUOUS<span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'labda'</span><span class="token punctuation">)</span>        <span class="token comment"># 变量名自动是 labda[1], labda[2], ...</span>
+    rmp_model<span class="token punctuation">.</span>setObjective<span class="token punctuation">(</span>labda<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token string">'*'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> sense<span class="token operator">=</span>GRB<span class="token punctuation">.</span>MINIMIZE<span class="token punctuation">)</span>   <span class="token comment"># 目标：原料根数最少</span>
+    rmp_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
+        <span class="token punctuation">(</span>quicksum<span class="token punctuation">(</span>a<span class="token punctuation">[</span>omega<span class="token punctuation">,</span> i<span class="token punctuation">]</span> <span class="token operator">*</span> labda<span class="token punctuation">[</span>omega<span class="token punctuation">]</span> <span class="token keyword">for</span> omega <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> columnpool<span class="token punctuation">.</span>col_num <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&gt;=</span> d<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        name<span class="token operator">=</span><span class="token string">'cons_rmp'</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> rmp_model<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="updateandsolvesp_heuristic-_exact...-解定价子问题核心">4.4 <code>updateAndSolveSP_Heuristic / _Exact(...)</code> —— 解定价子问题（核心）</h3>
+<p><strong>干什么</strong>：根据 RMP 当前的对偶值，找一条”加入后能让目标值下降”的新列。CSP 的定价子问题恰好是一个<strong>背包问题</strong>：把对偶值当”物品价格”、需求长度当”物品重量”，在容量 <code>L</code> 的背包里装出最大价值。</p>
+<p><strong>三个参数逐个讲</strong>：</p>
+<table>
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr>
+<th>参数</th>
+<th>是什么</th>
+<th>具体例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>y</code></td>
+<td>RMP 所有约束的对偶值，<code>numpy</code> 数组。<strong>顺序 = 你建模型时加约束的顺序</strong></td>
+<td>CSP 有 15 条约束（每种需求一条），所以 <code>y</code> 长度 15；<code>y[i-1]</code> 就是需求 i 那条约束的对偶值（”每多切一件需求 i 能省下多少根原料”）</td>
+</tr>
+<tr>
+<td><code>fingerprint</code></td>
+<td>当前要定价的子问题的标识，来自 <code>Environment.fingerprint_lst</code></td>
+<td>CSP 只有一个子问题，<code>fingerprint_lst=[1]</code>，传进来的恒为 <code>1</code>，用不上。如果你的问题有多个子问题（如 VRP 每个客户集合一个），框架会每轮按顺序把每个标识传进来，你根据它决定解哪个</td>
+</tr>
+<tr>
+<td><code>omega_next_col</code></td>
+<td>下一个新列应该用的编号（框架的列池计数器维护好的）</td>
+<td>初始列用到 15，那这里就是 16，直接赋给新列 <code>omega</code> 即可</td>
+</tr>
+</tbody>
+</table>
+<p><strong>返回值</strong>：改善列的 list（没有就返回空列表 <code>[]</code>）。每个改善列填 4 个属性，其中 <code>reduced_cost</code> 是关键：</p>
+<blockquote>
+<p><strong><code>reduced_cost</code>（检验数）</strong>：把这列加入 RMP 后，目标值能下降多少。最小化问题里<strong>为负就是改善列</strong>。CSP 中：原料成本为 1，背包价值为 <code>obj</code>，所以 <code>reduced_cost = 1 - obj</code>；例如背包解出 <code>obj=1.3</code>，则 <code>reduced_cost=-0.3</code>，说明加入这根”混合切割方案”能让总根数再降 0.3。</p>
+</blockquote>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">updateAndSolveSP_Exact</span><span class="token punctuation">(</span>y<span class="token punctuation">,</span> fingerprint<span class="token punctuation">,</span> omega_next_col<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    improve_column_lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    item_price <span class="token operator">=</span> <span class="token punctuation">{</span>i<span class="token punctuation">:</span> y<span class="token punctuation">[</span>i<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">}</span>      <span class="token comment"># 对偶值 → 物品价格</span>
+    item_weight <span class="token operator">=</span> <span class="token punctuation">{</span>i<span class="token punctuation">:</span> l<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">}</span>       <span class="token comment"># 长度 → 物品重量</span>
+    solution<span class="token punctuation">,</span> obj <span class="token operator">=</span> _solve_knapsack<span class="token punctuation">(</span>L<span class="token punctuation">,</span> I<span class="token punctuation">,</span> item_price<span class="token punctuation">,</span> item_weight<span class="token punctuation">)</span>  <span class="token comment"># 动态规划解背包（见示例文件）</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> obj<span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token operator">-</span><span class="token number">1e-6</span><span class="token punctuation">:</span>                    <span class="token comment"># reduced_cost 不为负 → 没有改善列</span>
+        <span class="token keyword">return</span> improve_column_lst
+    column <span class="token operator">=</span> Column<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    column<span class="token punctuation">.</span>omega <span class="token operator">=</span> omega_next_col            <span class="token comment"># 用框架给的编号</span>
+    column<span class="token punctuation">.</span>reduced_cost <span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">-</span> obj            <span class="token comment"># 检验数</span>
+    column<span class="token punctuation">.</span>tau <span class="token operator">=</span> <span class="token number">1</span>                           <span class="token comment"># 目标系数</span>
+    column<span class="token punctuation">.</span>coefficients <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span>solution<span class="token punctuation">.</span>values<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>   <span class="token comment"># 这个切割方案每种需求切几件</span>
+    improve_column_lst<span class="token punctuation">.</span>append<span class="token punctuation">(</span>column<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> improve_column_lst<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>updateAndSolveSP_Heuristic</code> 签名和返回值完全一样，只是求解算法换成贪婪策略（优先装单位价值高的物品），代码见示例文件。</p>
+<blockquote>
+<p>框架只认”返回的 list 是不是空”来判断有没有改善列，<strong>不检查符号</strong>，所以”算不算改善”由你自己在函数里判断。</p>
+</blockquote>
+<h3 id="coefficients_formattercoefficients-可选">4.5 <code>coefficients_formatter(coefficients)</code> —— 可选</h3>
+<p>开了 <code>col_file_output_on=True</code> 后，框架会把每个改善列写进 <code>columns/Column[omega].col</code> 文件，这时必须注册本函数，负责把 <code>coefficients</code> 变成可读字符串：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">coefficients_formatter</span><span class="token punctuation">(</span>coefficients<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token string">''</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token string">'a[{}]={}\n'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> coefficients<span class="token punctuation">[</span>i<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="组装起来运行">4.6 组装起来，运行</h3>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">toolbox <span class="token operator">=</span> ToolBox<span class="token punctuation">(</span><span class="token punctuation">)</span>
+toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span><span class="token string">'generateInitialCols'</span><span class="token punctuation">,</span> generateInitialCols<span class="token punctuation">)</span>
+toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span><span class="token string">'buildRestrictedMP'</span><span class="token punctuation">,</span> buildRestrictedMP<span class="token punctuation">)</span>
+toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span><span class="token string">'updateAndSolveSP_Exact'</span><span class="token punctuation">,</span> updateAndSolveSP_Exact<span class="token punctuation">)</span>
+toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span><span class="token string">'updateAndSolveSP_Heuristic'</span><span class="token punctuation">,</span> updateAndSolveSP_Heuristic<span class="token punctuation">)</span>
+toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span><span class="token string">'coefficients_formatter'</span><span class="token punctuation">,</span> coefficients_formatter<span class="token punctuation">)</span>
+
+environment <span class="token operator">=</span> Environment<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'labda'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'INTEGER'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token comment"># 三个位置参数：被松弛的变量名 / 松弛前类型(INTEGER或BINARY) / 子问题标识列表</span>
+environment<span class="token punctuation">.</span>result_file_output_on <span class="token operator">=</span> <span class="token boolean">True</span>
+
+engine <span class="token operator">=</span> Engine<span class="token punctuation">(</span><span class="token string">'csp_engine'</span><span class="token punctuation">,</span> environment<span class="token punctuation">,</span> toolbox<span class="token punctuation">)</span>
+engine<span class="token punctuation">.</span>runEngine<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>Engine</code> 构造时会打印当前配置，运行前检查一下即可。结束后结果在 <code>engine.result</code> 里。</p>
+<hr>
+<h2 id="environment-参数速查">5. Environment 参数速查</h2>
+<table>
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>一句话说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>relaxed_variables_name</code></td>
+<td>必填</td>
+<td>被松弛的变量名列表，<strong>第一个就是要动态生成的列</strong>（如 <code>['labda']</code>），名字首字母别相同</td>
+</tr>
+<tr>
+<td><code>relaxed_variables_type</code></td>
+<td>必填</td>
+<td>对应变量松弛前的类型：<code>'INTEGER'</code> 或 <code>'BINARY'</code>，列生成结束后恢复</td>
+</tr>
+<tr>
+<td><code>fingerprint_lst</code></td>
+<td>必填</td>
+<td>所有定价子问题的标识列表（如 <code>[1]</code>），框架按顺序逐个定价</td>
+</tr>
+<tr>
+<td><code>heuristic_solve_on</code> / <code>exact_solve_on</code></td>
+<td><code>True</code> / <code>True</code></td>
+<td>是否用启发式 / 精确解定价。两个都开 = 先用启发式、不行再切精确解兜底</td>
+</tr>
+<tr>
+<td><code>mini_batch_percent</code></td>
+<td><code>1.0</code></td>
+<td>每轮有 <code>round(该比例×子问题数)</code> 个子问题找到改善列就提前结束本轮定价</td>
+</tr>
+<tr>
+<td><code>dual_alpha</code></td>
+<td><code>0</code></td>
+<td>对偶平滑系数：<code>y=α·y_上轮+(1-α)·y_本轮</code>，<code>0</code>=不平滑。目标值震荡时设 <code>0.3~0.5</code></td>
+</tr>
+<tr>
+<td><code>truncate_threshold</code></td>
+<td><code>1e-6</code></td>
+<td>相邻两轮最优值差小于它就算”没改进”</td>
+</tr>
+<tr>
+<td><code>max_not_bertter</code></td>
+<td><code>inf</code></td>
+<td>连续多少轮没改进就终止（混合定价时先切精确解再判断）</td>
+</tr>
+<tr>
+<td><code>max_time_limit</code></td>
+<td><code>3600.0</code></td>
+<td>迭代总耗时上限（秒）</td>
+</tr>
+<tr>
+<td><code>barrier_method_on</code></td>
+<td><code>True</code></td>
+<td>是否用内点法求解 RMP（对偶值通常更稳）</td>
+</tr>
+<tr>
+<td><code>lp_file_ouput_on</code> / <code>ilp_file_output_on</code></td>
+<td><code>True</code> / <code>True</code></td>
+<td>是否输出 <code>.lp</code> 模型 / 不可行时的 <code>.ils</code> 文件</td>
+</tr>
+<tr>
+<td><code>col_file_output_on</code></td>
+<td><code>True</code></td>
+<td>是否把改善列写入 <code>columns/Column[omega].col</code>（需注册 <code>coefficients_formatter</code>）</td>
+</tr>
+<tr>
+<td><code>result_file_output_on</code></td>
+<td><code>False</code></td>
+<td>是否把最终结果写入 <code>{engine_name}.result</code></td>
+</tr>
+<tr>
+<td><code>rmp_log_to_console</code></td>
+<td><code>False</code></td>
+<td>是否在控制台打印 Gurobi 求解日志</td>
+</tr>
+<tr>
+<td><code>table_header_language</code></td>
+<td><code>'ascii'</code></td>
+<td>迭代表格表头：<code>'ascii'</code>（英文，任何终端对齐）/ <code>'chinese'</code>（中文，需终端中文为双宽）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="输出怎么看">6. 输出怎么看</h2>
+<p><strong>迭代表格</strong>（每轮一行）：</p>
 <table>
 <colgroup>
 <col style="width: 50%">
@@ -342,619 +563,33 @@ python CSP.py<span aria-hidden="true" class="line-numbers-rows"><span></span><sp
 </thead>
 <tbody>
 <tr>
-<td><code>Iter</code></td>
-<td>列生成迭代轮次</td>
+<td><code>Iter</code> 轮次 / <code>Time(s)</code> 本轮耗时 / <code>Cols</code> 当前列数</td>
+<td>迭代进度</td>
 </tr>
 <tr>
-<td><code>Time(s)</code></td>
-<td>本轮次迭代耗时（秒）</td>
+<td><code>RMP Obj</code> 本轮 RMP 最优值 / <code>NoBetter</code> 连续未改进次数</td>
+<td>收敛情况</td>
 </tr>
 <tr>
-<td><code>Cols</code></td>
-<td>本轮次迭代时列池中的列数量</td>
-</tr>
-<tr>
-<td><code>RMP Obj</code></td>
-<td>本轮次限制主问题的最优目标值</td>
-</tr>
-<tr>
-<td><code>NoBetter</code></td>
-<td>限制主问题最优值连续未改进的次数</td>
-</tr>
-<tr>
-<td><code>RMP Time</code></td>
-<td>本轮次限制主问题的求解时长（秒）</td>
-</tr>
-<tr>
-<td><code>Method</code></td>
-<td>本轮次使用的定价方式：<code>heuristic</code>（启发式）/ <code>exact</code>（精确解）</td>
-</tr>
-<tr>
-<td><code>SPs Time</code></td>
-<td>本轮次所有定价子问题的求解总时长（秒）</td>
+<td><code>RMP Time</code> RMP 求解时长 / <code>SPs Time</code> 子问题求解时长 / <code>Method</code> 定价方式(heuristic/exact)</td>
+<td>耗时分布</td>
 </tr>
 </tbody>
 </table>
-<hr>
-<h2 id="使用指南三步法">使用指南：三步法</h2>
-<p>使用 Colossus 求解一个新问题只需要三步：<strong>实现接口 → 配置参数 → 运行引擎</strong>。</p>
-<h3 id="第一步用-toolbox-实现问题相关接口">第一步：用 ToolBox 实现问题相关接口</h3>
-<p><a href="#toolbox"><code>ToolBox</code></a> 是一个工具容器，通过 <code>addTool(name, tool, *args, **kwargs)</code> 把与具体问题绑定的可调用对象注册进去（支持绑定额外参数，注册后框架会按固定签名调用）。需要实现/注册的工具如下：</p>
-<table>
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr>
-<th>工具名</th>
-<th>签名</th>
-<th>必须</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>generateInitialCols</code></td>
-<td><code>() -&gt; ColumnPool</code></td>
-<td>✅</td>
-<td>生成初始可行列，返回一个填充了初始列的 <code>ColumnPool</code> 对象</td>
-</tr>
-<tr>
-<td><code>buildRestrictedMP</code></td>
-<td><code>(columnpool) -&gt; gurobipy.Model</code></td>
-<td>✅</td>
-<td>构建限制主问题（RMP）的 Gurobi 数学模型，接收初始列池，返回 <code>Model</code> 对象</td>
-</tr>
-<tr>
-<td><code>updateAndSolveSP_Exact</code></td>
-<td><code>(y, fingerprint, omega_next_col) -&gt; List[Column]</code></td>
-<td>视定价策略</td>
-<td>用<strong>精确解算法</strong>求解定价子问题，返回改善列列表</td>
-</tr>
-<tr>
-<td><code>updateAndSolveSP_Heuristic</code></td>
-<td><code>(y, fingerprint, omega_next_col) -&gt; List[Column]</code></td>
-<td>视定价策略</td>
-<td>用<strong>启发式算法</strong>求解定价子问题，返回改善列列表</td>
-</tr>
-<tr>
-<td><code>coefficients_formatter</code></td>
-<td><code>(coefficients: list) -&gt; str</code></td>
-<td>可选</td>
-<td>把 <code>Column.coefficients</code> 格式化为字符串，用于 <code>.col</code> 列文件的可读输出</td>
-</tr>
-<tr>
-<td><code>modifyColumnPool</code></td>
-<td><code>(current_iter, columnpool)</code></td>
-<td>可选</td>
-<td>在每一轮迭代中（列生成循环内）对列池做自定义增删操作</td>
-</tr>
-</tbody>
-</table>
-<p><strong>各接口的详细约定：</strong></p>
-<h4 id="generateinitialcols-生成初始列">1. <code>generateInitialCols()</code> —— 生成初始列</h4>
-<p>返回一个 <code>ColumnPool</code> 对象，其中每个 <code>Column</code> 至少需要设置：</p>
+<p><strong><code>engine.result</code></strong>（<code>Result</code> 对象）关键属性：</p>
 <ul>
-<li><code>omega</code>：列在限制主问题中的索引（<code>int</code>），必须唯一；</li>
-<li><code>tau</code>：该列在限制主问题目标函数中的系数（<code>float</code> / <code>int</code>）；</li>
-<li><code>coefficients</code>：该列在各约束中的系数（<code>list</code>）。</li>
+<li><code>best_objective</code>：最终主问题（整数规划）最优值；<code>total_time</code>：总耗时；</li>
+<li><code>history_incumbent</code>：每轮 RMP 最优值列表（可画收敛曲线）；<code>history_rmp_time</code> / <code>history_sps_time</code>：每轮耗时。</li>
 </ul>
-<p>初始列的 <code>reduced_cost</code> 建议保持 <code>None</code>。示例（切割下料问题中，为每种需求的原材料单独生成一列”只切这种料”的初始方案）：</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">generateInitialCols</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    columnpool <span class="token operator">=</span> ColumnPool<span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token keyword">for</span> omega <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> M <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-        column <span class="token operator">=</span> Column<span class="token punctuation">(</span><span class="token punctuation">)</span>
-        column<span class="token punctuation">.</span>omega <span class="token operator">=</span> omega
-        column<span class="token punctuation">.</span>tau <span class="token operator">=</span> <span class="token number">1</span>
-        column<span class="token punctuation">.</span>coefficients <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">]</span>          <span class="token comment"># 与约束顺序对应的系数列表</span>
-        columnpool<span class="token punctuation">.</span>addCol<span class="token punctuation">(</span>column<span class="token punctuation">)</span>
-    <span class="token keyword">return</span> columnpool<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="buildrestrictedmpcolumnpool-构建限制主问题模型">2. <code>buildRestrictedMP(columnpool)</code> —— 构建限制主问题模型</h4>
-<p>返回一个 Gurobi <code>Model</code>。<strong>关键约束：</strong></p>
+<p><strong>生成的文件</strong>（写入当前工作目录）：<code>initial/final_rmp_model.lp</code>（模型）、<code>rmp_model.ils</code>（不可行分析）、<code>columns/Column[omega].col</code>（改善列明细）、<code>{engine_name}.result</code>（一行最终结果：最优值 总耗时 平均RMP耗时 平均子问题耗时 列数量 主问题耗时）。</p>
+<h2 id="常见问题">7. 常见问题</h2>
 <ul>
-<li>RMP 中每个初始列对应一个连续变量，变量名必须为 <strong><code>relaxed_variables_name[0] + '[' + str(omega) + ']'</code></strong> 的形式（例如 <code>'labda[1]'</code>），框架靠这个命名规则在模型中查找/删除列；</li>
-<li>建模建议：主问题尽量写成<strong>集覆盖（covering）或集划分（partitioning）</strong>的形式，约束用 <code>&gt;=</code> 或 <code>=</code> 而不用 <code>&lt;=</code>，这样限制主问题的对偶变量会更稳定，不容易剧烈波动；</li>
-<li>不需要在模型里添加以后会动态生成的列——那部分由框架自动完成。</li>
+<li><strong>开了 <code>col_file_output_on</code> 却没有 <code>.col</code> 文件</strong>：忘了注册 <code>coefficients_formatter</code>。</li>
+<li><strong>迭代很久不收敛 / 目标值来回跳</strong>：试试 <code>dual_alpha=0.3~0.5</code>；确认主问题约束是 <code>&gt;=</code>（集覆盖）；确认 <code>coefficients</code> 顺序与约束顺序一致。</li>
 </ul>
-<p>示例：</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">buildRestrictedMP</span><span class="token punctuation">(</span>columnpool<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    rmp_model <span class="token operator">=</span> Model<span class="token punctuation">(</span><span class="token punctuation">)</span>
-    labda <span class="token operator">=</span> rmp_model<span class="token punctuation">.</span>addVars<span class="token punctuation">(</span>
-        <span class="token punctuation">[</span>omega <span class="token keyword">for</span> omega <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> columnpool<span class="token punctuation">.</span>col_num <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-        vtype<span class="token operator">=</span>GRB<span class="token punctuation">.</span>CONTINUOUS<span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'labda'</span><span class="token punctuation">)</span>          <span class="token comment"># 变量名自动为 labda[1], labda[2], ...</span>
-    rmp_model<span class="token punctuation">.</span>setObjective<span class="token punctuation">(</span>labda<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span><span class="token string">'*'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> sense<span class="token operator">=</span>GRB<span class="token punctuation">.</span>MINIMIZE<span class="token punctuation">)</span>
-    rmp_model<span class="token punctuation">.</span>addConstrs<span class="token punctuation">(</span>
-        <span class="token punctuation">(</span>quicksum<span class="token punctuation">(</span>a<span class="token punctuation">[</span>omega<span class="token punctuation">,</span> i<span class="token punctuation">]</span> <span class="token operator">*</span> labda<span class="token punctuation">[</span>omega<span class="token punctuation">]</span> <span class="token keyword">for</span> omega <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> columnpool<span class="token punctuation">.</span>col_num <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&gt;=</span> d<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">)</span><span class="token punctuation">,</span>
-        name<span class="token operator">=</span><span class="token string">'cons_rmp'</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span> rmp_model<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="updateandsolvesp_exact-updateandsolvesp_heuristic-求解定价子问题">3. <code>updateAndSolveSP_Exact / updateAndSolveSP_Heuristic</code> —— 求解定价子问题</h4>
-<p>两个函数的签名一致，参数含义：</p>
-<ul>
-<li><code>y</code>：<code>numpy.ndarray</code>，限制主问题当前所有约束的对偶值（<code>Pi</code>），<strong>顺序与 <code>buildRestrictedMP</code> 中添加约束的顺序一致</strong>；</li>
-<li><code>fingerprint</code>：<code>tuple</code>，当前要定价的子问题的唯一标识，取自 <code>Environment.fingerprint_lst</code>；</li>
-<li><code>omega_next_col</code>：<code>int</code>，下一个新列的 <code>omega</code> 应当取的值（列池已维护好，直接使用即可）。</li>
-</ul>
-<p>返回值：由改善列（<code>Column</code> 对象）构成的 <strong>list</strong>。找不到改善列时返回空列表。每个改善列至少需要设置：</p>
-<ul>
-<li><code>omega</code>：取传入的 <code>omega_next_col</code>；</li>
-<li><code>reduced_cost</code>：该列的检验数（reduced cost），对于最小化问题，负的 reduced cost 表示改善列；</li>
-<li><code>tau</code>：目标函数系数；</li>
-<li><code>coefficients</code>：约束系数列表。</li>
-</ul>
-<p>示例（CSP 定价子问题 = 背包问题，用动态规划精确求解）：</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">updateAndSolveSP_Exact</span><span class="token punctuation">(</span>y<span class="token punctuation">,</span> fingerprint<span class="token punctuation">,</span> omega_next_col<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    improve_column_lst <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-    item_price<span class="token punctuation">,</span> item_weight <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">:</span>
-        item_price<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> item_weight<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> y<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> l<span class="token punctuation">[</span>i<span class="token punctuation">]</span>     <span class="token comment"># 用对偶值作为物品价格</span>
-    knapsack_solution<span class="token punctuation">,</span> knapsack_obj <span class="token operator">=</span> _solve_knapsack<span class="token punctuation">(</span>L<span class="token punctuation">,</span> item_set<span class="token operator">=</span>I<span class="token punctuation">,</span>
-                                                      item_price<span class="token operator">=</span>item_price<span class="token punctuation">,</span>
-                                                      item_weight<span class="token operator">=</span>item_weight<span class="token punctuation">)</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> knapsack_obj<span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token operator">-</span><span class="token number">1e-6</span><span class="token punctuation">:</span>                          <span class="token comment"># 无改善列</span>
-        <span class="token keyword">return</span> improve_column_lst
-    column <span class="token operator">=</span> Column<span class="token punctuation">(</span><span class="token punctuation">)</span>
-    column<span class="token punctuation">.</span>omega <span class="token operator">=</span> omega_next_col
-    column<span class="token punctuation">.</span>reduced_cost <span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">-</span> knapsack_obj
-    column<span class="token punctuation">.</span>tau <span class="token operator">=</span> <span class="token number">1</span>
-    column<span class="token punctuation">.</span>coefficients <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span>knapsack_solution<span class="token punctuation">.</span>values<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    improve_column_lst<span class="token punctuation">.</span>append<span class="token punctuation">(</span>column<span class="token punctuation">)</span>
-    <span class="token keyword">return</span> improve_column_lst<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<blockquote>
-<p>提示：框架本身不校验 reduced cost 的符号，是否”改善”由子问题函数自行判断（找不到改善列就返回空列表）。</p>
-</blockquote>
-<h4 id="coefficients_formattercoefficients-列文件格式化可选">4. <code>coefficients_formatter(coefficients)</code> —— 列文件格式化（可选）</h4>
-<p>当 <code>Environment.col_file_output_on=True</code> 时，框架会把每个生成的改善列写入 <code>columns/Column[omega].col</code> 文件，此时必须注册本工具，否则会打印提示且不写文件。工具接收 <code>Column.coefficients</code>（list），返回格式化后的字符串：</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">coefficients_formatter</span><span class="token punctuation">(</span>coefficients<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token keyword">return</span> <span class="token string">''</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token string">'a[{}]={}\n'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> coefficients<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> I<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h4 id="modifycolumnpoolcurrent_iter-columnpool-自定义列池管理可选">5. <code>modifyColumnPool(current_iter, columnpool)</code> —— 自定义列池管理（可选）</h4>
-<p>每一轮迭代中，在”定价子问题产生改善列加入列池之后、把列池变更提交到 RMP 之前”被调用，用于实现自定义的列池维护策略（如固定列池大小、按 reduced cost 淘汰列等）。示例见 <code>examples/CSP.py</code> 中被注释掉的 <code>modifyColumnPool</code>。</p>
-<h3 id="第二步配置-environment">第二步：配置 Environment</h3>
-<p><a href="#environment"><code>Environment</code></a> 是一个 <code>@dataclass</code> 配置类，控制 Engine 的全部行为。前三个参数为位置参数（必填），其余均为带默认值的关键字参数：</p>
-<table>
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr>
-<th>参数</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>relaxed_variables_name</code></td>
-<td><code>list[str]</code></td>
-<td>（必填）</td>
-<td>主问题中被线性松弛的变量名列表，<strong>第一个字符串对应的变量就是需要动态生成的列</strong>。建议各字符串首字母不同，避免 <code>startswith</code> 方法失效</td>
-</tr>
-<tr>
-<td><code>relaxed_variables_type</code></td>
-<td><code>list[str]</code></td>
-<td>（必填）</td>
-<td>被松弛变量原本的类型，<code>'INTEGER'</code> 或 <code>'BINARY'</code>（与 <code>relaxed_variables_name</code> 一一对应），列生成结束后框架会把它们恢复为原类型再求解</td>
-</tr>
-<tr>
-<td><code>fingerprint_lst</code></td>
-<td><code>list</code></td>
-<td>（必填）</td>
-<td>所有定价子问题的唯一标识（fingerprint）列表，引擎按顺序逐个求解子问题</td>
-</tr>
-<tr>
-<td><code>barrier_method_on</code></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td>限制主问题是否使用内点法求解。推荐开启，内点法得到的对偶变量一般优于单纯形法</td>
-</tr>
-<tr>
-<td><code>exact_solve_on</code></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td>是否用精确解算法求解定价子问题</td>
-</tr>
-<tr>
-<td><code>heuristic_solve_on</code></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td>是否用启发式算法求解定价子问题</td>
-</tr>
-<tr>
-<td><code>mini_batch_percent</code></td>
-<td><code>float</code></td>
-<td><code>1.0</code></td>
-<td>每轮迭代中，一旦有 <code>round(mini_batch_percent * len(fingerprint_lst))</code> 个子问题产生了改善列，就提前结束本轮定价。只有一个子问题时该参数无意义</td>
-</tr>
-<tr>
-<td><code>lp_file_ouput_on</code></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td>是否输出限制主问题的 <code>.lp</code> 模型文件（<code>initial_rmp_model.lp</code> / <code>final_rmp_model.lp</code>）</td>
-</tr>
-<tr>
-<td><code>ilp_file_output_on</code></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td>限制主问题不可行时是否输出 Gurobi 不可行性文件（<code>rmp_model.ils</code>）</td>
-</tr>
-<tr>
-<td><code>col_file_output_on</code></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td>是否将生成的改善列写入 <code>columns/Column[omega].col</code> 文件（需同时注册 <code>coefficients_formatter</code>）</td>
-</tr>
-<tr>
-<td><code>result_file_output_on</code></td>
-<td><code>bool</code></td>
-<td><code>False</code></td>
-<td>是否将最终求解结果写入 <code>{engine_name}.result</code> 文件</td>
-</tr>
-<tr>
-<td><code>dual_alpha</code></td>
-<td><code>float</code></td>
-<td><code>0</code></td>
-<td>对偶平滑系数：<code>y = alpha * y_上一轮 + (1 - alpha) * y_本轮</code>，默认 <code>0</code> 表示不平滑。迭代中按几何衰减（每轮 <code>alpha = 0.87096359 * alpha</code>），约 100 轮后衰减到 0</td>
-</tr>
-<tr>
-<td><code>truncate_threshold</code></td>
-<td><code>float</code></td>
-<td><code>1e-6</code></td>
-<td>相邻两轮限制主问题最优值之差的绝对值小于该阈值时，认为本轮没有改进</td>
-</tr>
-<tr>
-<td><code>max_not_bertter</code></td>
-<td><code>float</code></td>
-<td><code>inf</code></td>
-<td>限制主问题最优值连续 <code>max_not_bertter</code> 轮未改进时终止迭代（混合定价策略下会先切换为精确定价再判断）</td>
-</tr>
-<tr>
-<td><code>max_time_limit</code></td>
-<td><code>float</code></td>
-<td><code>3600.0</code></td>
-<td>列生成迭代的总耗时上限（秒），超时强制终止</td>
-</tr>
-<tr>
-<td><code>rmp_log_to_console</code></td>
-<td><code>bool</code></td>
-<td><code>False</code></td>
-<td>是否在控制台展示 Gurobi 求解限制主问题的详细日志</td>
-</tr>
-<tr>
-<td><code>table_header_language</code></td>
-<td><code>str</code></td>
-<td><code>'ascii'</code></td>
-<td>迭代表格表头语言：<code>'ascii'</code>（英文，任何环境严格对齐）或 <code>'chinese'</code>（中文，需终端将中文渲染为双宽）</td>
-</tr>
-</tbody>
-</table>
-<h3 id="第三步创建-engine-并运行">第三步：创建 Engine 并运行</h3>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">toolbox <span class="token operator">=</span> ToolBox<span class="token punctuation">(</span><span class="token punctuation">)</span>
-toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span><span class="token string">'generateInitialCols'</span><span class="token punctuation">,</span> generateInitialCols<span class="token punctuation">)</span>
-toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span><span class="token string">'buildRestrictedMP'</span><span class="token punctuation">,</span> buildRestrictedMP<span class="token punctuation">)</span>
-toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span><span class="token string">'updateAndSolveSP_Exact'</span><span class="token punctuation">,</span> updateAndSolveSP_Exact<span class="token punctuation">)</span>
-toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span><span class="token string">'updateAndSolveSP_Heuristic'</span><span class="token punctuation">,</span> updateAndSolveSP_Heuristic<span class="token punctuation">)</span>
-toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span><span class="token string">'coefficients_formatter'</span><span class="token punctuation">,</span> coefficients_formatter<span class="token punctuation">)</span>
-<span class="token comment"># toolbox.addTool('modifyColumnPool', modifyColumnPool)   # 可选</span>
-
-environment <span class="token operator">=</span> Environment<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'labda'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'INTEGER'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-environment<span class="token punctuation">.</span>result_file_output_on <span class="token operator">=</span> <span class="token boolean">True</span>
-
-engine <span class="token operator">=</span> Engine<span class="token punctuation">(</span><span class="token string">'csp_engine'</span><span class="token punctuation">,</span> environment<span class="token punctuation">,</span> toolbox<span class="token punctuation">)</span>
-engine<span class="token punctuation">.</span>runEngine<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>创建 <code>Engine</code> 时会在控制台打印当前配置，运行前请先检查配置是否满足要求。运行结束后：</p>
-<ul>
-<li>最优目标值：<code>engine.result.best_objective</code>；</li>
-<li>总求解时长：<code>engine.result.total_time</code>；</li>
-<li>迭代历史：见下文 <a href="#result-对象">Result 对象</a>。</li>
-</ul>
-<hr>
-<h2 id="框架运行流程">框架运行流程</h2>
-<p><code>Engine.runEngine()</code> 的内部流程如下：</p>
-<ol type="1">
-<li><strong>构造初始列</strong>：调用 <code>generateInitialCols()</code> 得到初始列池；</li>
-<li><strong>构造限制主问题</strong>：调用 <code>buildRestrictedMP(columnpool)</code> 得到 RMP 的 Gurobi 模型；</li>
-<li><strong>列生成主循环</strong>（每轮迭代）：
-<ol type="1">
-<li>求解限制主问题（Gurobi）；</li>
-<li>提取约束对偶值 <code>y</code>，做对偶平滑处理；</li>
-<li>依次求解定价子问题（按 <code>fingerprint_lst</code> 顺序，从 <code>break_point</code> 断点继续）：
-<ul>
-<li>纯启发式：只调用 <code>updateAndSolveSP_Heuristic</code>；</li>
-<li>纯精确解：只调用 <code>updateAndSolveSP_Exact</code>；</li>
-<li>混合策略：先用启发式，满足切换条件后改用精确解兜底；</li>
-<li>满足 <code>mini_batch_percent</code> 提前终止条件时结束本轮定价；</li>
-</ul></li>
-<li>将子问题返回的改善列加入列池，输出本轮迭代信息表格；</li>
-<li>调用可选接口 <code>modifyColumnPool</code> 做自定义列池维护；</li>
-<li>将列池变更自动提交到限制主问题模型（新增/删除变量）；</li>
-<li>判断终止条件：
-<ul>
-<li>连续 <code>max_not_bertter</code> 轮无改进 → 混合策略下切换为精确定价，否则终止；</li>
-<li>本轮所有子问题都找不到改善列 → 单定价方法直接终止；混合策略先切换精确，精确也找不到则终止；</li>
-<li>总耗时超过 <code>max_time_limit</code> → 终止；</li>
-</ul></li>
-</ol></li>
-<li><strong>求解最终主问题</strong>：把被松弛的变量恢复为 <code>relaxed_variables_type</code> 指定的整数/0-1 类型（此时列池中的全部列都在模型里），重置 Gurobi 参数为默认值，求解整数规划得到最终结果；</li>
-<li>若 <code>result_file_output_on=True</code>，将结果写入 <code>.result</code> 文件。</li>
-</ol>
-<hr>
-<h2 id="结果解读">结果解读</h2>
-<h3 id="控制台迭代表格">控制台迭代表格</h3>
-<p>每轮迭代输出一行，列含义见<a href="#快速开始运行切割下料示例">快速开始</a>中的表格。</p>
-<h3 id="result-对象">Result 对象</h3>
-<p><code>engine.result</code> 是一个 <a href="#result-对象"><code>Result</code></a> 对象，属性如下：</p>
-<table>
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr>
-<th>属性</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>history_incumbent</code></td>
-<td><code>list</code>，每轮限制主问题的最优目标值</td>
-</tr>
-<tr>
-<td><code>history_col_num</code></td>
-<td><code>list</code>，每轮迭代开始时列池的列数量</td>
-</tr>
-<tr>
-<td><code>history_rmp_time</code></td>
-<td><code>list</code>，每轮限制主问题的求解时长（秒）</td>
-</tr>
-<tr>
-<td><code>history_sps_time</code></td>
-<td><code>list</code>，每轮所有定价子问题的求解总时长（秒）</td>
-</tr>
-<tr>
-<td><code>history_optimal_basis_col_omega</code></td>
-<td><code>list[list[int]]</code>，每轮处于限制主问题最优基中的列的 <code>omega</code> 列表</td>
-</tr>
-<tr>
-<td><code>best_objective</code></td>
-<td><code>float</code>，最终主问题（整数规划）的最优目标值</td>
-</tr>
-<tr>
-<td><code>total_time</code></td>
-<td><code>float</code>，总求解时长（秒）</td>
-</tr>
-<tr>
-<td><code>master_problem_time</code></td>
-<td><code>float</code>，最后求解主问题的时长（秒）</td>
-</tr>
-</tbody>
-</table>
-<p>可以对历史数据做进一步分析，例如画出目标值收敛曲线：</p>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> matplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword">as</span> plt
-plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>engine<span class="token punctuation">.</span>result<span class="token punctuation">.</span>history_incumbent<span class="token punctuation">)</span>
-plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="输出文件">输出文件</h3>
-<table>
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr>
-<th>文件</th>
-<th>触发条件</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>initial_rmp_model.lp</code> / <code>final_rmp_model.lp</code></td>
-<td><code>lp_file_ouput_on=True</code></td>
-<td>初始 / 最终限制主问题的 LP 模型</td>
-</tr>
-<tr>
-<td><code>rmp_model.ils</code></td>
-<td>限制主问题不可行且 <code>ilp_file_output_on=True</code></td>
-<td>Gurobi 不可行性分析文件</td>
-</tr>
-<tr>
-<td><code>columns/Column[omega].col</code></td>
-<td><code>col_file_output_on=True</code> 且注册了 <code>coefficients_formatter</code></td>
-<td>每个改善列的详细信息</td>
-</tr>
-<tr>
-<td><code>{engine_name}.result</code></td>
-<td><code>result_file_output_on=True</code></td>
-<td>一行最终结果，格式：<code>Objective Time AvgRMPT AvgSPsT ColNum MPT</code>（最优值、总时长、RMP平均求解时长、子问题平均求解时长、最终列数量、主问题求解时长）</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>注意：所有文件均写入<strong>当前工作目录</strong>（相对路径 <code>./</code>）。</p>
-</blockquote>
-<hr>
-<h2 id="api-参考">API 参考</h2>
-<h3 id="column">Column</h3>
-<p><code>Column</code> 类用于存储限制主问题中单列的信息：</p>
-<table>
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr>
-<th>属性</th>
-<th>类型</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>omega</code></td>
-<td><code>int</code></td>
-<td>列在限制主问题中的索引，必须唯一</td>
-</tr>
-<tr>
-<td><code>reduced_cost</code></td>
-<td><code>float</code>/<code>None</code></td>
-<td>列的检验数；初始列请设为 <code>None</code></td>
-</tr>
-<tr>
-<td><code>dummy_reduced_cost</code></td>
-<td><code>float</code>/<code>None</code></td>
-<td>虚拟检验数（实验性想法：给某些列虚拟的低检验数以帮助进入最优基，默认 <code>None</code>）</td>
-</tr>
-<tr>
-<td><code>tau</code></td>
-<td><code>float</code>/<code>int</code></td>
-<td>列在限制主问题目标函数中的系数</td>
-</tr>
-<tr>
-<td><code>coefficients</code></td>
-<td><code>list</code></td>
-<td>列在各约束中的系数，顺序与约束一致</td>
-</tr>
-<tr>
-<td><code>in_rmp_optimal_basis_when</code></td>
-<td><code>list[int]</code>/<code>None</code></td>
-<td>记录该列在列生成的哪些轮次进入了限制主问题的最优基（由框架自动维护）</td>
-</tr>
-</tbody>
-</table>
-<h3 id="columnpool">ColumnPool</h3>
-<p><code>ColumnPool</code> 继承自 <code>dict</code>（<code>omega -&gt; Column</code>），自动维护列池元信息：</p>
-<table>
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr>
-<th>属性/方法</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>omega_next_col</code></td>
-<td>下一个新列应使用的 <code>omega</code>（单调递增，删除列也不会导致索引错乱）</td>
-</tr>
-<tr>
-<td><code>col_num</code></td>
-<td>当前列池中的列数量</td>
-</tr>
-<tr>
-<td><code>deleted_col_pool</code></td>
-<td><code>dict</code>，被删除的列（如需找回误删的列）</td>
-</tr>
-<tr>
-<td><code>addCol(column)</code></td>
-<td>原子式添加一列</td>
-</tr>
-<tr>
-<td><code>addCols(column_lst)</code></td>
-<td>批量添加列（会校验 <code>omega</code> 的连续性）</td>
-</tr>
-<tr>
-<td><code>delColByOmega(omega)</code></td>
-<td>按 <code>omega</code> 删除一列</td>
-</tr>
-<tr>
-<td><code>delColByReducedCost(lb, ub)</code></td>
-<td>批量删除 reduced cost 落在区间外的列（<code>reduced_cost is None</code> 的列不删）</td>
-</tr>
-</tbody>
-</table>
-<h3 id="toolbox">ToolBox</h3>
-<pre class="line-numbers language-python" data-language="python"><code class="language-python">toolbox <span class="token operator">=</span> ToolBox<span class="token punctuation">(</span><span class="token punctuation">)</span>
-toolbox<span class="token punctuation">.</span>addTool<span class="token punctuation">(</span>name<span class="token punctuation">,</span> tool<span class="token punctuation">,</span> <span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span>   <span class="token comment"># 注册工具，可绑定额外参数</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>可注册的工具名见<a href="#第一步用-toolbox-实现问题相关接口">第一步</a>的表格。</p>
-<h3 id="environment">Environment</h3>
-<p>配置数据类，字段见<a href="#第二步配置-environment">第二步</a>的表格。</p>
-<h3 id="engine">Engine</h3>
-<table>
-<thead>
-<tr>
-<th>属性/方法</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>Engine(name, environment, toolbox)</code></td>
-<td>创建引擎，构造时打印当前配置</td>
-</tr>
-<tr>
-<td><code>runEngine()</code></td>
-<td>运行列生成主循环并求解最终主问题</td>
-</tr>
-<tr>
-<td><code>result</code></td>
-<td><code>Result</code> 对象，见下</td>
-</tr>
-</tbody>
-</table>
-<h3 id="result">Result</h3>
-<p>见<a href="#result-对象">Result 对象</a>。</p>
-<hr>
-<h2 id="高级主题">高级主题</h2>
-<h3 id="定价策略启发式与精确解切换">定价策略：启发式与精确解切换</h3>
-<p><code>heuristic_solve_on</code> 与 <code>exact_solve_on</code> 的组合决定定价策略：</p>
-<ul>
-<li>只开启发式：每轮只用启发式求解子问题，找不到改善列即终止（速度快，但可能提前收敛到次优）；</li>
-<li>只开精确解：每轮都用精确算法定价（慢，但收敛质量有保证）；</li>
-<li><strong>两者都开（推荐）</strong>：先用启发式快速找改善列，当连续 <code>max_not_bertter</code> 轮无改进或启发式找不到改善列时，自动切换为精确解定价兜底；若精确解也找不到改善列，则终止。</li>
-</ul>
-<h3 id="对偶平滑dual-smoothing">对偶平滑（Dual Smoothing）</h3>
-<p>对偶变量直接使用容易在迭代间剧烈波动，导致生成的列质量不稳定。框架支持平滑：</p>
-<pre class="line-numbers language-none"><code class="language-none">y_本轮平滑 = alpha * y_上一轮 + (1 - alpha) * y_本轮原始
-alpha 每轮按 0.87096359 几何衰减<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<ul>
-<li>默认 <code>dual_alpha=0</code>（不平滑）；</li>
-<li>建议在子问题求解不稳定时开启，例如 <code>dual_alpha=0.5</code>；</li>
-<li>衰减策略保证后期平滑效应逐渐消失，不影响最终收敛。</li>
-</ul>
-<h3 id="mini-batch-提前终止">mini-batch 提前终止</h3>
-<p>当子问题数量很多时，不必每轮把所有子问题都求解一遍。设置 <code>mini_batch_percent</code>（如 <code>0.2</code>）后，一旦本轮已有 <code>round(mini_batch_percent * 子问题总数)</code> 个子问题产生了改善列，就提前结束本轮定价；下一轮从断点 <code>break_point</code> 继续求解剩余子问题，保证每个子问题最终都会被定价到。</p>
-<h3 id="自定义列池管理">自定义列池管理</h3>
-<p>注册 <code>modifyColumnPool(current_iter, columnpool)</code> 后，每轮迭代都会在”改善列入池后、提交模型前”调用它。可以在此实现列池瘦身（如固定列池大小、剔除长期不在最优基的列），注意：</p>
-<ul>
-<li>删除列请使用 <code>columnpool.delColByOmega(omega)</code>，框架会自动同步到模型；</li>
-<li>不要删除当前轮次刚加入的列（可检查 <code>columnpool._memory_change['omega_cols_added']</code>）。</li>
-</ul>
-<h3 id="建模建议">建模建议</h3>
-<ul>
-<li>主问题尽量写成<strong>集覆盖 / 集划分</strong>形式（约束为 <code>&gt;=</code> / <code>=</code>），对偶变量更稳定；</li>
-<li>限制主问题模型中的列变量名必须严格遵循 <code>relaxed_variables_name[0] + '[' + omega + ']'</code> 格式；</li>
-<li><code>relaxed_variables_name</code> 各字符串首字母不要相同，避免 <code>startswith</code> 误匹配；</li>
-<li>定价子问题的系数顺序（<code>coefficients</code>）必须与 <code>buildRestrictedMP</code> 中添加约束的顺序一致，因为 <code>y</code> 的顺序就是约束的顺序。</li>
-</ul>
-<table style="width:6%;">
-<colgroup>
-<col style="width: 5%">
-</colgroup>
-<tbody>
-<tr>
-<td>## 开源与许可证</td>
-</tr>
-<tr>
-<td>本项目使用 MIT 许可证开源（见 <code>LICENSE</code> 文件）。欢迎提交 Issue 和 Pull Request。</td>
-</tr>
-<tr>
-<td>&gt; 致谢：框架中使用的对偶平滑几何衰减系数、dummy_reduced_cost 等技巧灵感来自列生成相关文献与开源社区实践。</td>
-</tr>
-</tbody>
-</table>
-<p><em>Colossus —— 让列生成变得简单。</em></p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://YuanshengShe.github.io">syuansheng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://yuanshengshe.github.io/posts/2adef9b1/">https://yuanshengshe.github.io/posts/2adef9b1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Clossus/">Clossus</a><a class="post-meta__tags" href="/tags/%E5%88%97%E7%94%9F%E6%88%90/">列生成</a></div><div class="post-share"><div class="social-share" data-image="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css" media="print" onload="this.media='all'"><script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>点这里请我喝杯咖啡吧！</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/wechatreceive.jpg" target="_blank"><img class="post-qr-code-img" src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/wechatreceive.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/341d586a/" title="张家界和长沙旅行记"><img class="cover" src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/张家界长沙/26.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">张家界和长沙旅行记</div></div><div class="info-2"><div class="info-item-1">张家界很美，长沙有好吃的臭豆腐。 这是一段美好的记忆！</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/e671679d/" title="D-W分解与列生成算法"><img class="cover" src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/DW分解与列生成/cover.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-04</div><div class="info-item-2">D-W分解与列生成算法</div></div><div class="info-2"><div class="info-item-1">本文总结了运筹学三大分解方法之一的Dantzig-Wolfe分解，以及如何使用列生成算法求解使用D-W分解得到的模型</div></div></div></a><a class="pagination-related" href="/posts/77e15bf4/" title="列生成的子问题枚举策略"><img class="cover" src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/列生成子问题枚举策略/cover.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-09</div><div class="info-item-2">列生成的子问题枚举策略</div></div><div class="info-2"><div class="info-item-1">列生成的子问题枚举的一些加速策略</div></div></div></a><a class="pagination-related" href="/posts/9260e678/" title="大规模整数规划的求解技术"><img class="cover" src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/大规模整数规划的求解技术/cover.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-07</div><div class="info-item-2">大规模整数规划的求解技术</div></div><div class="info-2"><div class="info-item-1">Do what you believe is right with unwavering determination</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comments</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/avatar3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">syuansheng</div><div class="author-info-description">Life is a marathon!</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">79</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/YuanshengShe" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:13350003472@163.com" target="_blank" title="Mail2Me"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://grs.dlmu.edu.cn/" target="_blank" title="DMU"><i class="fa-solid fa-building-columns" style="color: #hdhfbb;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">我是syuansheng，一名<font color='green'>交通运输规划与管理专业</font>的在读研究生。这是我的个人主页，我将在这里记录学习📚和生活🌈，同时我也期待得到一份<font color='blue'>供应链、物流或航运相关的工作</font>，如果你能够提供类似岗位或实习机会，请通过上方邮箱联系我！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#colossus-%E9%80%9A%E7%94%A8%E5%88%97%E7%94%9F%E6%88%90%E6%B1%82%E8%A7%A3%E6%A1%86%E6%9E%B6"><span class="toc-number">1.</span> <span class="toc-text">Colossus — 通用列生成求解框架</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">1.1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">1.2.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-number">1.3.</span> <span class="toc-text">目录结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E4%BE%9D%E8%B5%96%E4%B8%8E%E5%AE%89%E8%A3%85"><span class="toc-number">1.4.</span> <span class="toc-text">环境依赖与安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B%E8%BF%90%E8%A1%8C%E5%88%87%E5%89%B2%E4%B8%8B%E6%96%99%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.5.</span> <span class="toc-text">快速开始：运行切割下料示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97%E4%B8%89%E6%AD%A5%E6%B3%95"><span class="toc-number">1.6.</span> <span class="toc-text">使用指南：三步法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E7%94%A8-toolbox-%E5%AE%9E%E7%8E%B0%E9%97%AE%E9%A2%98%E7%9B%B8%E5%85%B3%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.6.1.</span> <span class="toc-text">第一步：用 ToolBox 实现问题相关接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#generateinitialcols-%E7%94%9F%E6%88%90%E5%88%9D%E5%A7%8B%E5%88%97"><span class="toc-number">1.6.1.1.</span> <span class="toc-text">1. generateInitialCols() —— 生成初始列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#buildrestrictedmpcolumnpool-%E6%9E%84%E5%BB%BA%E9%99%90%E5%88%B6%E4%B8%BB%E9%97%AE%E9%A2%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.6.1.2.</span> <span class="toc-text">2. buildRestrictedMP(columnpool) —— 构建限制主问题模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#updateandsolvesp_exact-updateandsolvesp_heuristic-%E6%B1%82%E8%A7%A3%E5%AE%9A%E4%BB%B7%E5%AD%90%E9%97%AE%E9%A2%98"><span class="toc-number">1.6.1.3.</span> <span class="toc-text">3. updateAndSolveSP_Exact &#x2F; updateAndSolveSP_Heuristic —— 求解定价子问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#coefficients_formattercoefficients-%E5%88%97%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%8F%AF%E9%80%89"><span class="toc-number">1.6.1.4.</span> <span class="toc-text">4. coefficients_formatter(coefficients) —— 列文件格式化（可选）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#modifycolumnpoolcurrent_iter-columnpool-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%88%97%E6%B1%A0%E7%AE%A1%E7%90%86%E5%8F%AF%E9%80%89"><span class="toc-number">1.6.1.5.</span> <span class="toc-text">5. modifyColumnPool(current_iter, columnpool) —— 自定义列池管理（可选）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E9%85%8D%E7%BD%AE-environment"><span class="toc-number">1.6.2.</span> <span class="toc-text">第二步：配置 Environment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%88%9B%E5%BB%BA-engine-%E5%B9%B6%E8%BF%90%E8%A1%8C"><span class="toc-number">1.6.3.</span> <span class="toc-text">第三步：创建 Engine 并运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%86%E6%9E%B6%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.7.</span> <span class="toc-text">框架运行流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C%E8%A7%A3%E8%AF%BB"><span class="toc-number">1.8.</span> <span class="toc-text">结果解读</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%B0%E8%BF%AD%E4%BB%A3%E8%A1%A8%E6%A0%BC"><span class="toc-number">1.8.1.</span> <span class="toc-text">控制台迭代表格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#result-%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.8.2.</span> <span class="toc-text">Result 对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E6%96%87%E4%BB%B6"><span class="toc-number">1.8.3.</span> <span class="toc-text">输出文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#api-%E5%8F%82%E8%80%83"><span class="toc-number">1.9.</span> <span class="toc-text">API 参考</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#column"><span class="toc-number">1.9.1.</span> <span class="toc-text">Column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#columnpool"><span class="toc-number">1.9.2.</span> <span class="toc-text">ColumnPool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#toolbox"><span class="toc-number">1.9.3.</span> <span class="toc-text">ToolBox</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#environment"><span class="toc-number">1.9.4.</span> <span class="toc-text">Environment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#engine"><span class="toc-number">1.9.5.</span> <span class="toc-text">Engine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#result"><span class="toc-number">1.9.6.</span> <span class="toc-text">Result</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7%E4%B8%BB%E9%A2%98"><span class="toc-number">1.10.</span> <span class="toc-text">高级主题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%BB%B7%E7%AD%96%E7%95%A5%E5%90%AF%E5%8F%91%E5%BC%8F%E4%B8%8E%E7%B2%BE%E7%A1%AE%E8%A7%A3%E5%88%87%E6%8D%A2"><span class="toc-number">1.10.1.</span> <span class="toc-text">定价策略：启发式与精确解切换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E5%81%B6%E5%B9%B3%E6%BB%91dual-smoothing"><span class="toc-number">1.10.2.</span> <span class="toc-text">对偶平滑（Dual Smoothing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mini-batch-%E6%8F%90%E5%89%8D%E7%BB%88%E6%AD%A2"><span class="toc-number">1.10.3.</span> <span class="toc-text">mini-batch 提前终止</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%88%97%E6%B1%A0%E7%AE%A1%E7%90%86"><span class="toc-number">1.10.4.</span> <span class="toc-text">自定义列池管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E6%A8%A1%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.10.5.</span> <span class="toc-text">建模建议</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/2adef9b1/" title="Colossus框架使用指南"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Colossus框架使用指南"/></a><div class="content"><a class="title" href="/posts/2adef9b1/" title="Colossus框架使用指南">Colossus框架使用指南</a><time datetime="2026-08-22T06:50:24.588Z" title="Created 2026-08-22 14:50:24">2026-08-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/341d586a/" title="张家界和长沙旅行记"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/张家界长沙/26.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="张家界和长沙旅行记"/></a><div class="content"><a class="title" href="/posts/341d586a/" title="张家界和长沙旅行记">张家界和长沙旅行记</a><time datetime="2026-08-10T11:46:47.000Z" title="Created 2026-08-10 19:46:47">2026-08-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/447bec09/" title="使用Colossus框架求解CSP问题"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/杂/wallhaven-k82d26_1920x1080.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用Colossus框架求解CSP问题"/></a><div class="content"><a class="title" href="/posts/447bec09/" title="使用Colossus框架求解CSP问题">使用Colossus框架求解CSP问题</a><time datetime="2026-07-22T05:43:35.000Z" title="Created 2026-07-22 13:43:35">2026-07-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/7e6532e3/" title="科研就是屎上雕花"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大四季封面.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="科研就是屎上雕花"/></a><div class="content"><a class="title" href="/posts/7e6532e3/" title="科研就是屎上雕花">科研就是屎上雕花</a><time datetime="2026-07-08T06:14:39.000Z" title="Created 2026-07-08 14:14:39">2026-07-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/9381aa7e/" title="文章写作技巧感悟"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="文章写作技巧感悟"/></a><div class="content"><a class="title" href="/posts/9381aa7e/" title="文章写作技巧感悟">文章写作技巧感悟</a><time datetime="2026-07-07T05:25:09.000Z" title="Created 2026-07-07 13:25:09">2026-07-07</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2025 - 2026 By syuansheng</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll to Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+<h2 id="开源许可">8. 开源许可</h2>
+<p>开发中，还未开源~</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://YuanshengShe.github.io">syuansheng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://yuanshengshe.github.io/posts/2adef9b1/">https://yuanshengshe.github.io/posts/2adef9b1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Clossus/">Clossus</a><a class="post-meta__tags" href="/tags/%E5%88%97%E7%94%9F%E6%88%90/">列生成</a></div><div class="post-share"><div class="social-share" data-image="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大四季封面.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://lib.baomitu.com/social-share.js/1.0.16/css/share.min.css" media="print" onload="this.media='all'"><script src="https://lib.baomitu.com/social-share.js/1.0.16/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>点这里请我喝杯咖啡吧！</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/wechatreceive.jpg" target="_blank"><img class="post-qr-code-img" src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/wechatreceive.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/341d586a/" title="张家界和长沙旅行记"><img class="cover" src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/张家界长沙/26.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">张家界和长沙旅行记</div></div><div class="info-2"><div class="info-item-1">张家界很美，长沙有好吃的臭豆腐。 这是一段美好的记忆！</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/e671679d/" title="D-W分解与列生成算法"><img class="cover" src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/DW分解与列生成/cover.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-04</div><div class="info-item-2">D-W分解与列生成算法</div></div><div class="info-2"><div class="info-item-1">本文总结了运筹学三大分解方法之一的Dantzig-Wolfe分解，以及如何使用列生成算法求解使用D-W分解得到的模型</div></div></div></a><a class="pagination-related" href="/posts/77e15bf4/" title="列生成的子问题枚举策略"><img class="cover" src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/列生成子问题枚举策略/cover.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-09</div><div class="info-item-2">列生成的子问题枚举策略</div></div><div class="info-2"><div class="info-item-1">列生成的子问题枚举的一些加速策略</div></div></div></a><a class="pagination-related" href="/posts/9260e678/" title="大规模整数规划的求解技术"><img class="cover" src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/大规模整数规划的求解技术/cover.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-07</div><div class="info-item-2">大规模整数规划的求解技术</div></div><div class="info-2"><div class="info-item-1">Do what you believe is right with unwavering determination</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comments</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/avatar3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">syuansheng</div><div class="author-info-description">Life is a marathon!</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">79</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/YuanshengShe" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:13350003472@163.com" target="_blank" title="Mail2Me"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a><a class="social-icon" href="https://grs.dlmu.edu.cn/" target="_blank" title="DMU"><i class="fa-solid fa-building-columns" style="color: #hdhfbb;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">我是syuansheng，一名<font color='green'>交通运输规划与管理专业</font>的在读研究生。这是我的个人主页，我将在这里记录学习📚和生活🌈，同时我也期待得到一份<font color='blue'>供应链、物流或航运相关的工作</font>，如果你能够提供类似岗位或实习机会，请通过上方邮箱联系我！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#colossus-%E9%80%9A%E7%94%A8%E5%88%97%E7%94%9F%E6%88%90%E6%B1%82%E8%A7%A3%E6%A1%86%E6%9E%B6"><span class="toc-number">1.</span> <span class="toc-text">Colossus — 通用列生成求解框架</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%99%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.1.</span> <span class="toc-text">1. 这是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">1.2.</span> <span class="toc-text">2. 安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E6%89%8B%E8%B7%91%E9%80%9A%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.3.</span> <span class="toc-text">3. 上手：跑通示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%85%A7%E8%91%AB%E8%8A%A6%E7%94%BB%E7%93%A2%E8%B7%9F%E7%9D%80-csp-%E5%86%99%E4%BD%A0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.4.</span> <span class="toc-text">4. 照葫芦画瓢：跟着 CSP 写你的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%88%E5%AE%9A%E4%B9%89%E4%BD%A0%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 先定义你的数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#generateinitialcols-%E9%80%A0%E5%88%9D%E5%A7%8B%E5%88%97"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 generateInitialCols() —— 造初始列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#buildrestrictedmpcolumnpool-%E5%BB%BA%E9%99%90%E5%88%B6%E4%B8%BB%E9%97%AE%E9%A2%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 buildRestrictedMP(columnpool) —— 建限制主问题模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#updateandsolvesp_heuristic-_exact...-%E8%A7%A3%E5%AE%9A%E4%BB%B7%E5%AD%90%E9%97%AE%E9%A2%98%E6%A0%B8%E5%BF%83"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4 updateAndSolveSP_Heuristic &#x2F; _Exact(...) —— 解定价子问题（核心）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#coefficients_formattercoefficients-%E5%8F%AF%E9%80%89"><span class="toc-number">1.4.5.</span> <span class="toc-text">4.5 coefficients_formatter(coefficients) —— 可选</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E8%A3%85%E8%B5%B7%E6%9D%A5%E8%BF%90%E8%A1%8C"><span class="toc-number">1.4.6.</span> <span class="toc-text">4.6 组装起来，运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#environment-%E5%8F%82%E6%95%B0%E9%80%9F%E6%9F%A5"><span class="toc-number">1.5.</span> <span class="toc-text">5. Environment 参数速查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E6%80%8E%E4%B9%88%E7%9C%8B"><span class="toc-number">1.6.</span> <span class="toc-text">6. 输出怎么看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="toc-number">1.7.</span> <span class="toc-text">7. 常见问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E6%BA%90%E8%AE%B8%E5%8F%AF"><span class="toc-number">1.8.</span> <span class="toc-text">8. 开源许可</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/2adef9b1/" title="Colossus框架使用指南"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大四季封面.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Colossus框架使用指南"/></a><div class="content"><a class="title" href="/posts/2adef9b1/" title="Colossus框架使用指南">Colossus框架使用指南</a><time datetime="2026-08-22T06:50:24.588Z" title="Created 2026-08-22 14:50:24">2026-08-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/341d586a/" title="张家界和长沙旅行记"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/张家界长沙/26.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="张家界和长沙旅行记"/></a><div class="content"><a class="title" href="/posts/341d586a/" title="张家界和长沙旅行记">张家界和长沙旅行记</a><time datetime="2026-08-10T11:46:47.000Z" title="Created 2026-08-10 19:46:47">2026-08-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/447bec09/" title="使用Colossus框架求解CSP问题"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/杂/wallhaven-k82d26_1920x1080.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用Colossus框架求解CSP问题"/></a><div class="content"><a class="title" href="/posts/447bec09/" title="使用Colossus框架求解CSP问题">使用Colossus框架求解CSP问题</a><time datetime="2026-07-22T05:43:35.000Z" title="Created 2026-07-22 13:43:35">2026-07-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/7e6532e3/" title="科研就是屎上雕花"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="科研就是屎上雕花"/></a><div class="content"><a class="title" href="/posts/7e6532e3/" title="科研就是屎上雕花">科研就是屎上雕花</a><time datetime="2026-07-08T06:14:39.000Z" title="Created 2026-07-08 14:14:39">2026-07-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/9381aa7e/" title="文章写作技巧感悟"><img src="https://g.blfrp.cn/https://raw.githubusercontent.com/YuanshengShe/YuanshengShe.github.io/main/images/海大的四季/海大四季封面.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="文章写作技巧感悟"/></a><div class="content"><a class="title" href="/posts/9381aa7e/" title="文章写作技巧感悟">文章写作技巧感悟</a><time datetime="2026-07-07T05:25:09.000Z" title="Created 2026-07-07 13:25:09">2026-07-07</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2025 - 2026 By syuansheng</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll to Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
   const runMermaid = ele => {
     window.loadMermaid = true
     const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
