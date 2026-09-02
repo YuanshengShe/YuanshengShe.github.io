@@ -1,0 +1,114 @@
+/* ============================================================
+   Shipping Digest 分类页 · 极简整洁风格
+   仅作用于含 #sd-cat 的页面（即 Shipping Digest 分类列表页）
+   无封面 · 无卡片堆叠 · 无时间轴：一行“日期 + 标题” + 细分割线
+   ============================================================ */
+
+/* 隐藏侧边栏，正文居中为窄栏 */
+.layout:has(#sd-cat) .aside-wrap {
+  display: none;
+}
+.layout:has(#sd-cat) #content-inner {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  min-width: 0;
+}
+
+/* 白色圆角面板（替代默认透明背景） */
+.layout:has(#sd-cat) #category {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 14px rgba(16, 24, 40, 0.05);
+}
+
+#sd-cat {
+  padding: 46px 52px 40px;
+}
+
+/* ---- 页头：小而克制 ---- */
+#sd-cat .sd-head {
+  padding: 0 2px 22px;
+  border-bottom: 1px solid #eceff3;
+}
+#sd-cat .sd-title {
+  margin: 0 0 8px;
+  font-size: 1.55rem;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  line-height: 1.3;
+  color: #14181f;
+}
+#sd-cat .sd-sub {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #8b919b;
+}
+
+/* ---- 列表：日期 + 标题 单行 ---- */
+#sd-cat .sd-list {
+  margin-top: 4px;
+}
+#sd-cat a.sd-row {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding: 16px 2px;
+  color: #26282c;
+  text-decoration: none;
+  border-bottom: 1px solid #eef1f4;
+  transition: padding 0.15s ease;
+}
+#sd-cat a.sd-row:last-child {
+  border-bottom: none;
+}
+#sd-cat a.sd-row:hover {
+  padding-left: 8px;
+}
+#sd-cat a.sd-row:hover .sd-post-title {
+  color: #0a66c2;
+}
+#sd-cat .sd-date {
+  flex: 0 0 98px;
+  font-size: 0.85rem;
+  color: #9aa1ab;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+#sd-cat .sd-post-title {
+  flex: 1 1 auto;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: inherit;
+  overflow-wrap: break-word;
+}
+#sd-cat .sd-empty {
+  padding: 56px 0;
+  text-align: center;
+  color: #9aa1ab;
+}
+
+/* 分页器样式跟随极简风 */
+#sd-cat ~ .pagination,
+.layout:has(#sd-cat) #category > .pagination {
+  margin: 26px 0 0;
+}
+
+/* ---- 移动端：标题换行堆叠 ---- */
+@media screen and (max-width: 768px) {
+  .layout:has(#sd-cat) #content-inner {
+    padding: 0 14px;
+  }
+  #sd-cat {
+    padding: 28px 22px 24px;
+  }
+  #sd-cat a.sd-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  #sd-cat .sd-date {
+    flex: none;
+    font-size: 0.8rem;
+  }
+}
