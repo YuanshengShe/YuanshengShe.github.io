@@ -1,18 +1,53 @@
-/*使用@font-face 规则定义字体*/
-@font-face{
-    font-family: 'JetBrains Mono';
-    font-display: swap;
-    src: url('../fonts/JetBrainsMono-Regular.ttf') format("truetype");
+/* ============================================================
+   全站字体：霞鹜文楷 LXGW WenKai（自托管，v1.522）
+   来源：https://github.com/lxgw/LxgwWenKai
+   字重映射：400→Regular，500/600/700→Medium
+   （文楷无粗体字重，标题用 Medium + 浏览器合成加粗）
+   ============================================================ */
+
+@font-face {
+  font-family: 'LXGW WenKai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/LXGWWenKai-Regular.ttf') format('truetype');
 }
-@font-face{
-    font-family: 'HarmonyOS Sans SC';
-    font-display: swap;
-    src: url('../fonts/HarmonyOS_Sans_SC_Regular.ttf') format("truetype");
+
+@font-face {
+  font-family: 'LXGW WenKai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/LXGWWenKai-Medium.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'LXGW WenKai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/LXGWWenKai-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'LXGW WenKai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/LXGWWenKai-Medium.ttf') format('truetype');
+}
+
+/* 兜底覆盖（即使主题变量未生效，也能保证正文生效） */
 body {
-    font-family: 'JetBrains Mono','HarmonyOS Sans SC';
+  font-family: 'LXGW WenKai', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Microsoft JhengHei', sans-serif;
 }
-/*将自定义字体应用到整个网页正文，按顺序尝试，如果一个字体不可用就用下一个*/
-body {
-    font-family:   'JetBrains Mono','HarmonyOS Sans SC','LXGWWenKai-Regular';
+
+/* 代码/数学环境中文字符的兜底（西文仍用等宽字体） */
+code,
+kbd,
+pre,
+.highlight,
+mjx-container {
+  font-family: Consolas, Menlo, Monaco, 'LXGW WenKai', monospace;
 }
